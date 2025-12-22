@@ -15,6 +15,7 @@ import {
   Wishlist,
   Address,
 } from './database/entities';
+import { BooksModule } from './modules/books/books.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import {
         logging: configService.get('NODE_ENV') === 'development',
       }),
     }),
+    BooksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
