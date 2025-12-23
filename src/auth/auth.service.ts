@@ -9,11 +9,7 @@ import { UsersService } from 'src/users/users.service';
 
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-
-type JwtPayload = {
-  sub: string;
-  role?: string;
-};
+import { JwtPayload } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -22,9 +18,7 @@ export class AuthService {
     private readonly jwt: JwtService,
   ) {}
 
-  // =====================
   // REGISTER
-  // =====================
   async register(dto: RegisterDto) {
     const exists = await this.usersService.findByEmail(dto.email);
     if (exists) {
@@ -41,7 +35,6 @@ export class AuthService {
       lastName: dto.lastName,
     });
 
-    // 🔑 sub = USER ID (PAS email)
     const token = this.jwt.sign({
       sub: user.id,
     });
@@ -55,9 +48,7 @@ export class AuthService {
     };
   }
 
-  // =====================
   // LOGIN
-  // =====================
   async login(dto: LoginDto) {
     const user = await this.usersService.findByEmail(dto.email);
     if (!user || !user.isActive) {
@@ -80,25 +71,19 @@ export class AuthService {
     };
   }
 
-  // =====================
   // REFRESH
-  // =====================
   async refresh(userId: string) {
     return {
       accessToken: await this.jwt.signAsync({ sub: userId }),
     };
   }
 
-  // =====================
   // LOGOUT
-  // =====================
   logout() {
     return { message: 'Logged out' };
   }
 
-  // =====================
   // FORGOT PASSWORD
-  // =====================
   async forgotPassword(email: string) {
     const user = await this.usersService.findByEmail(email);
     if (!user) return;
@@ -114,20 +99,17 @@ export class AuthService {
     return { message: 'Reset email sent' };
   }
 
-  // =====================
   // RESET PASSWORD
-  // =====================
-async resetPassword(token: string, newPassword: string) {
-  const payload = this.jwt.verify(token) as JwtPayload;
+  async resetPassword(token: string, newPassword: string) {
+    const payload = this.jwt.verify(token) as JwtPayload;
 
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-  await this.usersService.resetPasswordById(
-    payload.sub,
-    hashedPassword,
-  );
+    await this.usersService.resetPasswordById(
+      payload.sub,
+      hashedPassword,
+    );
 
-  return { message: 'Password updated' };
-}
-
+    return { message: 'Password updated' };
+  }
 }

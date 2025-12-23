@@ -1,6 +1,7 @@
 import {
   Injectable,
   NotFoundException,
+   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -18,11 +19,8 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-
-  // =========================
+ 
   // FIND METHODS
-  // =========================
-
   findByEmail(email: string): Promise<User | null> {
     return this.userRepository.findOne({
       where: { email },
@@ -34,11 +32,12 @@ export class UsersService {
       where: { id },
     });
   }
+ findAll(): Promise<User[]> {
+     return this.userRepository.find();
+}
 
-  // =========================
+
   // CREATE USER (SAVE DIRECT)
-  // =========================
-
   async create(createUserDto: CreateUserDto): Promise<User> {
     return this.userRepository.save({
       email: createUserDto.email,
@@ -50,10 +49,7 @@ export class UsersService {
     });
   }
 
-  // =========================
   // USER-01 : UPDATE PROFILE (PRELOAD)
-  // =========================
-
   async updateProfile(
     userId: string,
     updateUserDto: UpdateUserDto,
@@ -69,11 +65,8 @@ export class UsersService {
 
     return this.userRepository.save(user);
   }
-
-  // =========================
+  
   // USER-02 : CHANGE / RESET PASSWORD (PRELOAD)
-  // =========================
-
   async changePassword(
     userId: string,
     dto: ChangePasswordDto,
@@ -89,8 +82,7 @@ export class UsersService {
     );
 
     if (!isValid) {
-      throw new NotFoundException('Wrong password');
-    }
+throw new UnauthorizedException('Wrong password');      }
 
     const hashedPassword = await bcrypt.hash(dto.newPassword, 10);
 
@@ -106,10 +98,7 @@ export class UsersService {
     await this.userRepository.save(updatedUser);
   }
 
-  // =========================
   // USER-04 : ORDER HISTORY (STUB)
-  // =========================
-
   async getOrderHistory(userId: string) {
     return {
       message:
@@ -133,7 +122,7 @@ async resetPasswordById(
 
   await this.userRepository.save(user);
 }
-
+ // delete account
   async deleteAccount(userId: string): Promise<void> {
     const user = await this.findById(userId);
     if (!user) {
@@ -142,11 +131,8 @@ async resetPasswordById(
 
     await this.userRepository.delete(userId);
   }
-
-  // =========================
+ 
   // EMAIL VERIFICATION
-  // =========================
-
   async activateUser(userId: string): Promise<void> {
     await this.userRepository.update(userId, {
       isActive: true,

@@ -8,7 +8,7 @@ import { AppService } from './app.service';
 
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-
+import { AdminModule } from './admin/admin.module';
 import { Role } from './common/enum/role.enum';
 import { UsersService } from './users/users.service';
 
@@ -29,6 +29,7 @@ import { UsersService } from './users/users.service';
 
     UsersModule,
     AuthModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -52,6 +53,6 @@ export class AppModule implements OnModuleInit {
       role: Role.ADMIN,
     });
 
-    console.log('✅ Default admin created');
+    console.log(' Default admin created');
   }
 }
