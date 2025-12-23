@@ -78,4 +78,40 @@ export class OrdersService {
 
     return order;
   }
+  // ORDER-10 + ORDER-11
+async findAll(
+  status?: OrderStatus,
+  userId?: number,
+): Promise<Order[]> {
+  const query = this.orderRepo.createQueryBuilder('order')
+    .leftJoinAndSelect('order.items', 'items');
+
+  if (status) {
+    query.andWhere('order.status = :status', { status });
+  }
+
+  if (userId) {
+    query.andWhere('order.userId = :userId', { userId });
+  }
+
+  return query.getMany();
+}
+
+// ORDER-13
+async updateStatus(
+  orderId: number,
+  status: OrderStatus,
+): Promise<Order> {
+  const order = await this.orderRepo.findOne({
+    where: { id: orderId },
+  });
+
+  if (!order) {
+    throw new NotFoundException('Order not found');
+  }
+
+  order.status = status;
+  return this.orderRepo.save(order);
+}
+
 }
