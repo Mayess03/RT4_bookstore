@@ -56,6 +56,13 @@ updateOrderStatus(
   findMyOrders(@Req() req) {
     return this.ordersService.findMyOrders(req.user.id);
   }
+  // ORDER-04 : confirmer commande
+  @UseGuards(FakeJwtAuthGuard)
+  @Patch(':id/confirm')
+  confirmOrder(@Param('id') id: string) {
+    const userId = 1; // 🔴 mock user
+    return this.ordersService.confirmOrder(+id, userId);
+  }
 
   // ORDER-06
   @Get(':id')
@@ -63,6 +70,19 @@ updateOrderStatus(
     return this.ordersService.findOne(Number(id), req.user.id);
   }
   
+// ORDER-07 : suivre le statut
+  @Get(':id/status')
+  getOrderStatus(@Param('id') id: string) {
+    const userId = 1; // 🔴 MOCK USER
+    return this.ordersService.getOrderStatus(+id, userId);
+  }
+  // ORDER-08 : annuler commande
+@UseGuards(FakeJwtAuthGuard)
+@Patch(':id/cancel')
+cancelOrder(@Param('id') id: string) {
+  const userId = 1; // 🔴 mock user
+  return this.ordersService.cancelOrder(+id, userId);
+}
 
   
 }

@@ -78,6 +78,26 @@ export class OrdersService {
 
     return order;
   }
+  // ORDER-07 : suivre le statut
+async getOrderStatus(
+  orderId: number,
+  userId: number,
+): Promise<{ status: OrderStatus }> {
+  const order = await this.orderRepo.findOne({
+    where: { id: orderId },
+  });
+
+  if (!order) {
+    throw new NotFoundException('Order not found');
+  }
+
+  if (order.userId !== userId) {
+    throw new ForbiddenException('Access denied');
+  }
+
+  return { status: order.status };
+}
+
   // ORDER-10 + ORDER-11
 async findAll(
   status?: OrderStatus,
@@ -111,6 +131,56 @@ async updateStatus(
   }
 
   order.status = status;
+  return this.orderRepo.save(order);
+}
+
+// ORDER-04 : confirmer une commande (USER)
+async confirmOrder(orderId: number, userId: number): Promise<Order> {
+  const order = await this.orderRepo.findOne({
+    where: { id: orderId },
+  });
+
+  if (!order) {
+    throw new NotFoundException('Order not found');
+  }
+
+  if (order.userId !== userId) {
+    throw new ForbiddenException('Access denied');
+  }
+
+  if (order.status !== OrderStatus.PENDING) {
+    throw new ForbiddenException(
+      'Only pending orders can be confirmed',
+    );
+  }
+
+  // 💳 Paiement simulé
+  order.status = OrderStatus.CONFIRMED;
+
+  return this.orderRepo.save(order);
+}
+// ORDER-08 : annuler une commande (USER)
+async cancelOrder(orderId: number, userId: number): Promise<Order> {
+  const order = await this.orderRepo.findOne({
+    where: { id: orderId },
+  });
+
+  if (!order) {
+    throw new NotFoundException('Order not found');
+  }
+
+  if (order.userId !== userId) {
+    throw new ForbiddenException('Access denied');
+  }
+
+  if (order.status !== OrderStatus.PENDING) {
+    throw new ForbiddenException(
+      'Only pending orders can be cancelled',
+    );
+  }
+
+  order.status = OrderStatus.CANCELLED;
+
   return this.orderRepo.save(order);
 }
 
