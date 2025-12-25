@@ -44,6 +44,19 @@ updateOrderStatus(
 ) {
   return this.ordersService.updateStatus(Number(id), dto.status);
 }
+// ORDER-12 : détail admin
+@UseGuards(FakeAdminGuard)
+@Get('admin/:id')
+getOrderAdmin(@Param('id') id: string) {
+  return this.ordersService.findOneAdmin(+id);
+}
+// ORDER-14 : annuler / rembourser
+@UseGuards(FakeAdminGuard)
+@Patch('admin/:id/refund')
+refundOrder(@Param('id') id: string) {
+  return this.ordersService.refundOrder(+id);
+}
+
 
   // ORDER-01
   @Post()

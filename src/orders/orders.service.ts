@@ -183,5 +183,33 @@ async cancelOrder(orderId: number, userId: number): Promise<Order> {
 
   return this.orderRepo.save(order);
 }
+// ORDER-12 : détail commande (ADMIN)
+async findOneAdmin(orderId: number): Promise<Order> {
+  const order = await this.orderRepo.findOne({
+    where: { id: orderId },
+    relations: ['items'],
+  });
+
+  if (!order) {
+    throw new NotFoundException('Order not found');
+  }
+
+  return order;
+}
+// ORDER-14 : annuler / rembourser (ADMIN)
+async refundOrder(orderId: number): Promise<Order> {
+  const order = await this.orderRepo.findOne({
+    where: { id: orderId },
+  });
+
+  if (!order) {
+    throw new NotFoundException('Order not found');
+  }
+
+  order.status = OrderStatus.CANCELLED;
+
+  // 💰 Remboursement simulé
+  return this.orderRepo.save(order);
+}
 
 }
