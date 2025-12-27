@@ -11,13 +11,14 @@ import { RefreshAuthGuard } from './guards/refresh-auth.guard';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
   @Post('register')
-  register(@Body() dto) {
+  register(@Body() dto: RegisterDto) {
     return this.auth.register(dto);
   }
 @Post('login')
