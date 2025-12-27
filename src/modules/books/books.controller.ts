@@ -10,6 +10,7 @@ import {
   ParseUUIDPipe,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -20,6 +21,10 @@ import {
 } from '@nestjs/swagger';
 import { BooksService } from './books.service';
 import { CreateBookDto, UpdateBookDto, QueryBookDto } from './dto';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../../auth/guards/roles.guard';
+import { Roles } from '../../auth/decorators/roles.decorator';
+import { Role } from '../../common/enums/role.enum';
 
 @ApiTags('Books')
 @Controller('books')
@@ -99,8 +104,8 @@ export class BooksController {
    */
   @Post()
   @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: '[ADMIN] Créer un nouveau livre' })
   @ApiResponse({ status: 201, description: 'Livre créé avec succès' })
   @ApiResponse({ status: 409, description: 'ISBN déjà existant' })
@@ -113,8 +118,8 @@ export class BooksController {
    */
   @Patch(':id')
   @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: '[ADMIN] Modifier un livre' })
   @ApiResponse({ status: 200, description: 'Livre modifié avec succès' })
   @ApiResponse({ status: 404, description: 'Livre non trouvé' })
@@ -130,8 +135,8 @@ export class BooksController {
    */
   @Delete(':id')
   @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: '[ADMIN] Supprimer un livre (soft delete)' })
   @ApiResponse({ status: 200, description: 'Livre supprimé avec succès' })
@@ -145,8 +150,8 @@ export class BooksController {
    */
   @Patch(':id/stock')
   @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: '[ADMIN] Mettre à jour le stock d\'un livre' })
   @ApiResponse({ status: 200, description: 'Stock mis à jour' })
   @ApiResponse({ status: 400, description: 'Stock insuffisant' })
@@ -162,8 +167,8 @@ export class BooksController {
    */
   @Patch(':id/toggle-active')
   @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: '[ADMIN] Activer/Désactiver un livre' })
   @ApiResponse({ status: 200, description: 'Statut du livre modifié' })
   toggleActive(
