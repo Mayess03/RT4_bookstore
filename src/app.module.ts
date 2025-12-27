@@ -17,6 +17,8 @@ import {
 } from './database/entities';
 import { BooksModule } from './modules/books/books.module';
 import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -53,6 +55,8 @@ import { AuthModule } from './auth/auth.module';
     }),
     BooksModule,
     AuthModule,
+    UsersModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
