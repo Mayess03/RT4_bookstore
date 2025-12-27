@@ -9,9 +9,9 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 
 import { AdminService } from './admin.service';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from '../common/enums/role.enum';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../../common/enums/role.enum';
 
 @Controller('admin')
 @UseGuards(AuthGuard('jwt'), RolesGuard)

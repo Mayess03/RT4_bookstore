@@ -8,8 +8,8 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ChangePasswordDto } from './dto/change-password.dto';
 
-import { User } from '../database/entities/user.entity';
-import { Role } from '../common/enums/role.enum';
+import { User } from '../../database/entities/user.entity';
+import { Role } from '../../common/enums/role.enum';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
