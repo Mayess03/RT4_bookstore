@@ -10,10 +10,12 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { AdminService } from './admin.service';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Role } from '../common/enum/role.enum';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from '../common/enums/role.enum';
 
 @Controller('admin')
-@UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
+@Roles(Role.ADMIN)
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 

@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
-import { Role } from '../common/enum/role.enum';
+import { Role } from '../common/enums/role.enum';
 import { BaseEntity } from './base.entity';
 
 @Entity('users')

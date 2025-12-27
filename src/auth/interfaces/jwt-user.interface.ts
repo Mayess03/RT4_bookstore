@@ -1,4 +1,4 @@
-import { Role } from '../../common/enum/role.enum';
+import { Role } from '../../common/enums/role.enum';
 
 export interface JwtUser {
   userId: string;

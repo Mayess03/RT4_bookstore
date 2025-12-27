@@ -1,98 +1,136 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 📚 Bookstore Backend API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend NestJS pour une plateforme de librairie en ligne avec TypeORM et PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🛠️ Stack Technique
 
-## Description
+- **Framework**: NestJS 11
+- **ORM**: TypeORM 0.3
+- **Database**: PostgreSQL 16
+- **Auth**: Passport JWT
+- **Validation**: class-validator
+- **Documentation**: Swagger
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
+## 🚀 Quick Start
 
 ```bash
-$ npm install
+npm install                # 1. Installer les dépendances
+docker-compose up -d       # 2. Démarrer PostgreSQL
+npm run start:dev          # 3. Démarrer l'application
+npm run seed               # 4. Insérer les données de test
 ```
 
-## Compile and run the project
+**API**: http://localhost:3000  
+**Swagger**: http://localhost:3000/api/docs  
+**pgAdmin**: http://localhost:5050 (admin@bookstore.com / admin)
+
+## 🔐 Comptes de Test
+
+| Email | Password | Role |
+|-------|----------|------|
+| admin@bookstore.com | Password123! | ADMIN |
+| john.doe@example.com | Password123! | USER |
+| jane.smith@example.com | Password123! | USER |
+
+## 🗄️ Entities (10)
+
+1. **User** - Utilisateurs avec rôles (ADMIN/USER)
+2. **Book** - Livres avec prix, stock, ISBN
+3. **Category** - Catégories de livres
+4. **Order** - Commandes avec statuts
+5. **OrderItem** - Articles commandés
+6. **Cart** - Panier utilisateur
+7. **CartItem** - Articles du panier
+8. **Review** - Avis sur les livres (1-5 étoiles)
+9. **Wishlist** - Liste de souhaits
+10. **Address** - Adresses de livraison
+
+**Relations**: UUID, timestamps, soft delete, CASCADE/RESTRICT appropriés
+
+## 👥 Modules à Développer (6 personnes)
+
+| Dev | Module | Tâches |
+|-----|--------|--------|
+| **Dev 1** | Auth | JWT Strategy, Guards, Login, Register |
+| **Dev 2** | Users | CRUD utilisateurs, Profil, Adresses |
+| **Dev 3** | Books | CRUD livres, Recherche, Upload images |
+| **Dev 4** | Categories | CRUD catégories, Liste par catégorie |
+| **Dev 5** | Cart | Ajouter/Supprimer, Quantités, Total |
+| **Dev 6** | Orders | Créer commande, Historique, Statuts |
+
+**Secondaires**: Reviews (Dev 1), Wishlist (Dev 2)
+
+## 📝 Scripts Disponibles
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run start:dev      # Mode développement avec watch
+npm run start:prod     # Mode production
+npm run build          # Compiler
+npm run seed           # Insérer données de test
+npm run lint           # Vérifier le code
+npm run test           # Tests unitaires
+npm run test:e2e       # Tests e2e
 ```
 
-## Run tests
+## 🔧 Configuration (.env)
 
+```env
+NODE_ENV=development
+PORT=3000
+
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_NAME=bookstore
+
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+JWT_EXPIRATION=7d
+```
+
+## 📁 Structure
+
+```
+src/
+├── common/
+│   ├── entities/       # BaseEntity (UUID, timestamps, soft delete)
+│   └── enums/         # Role, OrderStatus
+├── database/
+│   ├── entities/      # 10 entities TypeORM
+│   └── seeds/         # Script de seed
+├── app.module.ts      # Configuration TypeORM
+└── main.ts            # Bootstrap (CORS, Swagger, Validation)
+```
+
+## 🤝 Workflow Équipe
+
+1. Branche par module: `feature/auth`, `feature/books`, etc.
+2. **Ne jamais modifier les entities** sans accord
+3. DTOs pour validation (class-validator)
+4. Decorators Swagger (@ApiTags, @ApiOperation)
+5. Tests unitaires
+6. Pull Request + Review
+
+**Conventions**:
+- Entities: PascalCase (User, Book)
+- Endpoints: /api/resource (pluriel)
+- DTOs: CreateUserDto, UpdateBookDto
+
+## 🐛 Troubleshooting
+
+**Erreur de connexion DB:**
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker-compose down && docker-compose up -d
 ```
 
-## Deployment
+**Port déjà utilisé:**
+Modifier `PORT` dans `.env` ou arrêter le processus.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+**Erreur npm install:**
+Le fichier `.npmrc` avec `legacy-peer-deps=true` résout les conflits.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 📚 Ressources
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- [NestJS Docs](https://docs.nestjs.com)
+- [TypeORM Docs](https://typeorm.io)
+- [PostgreSQL Docs](https://www.postgresql.org/docs/)
