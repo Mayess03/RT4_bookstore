@@ -33,6 +33,7 @@ export class OrdersService {
     ];
 
     const totalPrice = cartItems.reduce(
+
       (sum, i) => sum + i.quantity * i.unitPrice,
       0,
     );
@@ -62,6 +63,53 @@ export class OrdersService {
     await this.orderItemRepo.save(items);
     return savedOrder;
   }
+  /*async createOrder(userId: string, dto: CreateOrderDto): Promise<Order> {
+  // 1️⃣ Récupérer le panier réel
+  const cartItems = await this.cartItemRepo.find({
+    where: { cart: { userId } },
+    relations: ['book'],
+  });
+
+  if (!cartItems.length) {
+    throw new BadRequestException('Cart is empty');
+  }
+
+  // 2️⃣ Calculer le total
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.quantity * item.book.price,
+    0,
+  );
+
+  // 3️⃣ Créer la commande
+  const order = this.orderRepo.create({
+    userId,
+    totalPrice,
+    status: OrderStatus.PENDING,
+    shippingAddress: dto.shippingAddress,
+    shippingCity: dto.shippingCity,
+    shippingZipCode: dto.shippingZipCode,
+    phone: dto.phone,
+  });
+  const savedOrder = await this.orderRepo.save(order);
+
+  // 4️⃣ Créer les OrderItems
+  const orderItems = cartItems.map((item) =>
+    this.orderItemRepo.create({
+      order: savedOrder,
+      bookId: item.book.id,
+      quantity: item.quantity,
+      unitPrice: item.book.price,
+      subtotal: item.quantity * item.book.price,
+    }),
+  );
+  await this.orderItemRepo.save(orderItems);
+
+  // 5️⃣ Vider le panier
+  await this.cartItemRepo.remove(cartItems);
+
+  return savedOrder;
+}
+*/ 
 
   // ORDER-04
   async confirmOrder(id: string, userId: string): Promise<Order> {
