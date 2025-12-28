@@ -1,5 +1,5 @@
 import { IsEnum } from 'class-validator';
-import { OrderStatus } from '../entities/order-status.enum';
+import { OrderStatus } from '../../../common/enums';
 
 export class UpdateStatusDto {
   @IsEnum(OrderStatus)
