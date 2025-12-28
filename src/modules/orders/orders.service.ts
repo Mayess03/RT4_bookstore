@@ -11,6 +11,10 @@ import { Order } from '../../database/entities/order.entity';
 import { OrderItem } from '../../database/entities/order-item.entity';
 import { OrderStatus } from '../../common/enums';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { CartItem } from '../../database/entities/cart-item.entity';
+import { CartService } from '../cart/cart.service';
+import { BooksService } from '../books/books.service';
+
 
 @Injectable()
 export class OrdersService {
@@ -20,12 +24,76 @@ export class OrdersService {
 
     @InjectRepository(OrderItem)
     private readonly orderItemRepo: Repository<OrderItem>,
+    private readonly cartService: CartService,   // ✅
+    private readonly booksService: BooksService, // ✅
+    
   ) {}
+  async createOrder(userId: string, dto: CreateOrderDto): Promise<Order> {
+  // 1️⃣ récupérer panier
+  const cart = await this.cartService.getCart(userId);
+
+  if (!cart || cart.items.length === 0) {
+    throw new BadRequestException('Cart is empty');
+  }
+
+  let totalPrice = 0;
+
+  // 2️⃣ créer commande
+  const order = this.orderRepo.create({
+    userId,
+    status: OrderStatus.PENDING,
+    shippingAddress: dto.shippingAddress,
+    shippingCity: dto.shippingCity,
+    shippingZipCode: dto.shippingZipCode,
+    phone: dto.phone,
+    totalPrice: 0,
+  });
+
+  const savedOrder = await this.orderRepo.save(order);
+
+  // 3️⃣ items
+  const orderItems: OrderItem[] = [];
+
+  for (const item of cart.items) {
+    const book = await this.booksService.findOne(item.bookId);
+
+    if (book.stock < item.quantity) {
+      throw new BadRequestException(`Stock insuffisant pour ${book.title}`);
+    }
+
+    const subtotal = book.price * item.quantity;
+    totalPrice += subtotal;
+
+    orderItems.push(
+      this.orderItemRepo.create({
+        order: savedOrder,
+        bookId: book.id,
+        quantity: item.quantity,
+        unitPrice: book.price,
+        subtotal,
+      }),
+    );
+
+    await this.booksService.decreaseStock(book.id, item.quantity);
+  }
+
+  await this.orderItemRepo.save(orderItems);
+
+  savedOrder.totalPrice = totalPrice;
+  await this.orderRepo.save(savedOrder);
+
+  // 4️⃣ vider panier
+  await this.cartService.clearCart(userId);
+
+  return savedOrder;
+}
+
+
 
   // ================= USER =================
 
   // ORDER-01
-  async createOrder(userId: string, dto: CreateOrderDto): Promise<Order> {
+ /* async createOrder(userId: string, dto: CreateOrderDto): Promise<Order> {
     // 🔴 PANIER MOCK
     const cartItems = [
       { bookId: '3fa85f64-5717-4562-b3fc-2c963f66afa6', quantity: 2, unitPrice: 30 },
@@ -63,53 +131,8 @@ export class OrdersService {
     await this.orderItemRepo.save(items);
     return savedOrder;
   }
-  /*async createOrder(userId: string, dto: CreateOrderDto): Promise<Order> {
-  // 1️⃣ Récupérer le panier réel
-  const cartItems = await this.cartItemRepo.find({
-    where: { cart: { userId } },
-    relations: ['book'],
-  });
-
-  if (!cartItems.length) {
-    throw new BadRequestException('Cart is empty');
-  }
-
-  // 2️⃣ Calculer le total
-  const totalPrice = cartItems.reduce(
-    (sum, item) => sum + item.quantity * item.book.price,
-    0,
-  );
-
-  // 3️⃣ Créer la commande
-  const order = this.orderRepo.create({
-    userId,
-    totalPrice,
-    status: OrderStatus.PENDING,
-    shippingAddress: dto.shippingAddress,
-    shippingCity: dto.shippingCity,
-    shippingZipCode: dto.shippingZipCode,
-    phone: dto.phone,
-  });
-  const savedOrder = await this.orderRepo.save(order);
-
-  // 4️⃣ Créer les OrderItems
-  const orderItems = cartItems.map((item) =>
-    this.orderItemRepo.create({
-      order: savedOrder,
-      bookId: item.book.id,
-      quantity: item.quantity,
-      unitPrice: item.book.price,
-      subtotal: item.quantity * item.book.price,
-    }),
-  );
-  await this.orderItemRepo.save(orderItems);
-
-  // 5️⃣ Vider le panier
-  await this.cartItemRepo.remove(cartItems);
-
-  return savedOrder;
-}
-*/ 
+  */
+ 
 
   // ORDER-04
   async confirmOrder(id: string, userId: string): Promise<Order> {
