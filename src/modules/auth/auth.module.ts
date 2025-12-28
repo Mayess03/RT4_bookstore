@@ -7,6 +7,8 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { RefreshStrategy } from './strategies/refresh.strategy';
+import { Cart } from 'src/database/entities';
+import { CartModule } from '../cart/cart.module';
 
 @Module({
   imports: [
@@ -20,9 +22,8 @@ import { RefreshStrategy } from './strategies/refresh.strategy';
         expiresIn: 3600, 
       },
     }),
-
-    
     UsersModule,
+    CartModule
   ],
   providers: [
     AuthService,
