@@ -10,12 +10,15 @@ import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { CartService } from '../cart/cart.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwt: JwtService,
+
+    private readonly cartService: CartService,
   ) {}
 
   // REGISTER
@@ -39,6 +42,8 @@ export class AuthService {
       sub: user.id,
     });
 
+    this.cartService.create({ userId: user.id }); // Create cart for new user
+    
     const verifyUrl =
       `${process.env.FRONT_URL || 'http://localhost:4200'}` +
       `/verify-email?token=${token}`;
@@ -105,10 +110,7 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    await this.usersService.resetPasswordById(
-      payload.sub,
-      hashedPassword,
-    );
+    await this.usersService.resetPasswordById(payload.sub, hashedPassword);
 
     return { message: 'Password updated' };
   }

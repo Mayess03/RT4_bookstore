@@ -1,10 +1,4 @@
-import {
-  Body,
-  Controller,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RefreshAuthGuard } from './guards/refresh-auth.guard';
@@ -21,11 +15,10 @@ export class AuthController {
   register(@Body() dto: RegisterDto) {
     return this.auth.register(dto);
   }
-@Post('login')
-login(@Body() dto: LoginDto) {
-  return this.auth.login(dto);
-}
-
+  @Post('login')
+  login(@Body() dto: LoginDto) {
+    return this.auth.login(dto);
+  }
 
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
