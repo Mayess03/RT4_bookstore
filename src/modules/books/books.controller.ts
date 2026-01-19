@@ -84,6 +84,16 @@ export class BooksController {
   }
 
   /**
+   * Get all categories
+   */
+  @Get('categories')
+  @ApiOperation({ summary: 'Liste de toutes les catégories de livres' })
+  @ApiResponse({ status: 200, description: 'Liste des catégories récupérée' })
+  getCategories() {
+    return this.booksService.getCategories();
+  }
+
+  /**
    * BOOK-02: Voir les détails d'un livre
    * BOOK-09: Consulter les avis sur un livre
    */
@@ -103,7 +113,7 @@ export class BooksController {
    * BOOK-10: Ajouter un nouveau livre (ADMIN)
    */
   @Post()
-  @ApiBearerAuth()
+  @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: '[ADMIN] Créer un nouveau livre' })
@@ -117,7 +127,7 @@ export class BooksController {
    * BOOK-11: Modifier un livre existant (ADMIN)
    */
   @Patch(':id')
-  @ApiBearerAuth()
+  @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: '[ADMIN] Modifier un livre' })
@@ -134,7 +144,7 @@ export class BooksController {
    * BOOK-12: Supprimer un livre (ADMIN)
    */
   @Delete(':id')
-  @ApiBearerAuth()
+  @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @HttpCode(HttpStatus.OK)
@@ -149,7 +159,7 @@ export class BooksController {
    * BOOK-14: Gérer le stock (quantités) (ADMIN)
    */
   @Patch(':id/stock')
-  @ApiBearerAuth()
+  @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: '[ADMIN] Mettre à jour le stock d\'un livre' })
@@ -166,7 +176,7 @@ export class BooksController {
    * BOOK-15: Activer/Désactiver un livre (ADMIN)
    */
   @Patch(':id/toggle-active')
-  @ApiBearerAuth()
+  @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: '[ADMIN] Activer/Désactiver un livre' })

@@ -7,6 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Book } from '../../database/entities/book.entity';
+import { Category } from '../../database/entities/category.entity';
 import { CreateBookDto, UpdateBookDto, QueryBookDto } from './dto';
 
 @Injectable()
@@ -14,6 +15,8 @@ export class BooksService {
   constructor(
     @InjectRepository(Book)
     private readonly bookRepository: Repository<Book>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
   ) {}
 
   /**
@@ -182,6 +185,15 @@ export class BooksService {
       relations: ['category'],
       order: { createdAt: 'DESC' },
       take: limit,
+    });
+  }
+
+  /**
+   * Get all book categories
+   */
+  async getCategories() {
+    return this.categoryRepository.find({
+      order: { name: 'ASC' },
     });
   }
 
