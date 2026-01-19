@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { CartService } from './cart.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { CreateCartItemDto } from './dto/create-cart-item.dto';
@@ -16,11 +17,12 @@ import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('cart')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth('JWT-auth')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
   // Add a book to cart
-  @UseGuards(JwtAuthGuard)
   @Post('add')
   addItem(@Body() createCartItemDto: CreateCartItemDto) {
     return this.cartService.addItem(createCartItemDto);
