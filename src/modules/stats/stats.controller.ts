@@ -51,4 +51,6 @@ export class StatsController {
     async getBooksByCategory() {
         return this.statsService.getBooksByCategory();
     }
+    
 }
+
