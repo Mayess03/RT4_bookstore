@@ -201,9 +201,10 @@ export class BooksService {
    * BOOK-10: Ajouter un nouveau livre (ADMIN)
    */
   async create(createBookDto: CreateBookDto) {
-    // Vérifier si ISBN existe déjà
+    // Vérifier si ISBN existe déjà (excluding soft-deleted books)
     const existingBook = await this.bookRepository.findOne({
       where: { isbn: createBookDto.isbn },
+      withDeleted: false, // Only check active books
     });
 
     if (existingBook) {
