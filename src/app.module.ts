@@ -22,12 +22,11 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { CartModule } from './modules/cart/cart.module';
+import { CategoryModule } from './modules/category/category.module';
 import {OrdersModule } from './modules/orders/orders.module';
-
+import { StatsModule } from './modules/stats/stats.module';
 import { UsersService } from './modules/users/users.service';
 import { Role } from './common/enums';
-import { StatsModule } from './modules/stats/stats.module';
-import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -66,6 +65,7 @@ import { CategoryModule } from './modules/category/category.module';
     UsersModule,
     AdminModule,
     CartModule,
+    CategoryModule,
     OrdersModule,
     StatsModule,
     CategoryModule,
