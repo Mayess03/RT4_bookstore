@@ -27,6 +27,7 @@ import {OrdersModule } from './modules/orders/orders.module';
 import { UsersService } from './modules/users/users.service';
 import { Role } from './common/enums';
 import { StatsModule } from './modules/stats/stats.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { StatsModule } from './modules/stats/stats.module';
     CartModule,
     OrdersModule,
     StatsModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
