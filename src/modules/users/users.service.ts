@@ -12,12 +12,15 @@ import { User } from '../../database/entities/user.entity';
 import { Role } from '../../common/enums/role.enum';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-
+import { OrdersService } from '../orders/orders.service';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+      private readonly ordersService: OrdersService,
+
+    
   ) {}
  
   // FIND METHODS
@@ -99,12 +102,10 @@ throw new UnauthorizedException('Wrong password');      }
   }
 
   // USER-04 : ORDER HISTORY (STUB)
-  async getOrderHistory(userId: string) {
-    return {
-      message:
-        'Order history will be available when OrdersModule is implemented',
-    };
-  }
+  // USER-04 : ORDER HISTORY
+async getOrderHistory(userId: string) {
+  return this.ordersService.findMyOrders(userId);
+}
 
 
 async resetPasswordById(
