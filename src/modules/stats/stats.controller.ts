@@ -5,11 +5,12 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from 'src/common/enums';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('stats')
-// @UseGuards(JwtAuthGuard, RolesGuard)
-// @Roles(Role.ADMIN)
-// verifier les guards
+@ApiBearerAuth('JWT-auth')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.ADMIN)
 export class StatsController {
     constructor(private readonly statsService: StatsService) { }
 
@@ -51,6 +52,6 @@ export class StatsController {
     async getBooksByCategory() {
         return this.statsService.getBooksByCategory();
     }
-    
+
 }
 
