@@ -7,6 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Book } from '../../database/entities/book.entity';
+import { Category } from '../../database/entities/category.entity';
 import { CreateBookDto, UpdateBookDto, QueryBookDto } from './dto';
 
 @Injectable()
@@ -14,6 +15,8 @@ export class BooksService {
   constructor(
     @InjectRepository(Book)
     private readonly bookRepository: Repository<Book>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
   ) {}
 
   /**
@@ -186,12 +189,22 @@ export class BooksService {
   }
 
   /**
+   * Get all book categories
+   */
+  async getCategories() {
+    return this.categoryRepository.find({
+      order: { name: 'ASC' },
+    });
+  }
+
+  /**
    * BOOK-10: Ajouter un nouveau livre (ADMIN)
    */
   async create(createBookDto: CreateBookDto) {
-    // Vérifier si ISBN existe déjà
+    // Vérifier si ISBN existe déjà (excluding soft-deleted books)
     const existingBook = await this.bookRepository.findOne({
       where: { isbn: createBookDto.isbn },
+      withDeleted: false, // Only check active books
     });
 
     if (existingBook) {

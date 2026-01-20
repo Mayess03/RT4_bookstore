@@ -53,8 +53,8 @@ export class CreateBookDto {
     description: 'URL de l\'image de couverture',
     required: false,
   })
-  @IsString()
   @IsOptional()
+  @IsString()
   coverImage?: string;
 
   @ApiProperty({
@@ -62,7 +62,7 @@ export class CreateBookDto {
     description: 'ID de la catégorie',
     required: false,
   })
-  @IsUUID()
   @IsOptional()
+  @IsUUID()
   categoryId?: string;
 }
