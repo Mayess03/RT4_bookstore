@@ -1,0 +1,134 @@
+<div class="auth-bg d-flex align-items-center py-5">
+  <div class="container">
+    <div class="row justify-content-center align-items-stretch g-4">
+
+      <!-- FORM -->
+      <div class="col-12 col-lg-5">
+        <div class="card auth-card p-4 p-md-5 h-100">
+          <h2 class="fw-bold mb-1">Register</h2>
+          <p class="text-muted mb-4">Create your new account</p>
+
+          <form (ngSubmit)="submit(formulaire)" #formulaire="ngForm" novalidate>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">First name</label>
+              <input
+                class="form-control auth-input"
+                type="text"
+                name="firstName"
+                [(ngModel)]="model.firstName"
+                #firstName="ngModel"
+                required
+                minlength="2"
+                placeholder="Enter your first name"
+              />
+              @if (firstName.touched && firstName.invalid) {
+                <div class="text-danger small mt-1">First name is required (min 2).</div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Last name</label>
+              <input
+                class="form-control auth-input"
+                type="text"
+                name="lastName"
+                [(ngModel)]="model.lastName"
+                #lastName="ngModel"
+                required
+                minlength="2"
+                placeholder="Enter your last name"
+              />
+              @if (lastName.touched && lastName.invalid) {
+                <div class="text-danger small mt-1">Last name is required (min 2).</div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Email</label>
+              <input
+                class="form-control auth-input"
+                type="email"
+                name="email"
+                [(ngModel)]="model.email"
+                #email="ngModel"
+                required
+                email
+                placeholder="Enter valid e-mail"
+              />
+              @if (email.touched && email.invalid) {
+                <div class="text-danger small mt-1">Please enter a valid email.</div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Password</label>
+              <input
+                class="form-control auth-input"
+                type="password"
+                name="password"
+                [(ngModel)]="model.password"
+                #password="ngModel"
+                required
+                minlength="6"
+                placeholder="Set a strong password"
+              />
+              @if (password.touched && password.invalid) {
+                <div class="text-danger small mt-1">Min 6 characters.</div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Confirm password</label>
+              <input
+                class="form-control auth-input"
+                type="password"
+                name="confirmPassword"
+                [(ngModel)]="model.confirmPassword"
+                #confirmPassword="ngModel"
+                required
+                minlength="6"
+                placeholder="Confirm your password"
+              />
+              @if (confirmPassword.touched && confirmPassword.invalid) {
+                <div class="text-danger small mt-1">Confirmation is required.</div>
+              }
+
+              @if (confirmPassword.touched && model.password && model.confirmPassword && model.password !== model.confirmPassword) {
+                <div class="text-danger small mt-1">Passwords do not match.</div>
+              }
+            </div>
+
+            @if (success()) {
+              <div class="alert alert-success py-2">{{ success() }}</div>
+            }
+
+            @if (error()) {
+              <div class="alert alert-danger py-2">{{ error() }}</div>
+            }
+
+            <button
+              class="btn btn-warning w-100 auth-btn"
+              type="submit"
+              [disabled]="formulaire.invalid || loading()"
+            >
+              @if (loading()) { Creating... } @else { Create account }
+            </button>
+
+            <div class="text-center mt-3">
+              <span class="text-muted small">Already have an account?</span>
+              <a routerLink="/auth/login" class="small text-decoration-none ms-1">Login</a>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      <!-- IMAGE -->
+      <div class="col-12 col-lg-7 d-none d-lg-block">
+        <div class="img-box rounded-4 h-100"></div>
+      </div>
+
+    </div>
+  </div>
+</div>

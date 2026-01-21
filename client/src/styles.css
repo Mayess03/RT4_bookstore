@@ -1,33 +1,22 @@
 
 /* Global styles for RT4 Bookstore */
 /* Angular Material theme is configured in angular.json */
-
-html {
-  height: 100%;
+@import "bootstrap/dist/css/bootstrap.min.css";
+.auth-bg {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #ffffff 0%, #ffffff 35%, #f7f1e6 100%);
 }
-
-body {
-  /* Light color theme */
-  color-scheme: light;
-
-  /* Material Design system variables */
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  /* Reset margin */
-  margin: 0;
-  height: 100%;
+.auth-card {
+  border: 0;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
 }
-
-/* You can add global styles below */
-
-/* Typography */
-* {
-  box-sizing: border-box;
+.auth-input {
+  border-radius: 12px;
+  padding: 12px 14px;
 }
-
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+.auth-btn {
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-weight: 700;
 }

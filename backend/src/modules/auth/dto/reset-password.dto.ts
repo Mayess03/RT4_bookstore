@@ -1,8 +1,10 @@
-import { MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
 
 export class ResetPasswordDto {
-  token: string;
+  @IsEmail()
+  email: string;
 
+  @IsNotEmpty()
   @MinLength(6)
   newPassword: string;
 }

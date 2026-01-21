@@ -1,0 +1,7 @@
+.img-box {
+  min-height: 560px;
+  background-image: url("/assets/auth/books.jpg");
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}

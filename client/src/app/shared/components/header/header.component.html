@@ -1,11 +1,10 @@
+<!--
 <mat-toolbar color="primary">
-  <!-- Logo/Brand -->
+  
   <span>📚 RT4 Bookstore</span>
   
-  <!-- Spacer to push buttons to right -->
   <span style="flex: 1 1 auto;"></span>
   
-  <!-- Navigation Links -->
   <button mat-button routerLink="/books">
     <mat-icon>book</mat-icon>
     Books
@@ -16,7 +15,6 @@
     Cart
   </button>
   
-  <!-- If logged in -->
   @if (isLoggedIn) {
     <button mat-button routerLink="/orders">
       <mat-icon>receipt</mat-icon>
@@ -34,7 +32,6 @@
     </button>
   }
   
-  <!-- If NOT logged in -->
   @if (!isLoggedIn) {
     <button mat-button routerLink="/auth/login">
       <mat-icon>login</mat-icon>
@@ -45,4 +42,6 @@
       Register
     </button>
   }
+  
 </mat-toolbar>
+-->
