@@ -105,13 +105,17 @@ export class AuthService {
   }
 
   // RESET PASSWORD
-  async resetPassword(token: string, newPassword: string) {
-    const payload = this.jwt.verify(token) as JwtPayload;
-
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    await this.usersService.resetPasswordById(payload.sub, hashedPassword);
-
-    return { message: 'Password updated' };
+async resetPasswordByEmail(email: string, newPassword: string) {
+  const user = await this.usersService.findByEmail(email);
+  if (!user) {
+    throw new UnauthorizedException('Email not found');
   }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  await this.usersService.resetPasswordById(user.id, hashedPassword);
+
+  return { message: 'Password updated successfully' };
+}
+
 }

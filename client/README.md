@@ -57,3 +57,27 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+# Authentication & Role Redirection
+
+This project implements a role-based authentication system.
+
+After login:
+
+- If the connected user has role **ADMIN**, he is automatically redirected to:  
+  👉 `/admin`
+
+- If the connected user has role **USER**, he is automatically redirected to:  
+  👉 `/home`
+
+This behavior is handled on the frontend by decoding the JWT token and checking the `role` field.
+
+Two simple components were created for testing:
+
+- `AdminComponent` → route: `/admin`
+- `HomeComponent` → route: `/home`
+
+They are currently basic placeholder pages used only to verify that the redirection and role guards work correctly.
+
+Access control:
+- `/home` is protected by `AuthGuard` (user must be logged in)
+- `/admin` is protected by `AuthGuard` + `AdminGuard` (user must be logged in and have ADMIN role)

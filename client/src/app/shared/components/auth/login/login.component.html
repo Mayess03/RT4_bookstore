@@ -1,0 +1,90 @@
+<div class="auth-bg d-flex align-items-center py-5">
+  <div class="container">
+    <div class="row justify-content-center align-items-stretch g-4">
+
+      <!-- FORM -->
+      <div class="col-12 col-lg-5">
+        <div class="card auth-card p-4 p-md-5 h-100">
+          <h2 class="fw-bold mb-1">Login</h2>
+          <p class="text-muted mb-4">Welcome back to Bookstore</p>
+
+          <!-- Template-driven form -->
+          <form (ngSubmit)="submit(formulaire)" #formulaire="ngForm" novalidate>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Email</label>
+
+              <input
+                class="form-control auth-input"
+                type="email"
+                name="email"
+                [(ngModel)]="model.email"
+                #email="ngModel"
+                required
+                email
+                placeholder="Enter valid e-mail"
+              />
+
+              @if (email.touched && email.invalid) {
+                <div class="text-danger small mt-1">
+                  Please enter a valid email.
+                </div>
+              }
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label fw-semibold">Password</label>
+
+              <input
+                class="form-control auth-input"
+                type="password"
+                name="password"
+                [(ngModel)]="model.password"
+                #password="ngModel"
+                required
+                minlength="1"
+                placeholder="Enter your password"
+              />
+
+              @if (password.touched && password.invalid) {
+                <div class="text-danger small mt-1">
+                  Password is required.
+                </div>
+              }
+            </div>
+
+            <div class="d-flex justify-content-end mb-3">
+              <a routerLink="/auth/forgot-password" class="small text-decoration-none">
+                Forgot password?
+              </a>
+            </div>
+
+            @if (error()) {
+              <div class="alert alert-danger py-2">{{ error() }}</div>
+            }
+
+            <button
+              class="btn btn-warning w-100 auth-btn"
+              type="submit"
+              [disabled]="formulaire.invalid || loading()"
+            >
+              @if (loading()) { Loading... } @else { Login }
+            </button>
+
+            <div class="text-center mt-3">
+              <span class="text-muted small">No account?</span>
+              <a routerLink="/auth/register" class="small text-decoration-none ms-1">Create one</a>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      <!-- IMAGE -->
+      <div class="col-12 col-lg-7 d-none d-lg-block">
+        <div class="img-box rounded-4 h-100"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
