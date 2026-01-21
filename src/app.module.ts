@@ -28,6 +28,7 @@ import { StatsModule } from './modules/stats/stats.module';
 import { UsersService } from './modules/users/users.service';
 import { Role } from './common/enums';
 import { WishlistModule } from './modules/wishlist/wishlist.module';
+import { ReviewsModule } from './modules/reviews/reviews.module';
 
 @Module({
   imports: [
@@ -71,6 +72,7 @@ import { WishlistModule } from './modules/wishlist/wishlist.module';
     StatsModule,
     CategoryModule,
     WishlistModule,
+    ReviewsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

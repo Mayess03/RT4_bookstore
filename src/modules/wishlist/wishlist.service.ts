@@ -6,42 +6,44 @@ import { Book } from 'src/database/entities';
 
 @Injectable()
 export class WishlistService {
-  constructor(
-    @InjectRepository(Wishlist)
-    private readonly wishlistRepository: Repository<Wishlist>,
+    constructor(
+        @InjectRepository(Wishlist)
+        private readonly wishlistRepository: Repository<Wishlist>,
 
-    @InjectRepository(Book)
-    private readonly bookRepository: Repository<Book>,
-  ) {}
+        @InjectRepository(Book)
+        private readonly bookRepository: Repository<Book>,
+    ) { }
 
-  async addBook(userId: string, bookId: string) {
-    // Vérifie que le livre existe
-    const book = await this.bookRepository.findOne({ where: { id: bookId } });
-    if (!book) throw new NotFoundException('Livre non trouvé');
+    async addBook(userId: string, bookId: string) {
+        // Vérifie que le livre existe
+        const book = await this.bookRepository.findOne({ where: { id: bookId } });
+        if (!book) throw new NotFoundException('Livre non trouvé');
 
-    // Vérifie si le livre est déjà dans la wishlist
-    const existing = await this.wishlistRepository.findOne({
-      where: { userId, bookId },
-    });
-    if (existing) return existing;
+        // Vérifie si le livre est déjà dans la wishlist
+        const existing = await this.wishlistRepository.findOne({
+            where: { userId, bookId },
+        });
+        if (existing) return existing;
 
-    const wishlistItem = this.wishlistRepository.create({ userId, bookId });
-    return this.wishlistRepository.save(wishlistItem);
-  }
+        return this.wishlistRepository.save({
+            userId,
+            bookId,
+        });
+    }
 
-  async removeBook(userId: string, bookId: string) {
-    const existing = await this.wishlistRepository.findOne({
-      where: { userId, bookId },
-    });
-    if (!existing) throw new NotFoundException('Livre non trouvé dans la wishlist');
+    async removeBook(userId: string, bookId: string) {
+        const existing = await this.wishlistRepository.findOne({
+            where: { userId, bookId },
+        });
+        if (!existing) throw new NotFoundException('Livre non trouvé dans la wishlist');
 
-    return this.wishlistRepository.remove(existing);
-  }
+        return this.wishlistRepository.remove(existing);
+    }
 
-  async getUserWishlist(userId: string) {
-    return this.wishlistRepository.find({
-      where: { userId },
-      relations: ['book'], // permet de récupérer les infos du livre
-    });
-  }
+    async getUserWishlist(userId: string) {
+        return this.wishlistRepository.find({
+            where: { userId },
+            relations: ['book'], // permet de récupérer les infos du livre
+        });
+    }
 }
