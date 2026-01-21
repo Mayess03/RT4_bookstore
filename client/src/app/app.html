@@ -1,0 +1,18 @@
+<!-- Header (shown on all pages) -->
+<app-header></app-header>
+
+<!-- Main content area - different page content loads here -->
+<main>
+  <router-outlet></router-outlet>
+</main>
+
+<!-- TEST SECTION - Uncomment to test shared components -->
+<!-- 
+<div style="padding: 2rem;">
+  <h2>Testing Components</h2>
+  
+  <app-loading [isLoading]="true" message="Loading books..."></app-loading>
+  
+  <app-book-card [book]="testBook" (addToCart)="onTestAddToCart($event)"></app-book-card>
+</div>
+-->
