@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 /**
@@ -29,6 +29,7 @@ export class ApiService {
   /**
    * HttpClient for making HTTP requests
    * Protected = child services can access it
+   * Using inject() function - modern Angular best practice
    */
-  constructor(protected http: HttpClient) {}
+  protected http = inject(HttpClient);
 }

@@ -24,7 +24,7 @@ import { CurrencyPipe } from '@angular/common';
     CurrencyPipe
   ],
   templateUrl: './book-card.component.html',
-  styleUrl: './book-card.component.scss'
+  styleUrl: './book-card.component.css'
 })
 export class BookCardComponent {
   @Input() book!: Book;  // Required input

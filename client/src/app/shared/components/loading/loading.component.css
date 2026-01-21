@@ -4,9 +4,9 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  
-  p {
-    margin-top: 1rem;
-    color: rgba(0, 0, 0, 0.6);
-  }
+}
+
+.loading-container p {
+  margin-top: 1rem;
+  color: rgba(0, 0, 0, 0.6);
 }

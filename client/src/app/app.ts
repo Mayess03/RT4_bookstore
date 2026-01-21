@@ -14,7 +14,7 @@ import { HeaderComponent } from './shared/components/header/header.component';
     // BookCardComponent  // Uncomment for testing
   ],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.css'
 })
 export class App {
   protected readonly title = signal('client');
