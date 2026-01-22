@@ -1,0 +1,23 @@
+<nav class="admin-navbar">
+  <div class="navbar-container">
+
+    <!-- LEFT: Brand -->
+    <div class="navbar-left">
+      <span class="brand">Bookstore Dashboard</span>
+    </div>
+
+    <!-- CENTER: Pages -->
+    <div class="navbar-center">
+      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-link">Home</a>
+      <a routerLink="/admin/users" routerLinkActive="active" class="nav-link">Users</a>
+      <a routerLink="/admin/orders" routerLinkActive="active" class="nav-link">Orders</a>
+      <a routerLink="/admin/profile" routerLinkActive="active" class="nav-link">Profile</a>
+    </div>
+
+    <!-- RIGHT: Logout Button -->
+    <div class="navbar-right">
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+
+  </div>
+</nav>

@@ -1,14 +1,12 @@
-//pour tester 
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { AdminNavbarComponent } from './admin-navbar/admin-navbar.component';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  template: `
-    <div class="container mt-5 text-center">
-      <h1>Admin Dashboard</h1>
-      <p>Welcome, you are logged in as ADMIN.</p>
-    </div>
-  `,
+  imports: [RouterOutlet, AdminNavbarComponent],
+  templateUrl: './admin.component.html',
+  styleUrls: ['./admin.component.css'],
 })
 export class AdminComponent {}
