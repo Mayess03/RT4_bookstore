@@ -1,0 +1,84 @@
+/* ===================== NAVBAR FIXE ===================== */
+.admin-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 72px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+/* Navbar container */
+.navbar-container {
+  display: flex;
+  justify-content: space-between; /* titre à gauche, user à droite */
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100%;
+}
+
+/* Center pages */
+.navbar-center {
+  display: flex;
+  gap: 2rem;
+  flex: 1; /* prend tout l’espace entre le titre et le bouton logout */
+  justify-content: center; /* centre les liens */
+}
+
+/* ===================== LEFT NAV ===================== */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.brand {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #FFD75E; /* couleur jaune mise à jour */
+  cursor: pointer;
+}
+
+/* ===================== NAV LINKS ===================== */
+.nav-link {
+  font-weight: 500;
+  color: #6c757d;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #FFD75E; /* couleur jaune mise à jour */
+  border-bottom: 2px solid #FFD75E;
+  padding-bottom: 4px;
+}
+
+/* ===================== RIGHT NAV ===================== */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* Navbar right: simple logout button */
+.logout-btn {
+  padding: 0.5rem 1rem;
+  background-color: #FFD75E; /* couleur jaune mise à jour */
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #e6c85a; /* jaune hover légèrement foncé */
+}
