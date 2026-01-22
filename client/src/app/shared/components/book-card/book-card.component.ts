@@ -31,6 +31,7 @@ import { CurrencyPipe } from '@angular/common';
 export class BookCardComponent {
   // Signal Inputs (Modern Angular 21)
   book = input.required<Book>();
+  isLoading = input<boolean>(false);
   
   // Signal Outputs (Modern Angular 21)
   addToCart = output<Book>();

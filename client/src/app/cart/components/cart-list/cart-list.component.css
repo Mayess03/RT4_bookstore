@@ -1,0 +1,36 @@
+/* Cart List Component Styles */
+
+:host {
+  display: block;
+}
+
+/* Responsive image sizing */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Smooth transitions */
+button {
+  transition: all 0.3s ease;
+}
+
+/* Spinner styling */
+mat-spinner {
+  display: inline-block;
+}
+
+/* Sticky positioning for small screens */
+@media (max-width: 1024px) {
+  .sticky {
+    position: static;
+    top: auto;
+  }
+}
+
+/* Ensure proper spacing on mobile */
+@media (max-width: 640px) {
+  .grid {
+    gap: 1.5rem;
+  }
+}

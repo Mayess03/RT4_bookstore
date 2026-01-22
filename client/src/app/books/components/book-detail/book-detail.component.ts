@@ -5,13 +5,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { BooksService } from '../../services/books.service';
+import { CartService } from '../../../cart/services/cart.service';
 import { Book } from '../../../shared/models';
 import { AuthService } from '../../../shared/services/auth.service';
 
 /**
  * Book Detail Component
- * 
+ *
  * Purpose: Display full details of a single book
  * Features:
  * - Large cover image with fallback
@@ -19,7 +21,7 @@ import { AuthService } from '../../../shared/services/auth.service';
  * - Stock status
  * - Add to cart functionality
  * - Back navigation
- * 
+ *
  * Used by: Dev 2 (Books module)
  */
 @Component({
@@ -31,16 +33,19 @@ import { AuthService } from '../../../shared/services/auth.service';
     MatIconModule,
     MatButtonModule,
     MatDividerModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
   ],
   templateUrl: './book-detail.component.html',
-  styleUrl: './book-detail.component.css'
+  styleUrl: './book-detail.component.css',
 })
 export class BookDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private booksService = inject(BooksService);
   private authService = inject(AuthService);
+  private cartService = inject(CartService);
+  private snackBar = inject(MatSnackBar);
 
   // State
   book = signal<Book | null>(null);
@@ -48,9 +53,11 @@ export class BookDetailComponent implements OnInit {
   error = signal<string | null>(null);
   quantity = signal(1);
   isLoggedIn = this.authService.isLoggedIn;
+  isAddingToCart = signal(false);
 
   // Placeholder for missing covers
-  readonly placeholderImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2YwZjBmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBDb3ZlcjwvdGV4dD48L3N2Zz4=';
+  readonly placeholderImage =
+    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2YwZjBmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBDb3ZlcjwvdGV4dD48L3N2Zz4=';
 
   ngOnInit() {
     const bookId = this.route.snapshot.paramMap.get('id');
@@ -78,7 +85,7 @@ export class BookDetailComponent implements OnInit {
         console.error('Failed to load book:', err);
         this.error.set('Failed to load book details. Please try again.');
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -96,7 +103,7 @@ export class BookDetailComponent implements OnInit {
   increaseQuantity() {
     const currentBook = this.book();
     if (currentBook && this.quantity() < currentBook.stock) {
-      this.quantity.update(q => q + 1);
+      this.quantity.update((q) => q + 1);
     }
   }
 
@@ -105,7 +112,7 @@ export class BookDetailComponent implements OnInit {
    */
   decreaseQuantity() {
     if (this.quantity() > 1) {
-      this.quantity.update(q => q - 1);
+      this.quantity.update((q) => q - 1);
     }
   }
 
@@ -115,19 +122,72 @@ export class BookDetailComponent implements OnInit {
   onAddToCart() {
     // Check if user is logged in
     if (!this.isLoggedIn()) {
-      alert('Please login to add items to your cart');
-      this.router.navigate(['/login'], {
-        queryParams: { returnUrl: this.router.url }
-      });
+      this.snackBar
+        .open('Please login to add items to your cart', 'Login', {
+          duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'bottom',
+        })
+        .onAction()
+        .subscribe(() => {
+          this.router.navigate(['/login'], {
+            queryParams: { returnUrl: this.router.url },
+          });
+        });
       return;
     }
 
     const currentBook = this.book();
-    if (currentBook) {
-      // TODO: Implement cart service integration
-      console.log('Add to cart:', currentBook, 'quantity:', this.quantity());
-      alert(`Added ${this.quantity()} x "${currentBook.title}" to cart!`);
+    const user = this.authService.currentUser();
+
+    if (!currentBook || !user?.id) {
+      this.snackBar.open('Error adding to cart', 'Close', {
+        duration: 5000,
+        horizontalPosition: 'end',
+        verticalPosition: 'bottom',
+        panelClass: ['error-snackbar'],
+      });
+      return;
     }
+
+    this.isAddingToCart.set(true);
+
+    this.cartService
+      .addToCart({
+        userId: user.id,
+        bookId: currentBook.id,
+        quantity: this.quantity(),
+      })
+      .subscribe({
+        next: (cartItem) => {
+          this.isAddingToCart.set(false);
+          this.snackBar
+            .open(`Added ${this.quantity()} x "${currentBook.title}" to cart!`, 'View Cart', {
+              duration: 5000,
+              horizontalPosition: 'end',
+              verticalPosition: 'bottom',
+              panelClass: ['success-snackbar'],
+            })
+            .onAction()
+            .subscribe(() => {
+              this.router.navigate(['/cart']);
+            });
+
+          // Reset quantity
+          this.quantity.set(1);
+        },
+        error: (error) => {
+          this.isAddingToCart.set(false);
+          console.error('Error adding to cart:', error);
+          const errorMessage = error?.error?.message || 'Failed to add to cart. Please try again.';
+          this.snackBar.open(errorMessage, 'Close', {
+            duration: 5000,
+            horizontalPosition: 'end',
+            verticalPosition: 'bottom',
+            panelClass: ['error-snackbar'],
+          });
+        },
+      });
   }
 
   /**

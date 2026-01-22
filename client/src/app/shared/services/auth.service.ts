@@ -4,7 +4,7 @@ import { ApiService } from './api.service';
 import { AuthResponse, LoginDto, RegisterDto, User } from '../models/user.model';
 
 /**
- * 
+ *
  * Uses signals for reactive auth state management
  * Automatically updates all components when auth state changes
  */
@@ -15,7 +15,7 @@ export class AuthService extends ApiService {
 
   // Signal state
   private currentUserSignal = signal<User | null>(null);
-  
+
   // Computed signals (reactive, auto-update components)
   currentUser = computed(() => this.currentUserSignal());
   isLoggedIn = computed(() => !!this.currentUserSignal());
@@ -30,34 +30,53 @@ export class AuthService extends ApiService {
     const token = this.accessToken;
     if (token) {
       // User is logged in (token exists)
-      // We don't have user details from token, but we know they're authenticated
-      // Set a minimal user object - real data will load from API if needed
-      this.currentUserSignal.set({
-        id: '',
-        email: '',
-        firstName: '',
-        lastName: '',
-        role: 'USER',
-        isActive: true
-      });
+      // Decode JWT to get user info
+      const user = this.decodeToken(token);
+      if (user) {
+        this.currentUserSignal.set(user);
+      }
+    }
+  }
+
+  /**
+   * Decode JWT token to extract user info
+   */
+  private decodeToken(token: string): User | null {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join(''),
+      );
+      const decoded = JSON.parse(jsonPayload);
+      return {
+        id: decoded.id || decoded.sub || '',
+        email: decoded.email || '',
+        firstName: decoded.firstName || '',
+        lastName: decoded.lastName || '',
+        role: decoded.role || 'USER',
+        isActive: decoded.isActive !== false,
+      };
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
     }
   }
 
   //  LOGIN => POST /api/auth/login
   login(dto: LoginDto) {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, dto).pipe(
-      tap(res => {
+      tap((res) => {
         this.saveTokens(res);
-        // Set logged in state - user details from email in dto
-        this.currentUserSignal.set({
-          id: '',
-          email: dto.email,
-          firstName: '',
-          lastName: '',
-          role: 'USER',
-          isActive: true
-        });
-      })
+        // Decode token to get user info
+        const user = this.decodeToken(res.accessToken);
+        if (user) {
+          this.currentUserSignal.set(user);
+        }
+      }),
     );
   }
 
@@ -73,18 +92,18 @@ export class AuthService extends ApiService {
 
   //  RESET PASSWORD => POST /api/auth/reset-password
   resetPasswordByEmail(email: string, newPassword: string) {
-    return this.http.post<{ message: string }>(
-      `${this.apiUrl}/auth/reset-password`,
-      { email, newPassword }
-    );
+    return this.http.post<{ message: string }>(`${this.apiUrl}/auth/reset-password`, {
+      email,
+      newPassword,
+    });
   }
 
   //  REFRESH
   refresh() {
     return this.http.post<{ accessToken: string }>(`${this.apiUrl}/auth/refresh`, {}).pipe(
-      tap(res => {
+      tap((res) => {
         this.setAccessToken(res.accessToken);
-      })
+      }),
     );
   }
 
@@ -94,7 +113,7 @@ export class AuthService extends ApiService {
       tap(() => {
         this.clearTokens();
         this.currentUserSignal.set(null);
-      })
+      }),
     );
   }
 
@@ -120,5 +139,12 @@ export class AuthService extends ApiService {
 
   get refreshToken() {
     return localStorage.getItem(this.refreshKey);
+  }
+
+  /**
+   * Get current user
+   */
+  getCurrentUser(): User | null {
+    return this.currentUserSignal();
   }
 }
