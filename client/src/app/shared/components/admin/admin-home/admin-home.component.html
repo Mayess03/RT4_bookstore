@@ -12,3 +12,26 @@
     </div>
   </div>
 </div>
+
+<div class="dashboard-row">
+
+  <!-- LEFT: chart -->
+  <div class="chart-container">
+    <div class="chart-header">
+      <h5>Sales Analytics (DT)</h5>
+
+      <select (change)="onPeriodChange($event)">
+        <option value="day">By Day</option>
+        <option value="month">By Month</option>
+      </select>
+    </div>
+
+    <canvas id="salesChart"></canvas>
+  </div>
+
+  <!-- RIGHT (future content) -->
+  <div class="dashboard-right">
+    <!-- réservé pour plus tard -->
+  </div>
+
+</div>

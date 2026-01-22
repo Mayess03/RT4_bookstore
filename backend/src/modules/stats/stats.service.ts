@@ -24,17 +24,17 @@ export class StatsService {
     }
 
     async getRevenue() {
-        // somme total des commandes
-        const result = await this.dataSource
-            .getRepository(OrderItem)
-            .createQueryBuilder('item')
-            .select('SUM(item.subtotal)', 'total')
-            .getRawOne();
+    // somme total des commandes
+    const result = await this.dataSource
+        .getRepository(Order)
+        .createQueryBuilder('order')
+        .select('SUM(order.totalPrice)', 'totalRevenue')
+        .getRawOne();
 
-        return {
-            totalRevenue: Number(result.total) || 0,
-        };
-    }
+    return {
+        totalRevenue: Number(result.totalRevenue ?? 0),
+    };
+}
 
     // Ventes agrégées par jour
     async getSalesByDay() {

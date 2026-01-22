@@ -1,6 +1,9 @@
+/* ==============================
+   STATS BOXES
+============================== */
 .stats-container {
   display: flex;
-  justify-content: flex-start; /* pour que margin-left fonctionne visuellement */
+  justify-content: flex-start;
   gap: 1rem;
   margin: 2rem 0;
   flex-wrap: wrap; /* responsive */
@@ -8,8 +11,8 @@
 
 /* Chaque boîte */
 .stat-box {
-  display: flex;          /* horizontal */
-  align-items: center;    /* vertical centré */
+  display: flex;
+  align-items: center;
   flex: 1;
   min-width: 220px;
   background-color: #ffffff;
@@ -17,8 +20,6 @@
   padding: 1rem 1.5rem;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transition: transform 0.2s, box-shadow 0.2s;
-
-  margin-left: 1rem; /* <-- ajoute un petit espace à gauche de chaque boîte */
 }
 
 .stat-box:hover {
@@ -30,7 +31,7 @@
 .stat-left i {
   font-size: 2.5rem;
   color: #FFC107;
-  margin-right: 1.5rem; /* <-- augmente l'espace entre icône et texte/nombre */
+  margin-right: 1.5rem;
 }
 
 /* Texte à droite */
@@ -51,7 +52,7 @@
   color: #212529;
 }
 
-/* Responsive */
+/* Responsive pour stat-box */
 @media (max-width: 768px) {
   .stats-container {
     flex-direction: column;
@@ -60,8 +61,55 @@
 
   .stat-box {
     width: 100%;
-    flex-direction: row; 
+    flex-direction: row;
     padding: 1rem;
-    margin-left: 0; /* enlève margin-left sur mobile */
+  }
+}
+
+/* ==============================
+   DASHBOARD ROW (CHART + RIGHT)
+============================== */
+.dashboard-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 colonnes égales */
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Chart prend exactement 2 colonnes = largeur de 2 boxes */
+.chart-container {
+  grid-column: span 2;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.chart-header select {
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+}
+
+/* Right side placeholder prend 2 colonnes aussi */
+.dashboard-right {
+  grid-column: span 2;
+}
+
+/* Responsive : mobile */
+@media (max-width: 992px) {
+  .dashboard-row {
+    grid-template-columns: 1fr; /* 1 colonne */
+  }
+
+  .chart-container,
+  .dashboard-right {
+    grid-column: span 1; /* pleine largeur */
   }
 }
