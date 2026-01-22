@@ -20,7 +20,8 @@ export interface Book {
   publishedDate?: Date;    // Optional
   createdAt?: Date;        // When added to database
   updatedAt?: Date;        // Last modification
-  avgRating?: number;      // Optional - average rating from reviews
+  avgRating?: number;      // Optional - average rating from reviews (calculated by backend)
+  reviewsCount?: number;   // Optional - number of reviews (calculated by backend)
   totalSales?: number;     // Optional - total number of sales
 }
 

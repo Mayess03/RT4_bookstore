@@ -34,6 +34,40 @@ export class HomeComponent implements OnInit {
   newArrivals = signal<Book[]>([]);
   loading = signal(true);
 
+  // Categories data
+  categories = [
+    { name: 'Fiction', icon: '📖', count: 250 },
+    { name: 'Science Fiction', icon: '🚀', count: 180 },
+    { name: 'Fantasy', icon: '🧙', count: 200 },
+    { name: 'Business', icon: '💼', count: 120 },
+    { name: 'Technology', icon: '💻', count: 150 },
+    { name: 'Self-Help', icon: '🌟', count: 100 },
+    { name: 'History', icon: '📜', count: 90 },
+    { name: 'Science', icon: '🔬', count: 110 }
+  ];
+
+  // Testimonials data
+  testimonials = [
+    {
+      name: 'Sarah Johnson',
+      initial: 'S',
+      role: 'Book Enthusiast',
+      text: 'Amazing selection and fast delivery! I found books I couldn\'t find anywhere else. The customer service is exceptional.'
+    },
+    {
+      name: 'Michael Chen',
+      initial: 'M',
+      role: 'Fiction Lover',
+      text: 'The curated collections are fantastic. I love the personalized recommendations and the easy browsing experience.'
+    },
+    {
+      name: 'Emma Williams',
+      initial: 'E',
+      role: 'Avid Reader',
+      text: 'Best bookstore I\'ve used! The prices are competitive and I appreciate the detailed book descriptions and reviews.'
+    }
+  ];
+
   ngOnInit() {
     this.loadFeaturedBooks();
   }
@@ -57,6 +91,19 @@ export class HomeComponent implements OnInit {
 
   browseBooks() {
     this.router.navigate(['/books']);
+  }
+
+  browseByCategory(categoryName: string) {
+    this.router.navigate(['/books'], {
+      queryParams: { category: categoryName }
+    });
+  }
+
+  scrollToSection(sectionId: string) {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   onAddToCart(book: Book) {

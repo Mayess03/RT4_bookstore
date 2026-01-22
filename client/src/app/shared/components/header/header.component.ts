@@ -31,14 +31,20 @@ export class HeaderComponent {
   isLoggedIn = this.authService.isLoggedIn;
   
   onLogout() {
+    console.log('Logout clicked, isLoggedIn before:', this.isLoggedIn());
+    
+    // Clear state immediately (clearTokens also sets currentUserSignal to null)
+    this.authService.clearTokens();
+    
+    console.log('Tokens cleared, isLoggedIn after:', this.isLoggedIn());
+    
+    // Try to call API but ignore errors
     this.authService.logout().subscribe({
-      next: () => {
-        this.router.navigate(['/']);
-      },
-      error: () => {
-        // Even if API fails, state is already cleared by service
-        this.router.navigate(['/']);
-      }
+      next: () => console.log('Logout API success'),
+      error: (err) => console.log('Logout API failed (ignored):', err.status)
     });
+    
+    // Navigate to home
+    this.router.navigate(['/']);
   }
 }

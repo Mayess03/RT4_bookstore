@@ -50,19 +50,23 @@ export class BooksService {
       .groupBy('book.id')
       .addGroupBy('category.id');
 
-    // BOOK-03: Recherche par titre
+    // BOOK-03: Global search - searches title, author, AND ISBN (case-insensitive)
     if (search) {
-      query.andWhere('book.title ILIKE :search', { search: `%${search}%` });
+      const trimmedSearch = search.trim();
+      query.andWhere(
+        '(book.title ILIKE :search OR book.author ILIKE :search OR book.isbn ILIKE :search)',
+        { search: `%${trimmedSearch}%` }
+      );
     }
 
-    // BOOK-03: Recherche par auteur
+    // BOOK-03: Specific author filter (if needed separately)
     if (author) {
-      query.andWhere('book.author ILIKE :author', { author: `%${author}%` });
+      query.andWhere('book.author ILIKE :author', { author: `%${author.trim()}%` });
     }
 
-    // BOOK-03: Recherche par ISBN
+    // BOOK-03: Specific ISBN search (exact match)
     if (isbn) {
-      query.andWhere('book.isbn = :isbn', { isbn });
+      query.andWhere('book.isbn = :isbn', { isbn: isbn.trim() });
     }
 
     // BOOK-04: Filtrer par catégorie
