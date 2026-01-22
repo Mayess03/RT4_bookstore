@@ -1,4 +1,70 @@
-/* Header styles (mostly handled by Material) */
-mat-toolbar button {
-  margin-left: 8px;
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.brand:hover {
+  opacity: 0.9;
+}
+
+.brand mat-icon {
+  font-size: 1.75rem;
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.nav-links button {
+  font-weight: 500;
+}
+
+.nav-links button mat-icon {
+  margin-right: 0.25rem;
+}
+
+.logout-btn {
+  margin-left: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .brand span {
+    display: none;
+  }
+  
+  .nav-links button span {
+    display: none;
+  }
+  
+  .nav-links button mat-icon {
+    margin-right: 0;
+  }
+  
+  .nav-links {
+    gap: 0.25rem;
+  }
+}
+

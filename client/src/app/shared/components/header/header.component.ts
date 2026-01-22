@@ -1,18 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 /**
- * Header Component
+ * Header Component (Smart Component)
  * 
  * Purpose: Navigation bar shown on every page
- * 
- * Uses Material:
- * - mat-toolbar: Navigation bar
- * - mat-button: Styled buttons
- * - mat-icon: Material icons
+ * Features: Auth-aware navigation, responsive design
  */
 @Component({
   selector: 'app-header',
@@ -27,11 +24,21 @@ import { RouterLink } from '@angular/router';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
-  // TODO Dev 1: Add authentication logic
-  isLoggedIn = false;
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  
+  // Signal: reactive authentication state (auto-updates when auth changes)
+  isLoggedIn = this.authService.isLoggedIn;
   
   onLogout() {
-    // TODO Dev 1: Implement logout
-    console.log('Logout clicked');
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/']);
+      },
+      error: () => {
+        // Even if API fails, state is already cleared by service
+        this.router.navigate(['/']);
+      }
+    });
   }
 }

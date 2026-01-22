@@ -1,47 +1,55 @@
-<!--
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="navbar">
+  <!-- Logo/Brand -->
+  <a routerLink="/" class="brand">
+    <mat-icon>menu_book</mat-icon>
+    <span>RT4 Bookstore</span>
+  </a>
   
-  <span>📚 RT4 Bookstore</span>
+  <span class="spacer"></span>
   
-  <span style="flex: 1 1 auto;"></span>
-  
-  <button mat-button routerLink="/books">
-    <mat-icon>book</mat-icon>
-    Books
-  </button>
-  
-  <button mat-button routerLink="/cart">
-    <mat-icon>shopping_cart</mat-icon>
-    Cart
-  </button>
-  
-  @if (isLoggedIn) {
-    <button mat-button routerLink="/orders">
-      <mat-icon>receipt</mat-icon>
-      Orders
+  <!-- Navigation Links -->
+  <nav class="nav-links">
+    <button mat-button routerLink="/">
+      <mat-icon>home</mat-icon>
+      Home
     </button>
     
-    <button mat-button routerLink="/profile">
-      <mat-icon>person</mat-icon>
-      Profile
+    <button mat-button routerLink="/books">
+      <mat-icon>book</mat-icon>
+      Books
     </button>
     
-    <button mat-button (click)="onLogout()">
-      <mat-icon>logout</mat-icon>
-      Logout
-    </button>
-  }
-  
-  @if (!isLoggedIn) {
-    <button mat-button routerLink="/auth/login">
-      <mat-icon>login</mat-icon>
-      Login
+    <button mat-button routerLink="/cart">
+      <mat-icon>shopping_cart</mat-icon>
+      Cart
     </button>
     
-    <button mat-raised-button color="accent" routerLink="/auth/register">
-      Register
-    </button>
-  }
-  
+    @if (isLoggedIn()) {
+      <button mat-button routerLink="/orders">
+        <mat-icon>receipt</mat-icon>
+        Orders
+      </button>
+      
+      <button mat-button routerLink="/profile">
+        <mat-icon>person</mat-icon>
+        Profile
+      </button>
+      
+      <button mat-button (click)="onLogout()" class="logout-btn">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+    }
+    
+    @if (!isLoggedIn()) {
+      <button mat-button routerLink="/auth/login">
+        <mat-icon>login</mat-icon>
+        Login
+      </button>
+      
+      <button mat-raised-button color="accent" routerLink="/auth/register">
+        Register
+      </button>
+    }
+  </nav>
 </mat-toolbar>
--->
