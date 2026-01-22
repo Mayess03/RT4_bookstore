@@ -1,12 +1,15 @@
 import { Component, OnInit, inject, signal, effect } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { BooksService } from '../../services/books.service';
+import { CartService } from '../../../cart/services/cart.service';
+import { AuthService } from '../../../shared/services/auth.service';
 import { Book } from '../../../shared/models';
 import { BookCardComponent } from '../../../shared/components/book-card/book-card.component';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
@@ -35,6 +38,7 @@ import { debounceTime, Subject } from 'rxjs';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
+    MatSnackBarModule,
     BookCardComponent,
     LoadingComponent
   ],
@@ -43,6 +47,10 @@ import { debounceTime, Subject } from 'rxjs';
 })
 export class BookListComponent implements OnInit {
   private booksService = inject(BooksService);
+  private cartService = inject(CartService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
   private searchSubject = new Subject<string>();
 
   // State using signals (Modern Angular best practice)
@@ -64,6 +72,9 @@ export class BookListComponent implements OnInit {
   sortBy = signal<string>('title');
   sortOrder = signal<'ASC' | 'DESC'>('ASC'); // Backend expects uppercase
   categories = signal<Array<{ id: string; name: string }>>([]);
+  
+  // Cart loading state
+  addingToCartBookId = signal<string | null>(null);
 
   ngOnInit() {
     this.loadCategories();
@@ -198,9 +209,65 @@ export class BookListComponent implements OnInit {
    * Handle add to cart event from book card
    */
   onAddToCart(book: Book) {
-    // TODO: Implement cart service integration
-    console.log('Add to cart:', book);
-    alert(`Added "${book.title}" to cart!`);
+    // Check if user is logged in
+    if (!this.authService.isLoggedIn()) {
+      this.snackBar.open('Please login to add items to your cart', 'Login', {
+        duration: 5000,
+        horizontalPosition: 'end',
+        verticalPosition: 'bottom'
+      }).onAction().subscribe(() => {
+        this.router.navigate(['/login'], {
+          queryParams: { returnUrl: this.router.url }
+        });
+      });
+      return;
+    }
+
+    const user = this.authService.getCurrentUser();
+    if (!user?.id) {
+      this.snackBar.open('Error: User not found', 'Close', {
+        duration: 5000,
+        horizontalPosition: 'end',
+        verticalPosition: 'bottom',
+        panelClass: ['error-snackbar']
+      });
+      return;
+    }
+
+    this.addingToCartBookId.set(book.id);
+
+    this.cartService.addToCart({
+      userId: user.id,
+      bookId: book.id,
+      quantity: 1
+    }).subscribe({
+      next: () => {
+        this.addingToCartBookId.set(null);
+        this.snackBar.open(
+          `Added "${book.title}" to cart!`,
+          'View Cart',
+          {
+            duration: 5000,
+            horizontalPosition: 'end',
+            verticalPosition: 'bottom',
+            panelClass: ['success-snackbar']
+          }
+        ).onAction().subscribe(() => {
+          this.router.navigate(['/cart']);
+        });
+      },
+      error: (error) => {
+        this.addingToCartBookId.set(null);
+        console.error('Error adding to cart:', error);
+        const errorMessage = error?.error?.message || 'Failed to add to cart';
+        this.snackBar.open(errorMessage, 'Close', {
+          duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'bottom',
+          panelClass: ['error-snackbar']
+        });
+      }
+    });
   }
 
   /**

@@ -33,9 +33,14 @@
     <button mat-raised-button 
             color="primary" 
             (click)="onAddToCart()"
-            [disabled]="book().stock === 0">
-      <mat-icon>shopping_cart</mat-icon>
-      Add to Cart
+            [disabled]="book().stock === 0 || isLoading()">
+      @if (isLoading()) {
+        <mat-icon class="animate-spin mr-1">hourglass_empty</mat-icon>
+        Adding...
+      } @else {
+        <mat-icon>shopping_cart</mat-icon>
+        Add to Cart
+      }
     </button>
   </mat-card-actions>
 </mat-card>

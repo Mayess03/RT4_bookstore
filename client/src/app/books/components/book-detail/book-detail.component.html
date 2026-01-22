@@ -1,6 +1,5 @@
 <div class="min-h-screen bg-stone-50 py-8">
   <div class="container mx-auto px-4 max-w-7xl">
-    
     <!-- Loading State -->
     @if (loading()) {
       <div class="flex justify-center items-center py-20">
@@ -45,12 +44,11 @@
 
       <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
-          
           <!-- Left Column: Image -->
           <div class="flex justify-center items-start">
             <div class="sticky top-8">
-              <img 
-                [src]="book()!.coverImage" 
+              <img
+                [src]="book()!.coverImage"
                 [alt]="book()!.title"
                 (error)="onImageError($event)"
                 class="w-full max-w-md h-auto rounded-lg shadow-xl"
@@ -60,7 +58,6 @@
 
           <!-- Right Column: Details -->
           <div class="space-y-6">
-            
             <!-- Title & Author -->
             <div>
               <h1 class="text-4xl font-serif font-bold text-stone-900 mb-2">{{ book()!.title }}</h1>
@@ -72,16 +69,22 @@
             <!-- Price & Stock -->
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-3xl font-bold text-amber-700">${{ +book()!.price | number:'1.2-2' }}</p>
+                <p class="text-3xl font-bold text-amber-700">
+                  ${{ +book()!.price | number: '1.2-2' }}
+                </p>
               </div>
               <div>
                 @if (book()!.stock > 0) {
-                  <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                  <span
+                    class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-800"
+                  >
                     <mat-icon class="mr-1 text-sm">check_circle</mat-icon>
                     In Stock ({{ book()!.stock }} available)
                   </span>
                 } @else {
-                  <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                  <span
+                    class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-800"
+                  >
                     <mat-icon class="mr-1 text-sm">cancel</mat-icon>
                     Out of Stock
                   </span>
@@ -114,7 +117,9 @@
               @if (book()!.publishedDate) {
                 <div>
                   <p class="text-sm text-gray-500 mb-1">Published</p>
-                  <p class="font-medium text-gray-900">{{ book()!.publishedDate | date:'mediumDate' }}</p>
+                  <p class="font-medium text-gray-900">
+                    {{ book()!.publishedDate | date: 'mediumDate' }}
+                  </p>
                 </div>
               }
               @if (book()!.avgRating) {
@@ -123,7 +128,9 @@
                   <p class="font-medium text-gray-900">
                     ⭐ {{ book()!.avgRating }} / 5
                     @if (book()!.reviewsCount) {
-                      <span class="text-sm text-gray-500">({{ book()!.reviewsCount }} reviews)</span>
+                      <span class="text-sm text-gray-500"
+                        >({{ book()!.reviewsCount }} reviews)</span
+                      >
                     }
                   </p>
                 </div>
@@ -139,7 +146,11 @@
                   <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 text-center">
                     <mat-icon class="text-amber-600 mb-2">info</mat-icon>
                     <p class="text-amber-900 font-medium mb-2">Please login to purchase</p>
-                    <button mat-raised-button class="!bg-amber-600 !text-white hover:!bg-amber-700" routerLink="/login">
+                    <button
+                      mat-raised-button
+                      class="!bg-amber-600 !text-white hover:!bg-amber-700"
+                      routerLink="/login"
+                    >
                       <mat-icon>login</mat-icon>
                       Login
                     </button>
@@ -148,16 +159,18 @@
                 <div class="flex items-center space-x-4">
                   <label class="text-gray-700 font-medium">Quantity:</label>
                   <div class="flex items-center border border-gray-300 rounded-lg">
-                    <button 
-                      mat-icon-button 
+                    <button
+                      mat-icon-button
                       (click)="decreaseQuantity()"
                       [disabled]="quantity() <= 1"
                     >
                       <mat-icon>remove</mat-icon>
                     </button>
-                    <span class="px-4 py-2 min-w-[3rem] text-center font-medium">{{ quantity() }}</span>
-                    <button 
-                      mat-icon-button 
+                    <span class="px-4 py-2 min-w-[3rem] text-center font-medium">{{
+                      quantity()
+                    }}</span>
+                    <button
+                      mat-icon-button
                       (click)="increaseQuantity()"
                       [disabled]="quantity() >= book()!.stock"
                     >
@@ -166,13 +179,19 @@
                   </div>
                 </div>
 
-                <button 
-                  mat-raised-button 
+                <button
+                  mat-raised-button
                   class="w-full !py-4 !text-lg !bg-amber-600 !text-white hover:!bg-amber-700"
                   (click)="onAddToCart()"
+                  [disabled]="isAddingToCart()"
                 >
-                  <mat-icon class="mr-2">shopping_cart</mat-icon>
-                  Add to Cart
+                  @if (isAddingToCart()) {
+                    <mat-spinner diameter="20" class="mr-2"></mat-spinner>
+                    Adding...
+                  } @else {
+                    <mat-icon class="mr-2">shopping_cart</mat-icon>
+                    Add to Cart
+                  }
                 </button>
               </div>
             } @else {

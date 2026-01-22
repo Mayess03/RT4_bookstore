@@ -1,0 +1,262 @@
+<div class="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+  <!-- Header Section -->
+  <div
+    class="bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 text-white py-12 sm:py-16 md:py-20 mb-8 sm:mb-12"
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif font-bold mb-2 sm:mb-3">
+            Shopping Cart
+          </h1>
+          <p class="text-base sm:text-lg text-amber-100">Review and manage your items</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="flex gap-4 sm:gap-6">
+          <div class="text-center">
+            <div class="text-2xl sm:text-3xl font-bold">{{ itemCount() }}</div>
+            <div class="text-xs sm:text-sm text-amber-200">Items</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16">
+    <!-- Error Message -->
+    @if (error()) {
+      <div class="mb-6 p-4 rounded-lg bg-red-100 border border-red-400 text-red-700">
+        <div class="flex items-center gap-2">
+          <mat-icon>error</mat-icon>
+          <span>{{ error() }}</span>
+        </div>
+      </div>
+    }
+
+    <!-- Loading State -->
+    @if (loading() && !cart()) {
+      <app-loading></app-loading>
+    } @else if (!cart() || cart()!.items.length === 0) {
+      <!-- Empty Cart State -->
+      <div class="text-center py-16">
+        <mat-icon
+          class="text-6xl text-amber-400 mb-4"
+          style="font-size: 5rem; width: 5rem; height: 5rem"
+          >shopping_cart</mat-icon
+        >
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-3">Your Cart is Empty</h2>
+        <p class="text-gray-600 mb-8 text-sm sm:text-base">Add some books to get started!</p>
+        <button
+          (click)="continueShopping()"
+          class="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-full bg-amber-600 hover:bg-amber-700 text-white font-semibold transition-all"
+        >
+          <mat-icon>arrow_back</mat-icon>
+          Continue Shopping
+        </button>
+      </div>
+    } @else {
+      <!-- Cart Content -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+        <!-- Cart Items (Left Column) -->
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div
+              class="px-4 sm:px-6 py-4 border-b border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50"
+            >
+              <h2 class="text-xl sm:text-2xl font-bold text-gray-800">Items ({{ itemCount() }})</h2>
+            </div>
+
+            <div class="divide-y divide-gray-200">
+              @for (item of cart()!.items; track item.id) {
+                <div class="p-4 sm:p-6 hover:bg-amber-50 transition-colors">
+                  <div class="flex gap-4 sm:gap-6">
+                    <!-- Book Image -->
+                    @if (item.book?.coverImage) {
+                      <img
+                        [src]="item.book?.coverImage"
+                        [alt]="item.book?.title"
+                        class="w-20 sm:w-24 h-28 sm:h-36 object-cover rounded-lg border border-amber-200"
+                      />
+                    } @else {
+                      <div
+                        class="w-20 sm:w-24 h-28 sm:h-36 bg-gray-200 rounded-lg flex items-center justify-center border border-amber-200"
+                      >
+                        <mat-icon class="text-gray-400 text-3xl">book</mat-icon>
+                      </div>
+                    }
+
+                    <!-- Item Details -->
+                    <div class="flex-1">
+                      <div
+                        class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3"
+                      >
+                        <div>
+                          <h3 class="font-bold text-gray-800 text-base sm:text-lg">
+                            {{ item.book?.title }}
+                          </h3>
+                          <p class="text-gray-600 text-sm">by {{ item.book?.author }}</p>
+                        </div>
+                        <button
+                          (click)="removeItem(item)"
+                          [disabled]="isUpdating(item.id)"
+                          class="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-all disabled:opacity-50"
+                        >
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </div>
+
+                      <!-- Price and Stock Info -->
+                      <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 mb-4">
+                        <span class="text-lg sm:text-xl font-bold text-amber-600">
+                          {{ item.book?.price | currency: 'EUR' }}
+                        </span>
+                        @if (item.book && item.book.stock > 0) {
+                          <span class="text-sm text-green-600 flex items-center gap-1">
+                            <mat-icon class="text-sm">check_circle</mat-icon>
+                            In Stock
+                          </span>
+                        } @else {
+                          <span class="text-sm text-red-600 flex items-center gap-1">
+                            <mat-icon class="text-sm">cancel</mat-icon>
+                            Out of Stock
+                          </span>
+                        }
+                      </div>
+
+                      <!-- Quantity Control -->
+                      <div class="flex items-center gap-3">
+                        <span class="text-sm text-gray-600">Quantity:</span>
+                        <div class="flex items-center border border-gray-300 rounded-lg">
+                          <button
+                            (click)="updateQuantity(item, item.quantity - 1)"
+                            [disabled]="item.quantity <= 1 || isUpdating(item.id)"
+                            class="px-3 py-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          >
+                            <mat-icon class="text-lg">remove</mat-icon>
+                          </button>
+                          <span class="px-4 py-2 font-semibold text-center min-w-16">{{
+                            item.quantity
+                          }}</span>
+                          <button
+                            (click)="updateQuantity(item, item.quantity + 1)"
+                            [disabled]="
+                              (item.book && item.quantity >= item.book.stock) || isUpdating(item.id)
+                            "
+                            class="px-3 py-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          >
+                            <mat-icon class="text-lg">add</mat-icon>
+                          </button>
+                        </div>
+                        @if (isUpdating(item.id)) {
+                          <mat-spinner diameter="20"></mat-spinner>
+                        }
+                      </div>
+
+                      <!-- Line Total -->
+                      <div class="mt-4 text-right">
+                        <span class="text-gray-600">Subtotal: </span>
+                        <span class="font-bold text-amber-600">{{
+                          (item.book?.price || 0) * item.quantity | currency: 'EUR'
+                        }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Clear Cart Button -->
+            @if (cart()!.items.length > 0) {
+              <div class="px-4 sm:px-6 py-4 border-t border-amber-200 bg-amber-50">
+                <button
+                  (click)="clearCart()"
+                  class="text-red-600 hover:text-red-700 hover:bg-red-50 px-4 py-2 rounded-lg transition-all font-semibold flex items-center gap-2"
+                >
+                  <mat-icon>delete_sweep</mat-icon>
+                  Clear Cart
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Order Summary (Right Column) -->
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-lg shadow-md sticky top-20">
+            <!-- Summary Header -->
+            <div
+              class="px-4 sm:px-6 py-4 border-b border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50"
+            >
+              <h2 class="text-xl sm:text-2xl font-bold text-gray-800">Order Summary</h2>
+            </div>
+
+            <!-- Summary Content -->
+            <div class="p-4 sm:p-6 space-y-4">
+              <!-- Items Count -->
+              <div class="flex justify-between text-sm sm:text-base">
+                <span class="text-gray-600">Items ({{ itemCount() }})</span>
+                <span class="font-semibold">{{ itemCount() }}</span>
+              </div>
+
+              <!-- Subtotal -->
+              <div class="flex justify-between text-sm sm:text-base border-b border-gray-200 pb-4">
+                <span class="text-gray-600">Subtotal</span>
+                <span class="font-semibold">{{ subtotal() | currency: 'EUR' }}</span>
+              </div>
+
+              <!-- Tax -->
+              <div class="flex justify-between text-sm sm:text-base">
+                <div class="flex items-center gap-2">
+                  <span class="text-gray-600">Tax ({{ tax() * 100 }}%)</span>
+                  <mat-icon class="text-xs text-gray-400 cursor-help" title="Estimated tax rate"
+                    >info</mat-icon
+                  >
+                </div>
+                <span class="font-semibold">{{ taxAmount() | currency: 'EUR' }}</span>
+              </div>
+
+              <!-- Total -->
+              <div
+                class="flex justify-between text-base sm:text-lg font-bold border-t border-gray-200 pt-4 mt-4"
+              >
+                <span class="text-gray-800">Total</span>
+                <span class="text-amber-600">{{ total() | currency: 'EUR' }}</span>
+              </div>
+
+              <!-- Buttons -->
+              <div class="space-y-3 mt-6">
+                <button
+                  (click)="proceedToCheckout()"
+                  [disabled]="loading() || itemCount() === 0"
+                  class="w-full px-4 py-3 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  <mat-icon>payment</mat-icon>
+                  Proceed to Checkout
+                </button>
+                <button
+                  (click)="continueShopping()"
+                  class="w-full px-4 py-3 rounded-lg border-2 border-amber-600 text-amber-600 hover:bg-amber-50 font-semibold transition-all flex items-center justify-center gap-2"
+                >
+                  <mat-icon>arrow_back</mat-icon>
+                  Continue Shopping
+                </button>
+              </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="px-4 sm:px-6 py-4 bg-blue-50 border-t border-blue-200 rounded-b-lg">
+              <div class="flex gap-3">
+                <mat-icon class="text-blue-600 flex-shrink-0">info</mat-icon>
+                <div class="text-xs sm:text-sm text-blue-800">
+                  <p class="font-semibold mb-1">Free Shipping</p>
+                  <p>on orders over €50</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

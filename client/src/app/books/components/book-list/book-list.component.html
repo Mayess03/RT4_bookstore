@@ -165,7 +165,8 @@
           @for (book of books(); track book.id) {
             <div class="transform hover:scale-105 transition-transform duration-300">
               <app-book-card 
-                [book]="book" 
+                [book]="book"
+                [isLoading]="addingToCartBookId() === book.id"
                 (addToCart)="onAddToCart($event)">
               </app-book-card>
             </div>
