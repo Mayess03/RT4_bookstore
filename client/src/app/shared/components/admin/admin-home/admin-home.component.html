@@ -1,0 +1,14 @@
+<div class="stats-container">
+  <div class="stat-box" *ngFor="let stat of stats()">
+    <!-- Icône à gauche -->
+    <div class="stat-left">
+      <i [attr.class]="stat.icon"></i>
+    </div>
+
+    <!-- Texte et nombre -->
+    <div class="stat-right">
+      <div class="stat-title">{{ stat.title }}</div>
+      <div class="stat-number">{{ stat.value }}</div>
+    </div>
+  </div>
+</div>

@@ -41,7 +41,7 @@
 .brand {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #FFD75E; /* couleur jaune mise à jour */
+  color: #FFC107; /* couleur jaune mise à jour */
   cursor: pointer;
 }
 
@@ -55,8 +55,8 @@
 
 .nav-link:hover,
 .nav-link.active {
-  color: #FFD75E; /* couleur jaune mise à jour */
-  border-bottom: 2px solid #FFD75E;
+  color: #FFC107; /* couleur jaune mise à jour */
+  border-bottom: 2px solid #FFC107;
   padding-bottom: 4px;
 }
 
@@ -70,7 +70,7 @@
 /* Navbar right: simple logout button */
 .logout-btn {
   padding: 0.5rem 1rem;
-  background-color: #FFD75E; /* couleur jaune mise à jour */
+  background-color: #FFC107; /* couleur jaune mise à jour */
   border: none;
   border-radius: 6px;
   color: white;
@@ -80,5 +80,5 @@
 }
 
 .logout-btn:hover {
-  background-color: #e6c85a; /* jaune hover légèrement foncé */
+  background-color: #FFD75E; /* jaune hover légèrement foncé */
 }
