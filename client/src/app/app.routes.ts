@@ -11,6 +11,7 @@ import { AdminOrders } from './shared/components/admin/admin-orders/admin-orders
 import { AdminProfile } from './shared/components/admin/admin-profile/admin-profile';
 import { AdminHome } from './shared/components/admin/admin-home/admin-home.component';
 import { AdminBooks } from './shared/components/admin/admin-books/admin-books';
+import { AdminCategories } from './shared/components/admin/admin-categories/admin-categories';
 export const routes: Routes = [
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 
@@ -28,6 +29,7 @@ export const routes: Routes = [
       { path: '', component: AdminHome },
       { path: 'users', component: AdminUsers },
       { path: 'books', component: AdminBooks },
+      { path: 'category', component: AdminCategories },
       { path: 'orders', component: AdminOrders },
       { path: 'profile', component: AdminProfile }
     ]
