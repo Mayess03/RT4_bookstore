@@ -12,12 +12,16 @@ export interface Book {
   price: number;           // Price in currency (e.g., 19.99)
   stock: number;           // Available quantity
   description?: string;    // Optional - book description
-  imageUrl?: string;       // Optional - cover image URL
+  coverImage?: string;     // Optional - cover image URL (backend field name)
+  imageUrl?: string;       // Optional - alias for coverImage (for compatibility)
   categoryId?: string;     // Optional - which category it belongs to
   category?: Category;     // Optional - full category object (populated by backend)
+  isActive?: boolean;      // Optional - is book active/visible
   publishedDate?: Date;    // Optional
   createdAt?: Date;        // When added to database
   updatedAt?: Date;        // Last modification
+  avgRating?: number;      // Optional - average rating from reviews
+  totalSales?: number;     // Optional - total number of sales
 }
 
 /**

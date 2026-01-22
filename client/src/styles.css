@@ -1,7 +1,11 @@
-
 /* Global styles for RT4 Bookstore */
 /* Angular Material theme is configured in angular.json */
 @import "bootstrap/dist/css/bootstrap.min.css";
+
+/* Tailwind CSS directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 .auth-bg {
   min-height: 100vh;
   background: linear-gradient(120deg, #ffffff 0%, #ffffff 35%, #f7f1e6 100%);

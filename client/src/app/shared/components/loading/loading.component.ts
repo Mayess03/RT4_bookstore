@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 /**
@@ -17,6 +17,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrl: './loading.component.css'
 })
 export class LoadingComponent {
-  @Input() isLoading = false;
-  @Input() message = 'Loading...';
+  // Signal Inputs (Modern Angular 21)
+  isLoading = input(false);
+  message = input('Loading...');
 }

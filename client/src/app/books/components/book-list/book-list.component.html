@@ -1,0 +1,56 @@
+<div class="book-list-container">
+  <h1>Browse Books</h1>
+
+  <!-- Loading state -->
+  @if (loading()) {
+    <app-loading [isLoading]="true" message="Loading books..."></app-loading>
+  }
+
+  <!-- Error state -->
+  @if (error()) {
+    <div class="error-message">
+      <p>{{ error() }}</p>
+      <button (click)="loadBooks()">Try Again</button>
+    </div>
+  }
+
+  <!-- Books grid -->
+  @if (!loading() && !error() && books().length > 0) {
+    <div class="books-grid">
+      @for (book of books(); track book.id) {
+        <app-book-card 
+          [book]="book" 
+          (addToCart)="onAddToCart($event)">
+        </app-book-card>
+      }
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button 
+        (click)="previousPage()" 
+        [disabled]="currentPage() === 1"
+        class="pagination-btn">
+        Previous
+      </button>
+
+      <span class="pagination-info">
+        Page {{ currentPage() }} of {{ totalPages() }} ({{ totalBooks() }} books)
+      </span>
+
+      <button 
+        (click)="nextPage()" 
+        [disabled]="currentPage() === totalPages()"
+        class="pagination-btn">
+        Next
+      </button>
+    </div>
+  }
+
+  <!-- Empty state -->
+  @if (!loading() && !error() && books().length === 0) {
+    <div class="empty-state">
+      <p>No books found</p>
+    </div>
+  }
+</div>

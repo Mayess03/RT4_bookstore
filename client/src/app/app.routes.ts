@@ -13,14 +13,23 @@ import { AdminHome } from './shared/components/admin/admin-home/admin-home.compo
 import { AdminBooks } from './shared/components/admin/admin-books/admin-books';
 import { AdminCategories } from './shared/components/admin/admin-categories/admin-categories';
 export const routes: Routes = [
-  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
+  { path: '', component: HomeComponent }, // Landing page (public)
 
+  // Auth routes (public)
   { path: 'auth/login', component: LoginComponent },
-
-  { path: 'home', canActivate: [authGuard], component: HomeComponent },
-{ path: 'auth/register', component: RegisterComponent },
+  { path: 'auth/register', component: RegisterComponent },
   { path: 'auth/forgot-password', component: ForgotPasswordComponent },
 
+  // Protected routes
+  { path: 'profile', canActivate: [authGuard], component: HomeComponent },
+  
+  // Books module - lazy loaded (public browsing, will need cart auth)
+  {
+    path: 'books',
+    loadChildren: () => import('./books/books.routes').then(m => m.BOOKS_ROUTES)
+  },
+  
+  // Admin routes (protected) - Dev 6's admin dashboard
   {
     path: 'admin',
     component: AdminComponent,
@@ -35,5 +44,5 @@ export const routes: Routes = [
     ]
   },
 
-  { path: '**', redirectTo: 'auth/login' },
+  { path: '**', redirectTo: '' }, // Redirect unknown routes to home
 ];
