@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './shared/components/header/header.component';
-// import { LoadingComponent } from './shared/components/loading/loading.component';
+//import { LoadingComponent } from './shared/components/loading/loading.component';
 // import { BookCardComponent } from './shared/components/book-card/book-card.component';
 // import { Book } from './shared/models';
 
@@ -9,8 +9,8 @@ import { HeaderComponent } from './shared/components/header/header.component';
   selector: 'app-root',
   imports: [
     RouterOutlet,
-    HeaderComponent
-    // LoadingComponent,  // Uncomment for testing
+    HeaderComponent,
+    //LoadingComponent,  // Uncomment for testing
     // BookCardComponent  // Uncomment for testing
   ],
   templateUrl: './app.html',

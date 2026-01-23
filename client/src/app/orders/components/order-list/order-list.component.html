@@ -1,35 +1,44 @@
-<h2>My Orders</h2>
+<div class="orders-container">
+  <h2 class="page-title">My Orders</h2>
 
-@if (loading) {
-  <p>Loading orders...</p>
-} @else if (error) {
-  <p class="error">{{ error }}</p>
-} @else if (orders.length === 0) {
-  <p>No orders yet.</p>
+@if (orders$ | async; as orders) {
+
+  @if (orders.length === 0) {
+    <p class="empty">No orders yet.</p>
+  } @else {
+
+    <div class="orders-grid">
+      @for (order of orders; track order.id) {
+
+        <div class="order-card">
+          <p class="order-id">
+            Order #{{ order.id }}
+          </p>
+
+          <p class="order-status">
+            Status:
+            <span class="status">{{ order.status }}</span>
+          </p>
+
+          <p class="order-total">
+            Total: {{ order.totalPrice | currency:'EUR' }}
+          </p>
+
+          <a
+            class="details-btn"
+            [routerLink]="['/orders', order.id]"
+          >
+            View details →
+          </a>
+        </div>
+
+      }
+    </div>
+
+  }
+
 } @else {
-  <ul class="orders-list">
-    @for (order of orders; track order.id) {
-      <li class="order-item">
-        <strong>Order #{{ order.id }}</strong><br />
-
-        <span>
-          Status:
-          <span class="status" [class.pending]="order.status === 'pending'"
-                              [class.cancelled]="order.status === 'cancelled'">
-            {{ order.status }}
-          </span>
-        </span>
-        <br />
-
-        <span>
-          Total: {{ order.totalPrice | currency:'EUR' }}
-        </span>
-        <br />
-
-        <a [routerLink]="['/orders', order.id]">
-          View details →
-        </a>
-      </li>
-    }
-  </ul>
+  <p class="loading">Loading orders...</p>
 }
+
+</div>

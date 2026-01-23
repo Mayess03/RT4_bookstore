@@ -4,7 +4,18 @@ import { OrderDetailsComponent } from './components/order-details/order-details.
 import { CheckoutComponent } from './pages/checkout/checkout.component';
 
 export const ORDERS_ROUTES: Routes = [
-  { path: '', component: OrderListComponent },
-  { path: 'checkout', component: CheckoutComponent },
-  { path: ':id', component: OrderDetailsComponent },
+  {
+    path: '',
+    pathMatch: 'full',
+    component: OrderListComponent,
+  },
+  {
+    path: 'checkout',
+    component: CheckoutComponent,
+  },
+  {
+    path: ':id',
+    component: OrderDetailsComponent,
+  },
 ];
+
