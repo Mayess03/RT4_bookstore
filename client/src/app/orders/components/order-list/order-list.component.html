@@ -1,0 +1,35 @@
+<h2>My Orders</h2>
+
+@if (loading) {
+  <p>Loading orders...</p>
+} @else if (error) {
+  <p class="error">{{ error }}</p>
+} @else if (orders.length === 0) {
+  <p>No orders yet.</p>
+} @else {
+  <ul class="orders-list">
+    @for (order of orders; track order.id) {
+      <li class="order-item">
+        <strong>Order #{{ order.id }}</strong><br />
+
+        <span>
+          Status:
+          <span class="status" [class.pending]="order.status === 'pending'"
+                              [class.cancelled]="order.status === 'cancelled'">
+            {{ order.status }}
+          </span>
+        </span>
+        <br />
+
+        <span>
+          Total: {{ order.totalPrice | currency:'EUR' }}
+        </span>
+        <br />
+
+        <a [routerLink]="['/orders', order.id]">
+          View details →
+        </a>
+      </li>
+    }
+  </ul>
+}

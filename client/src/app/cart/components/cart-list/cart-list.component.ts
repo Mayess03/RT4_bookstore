@@ -11,6 +11,8 @@ import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { Cart, CartItem } from '../../../shared/models';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
+import { Router } from '@angular/router';
+
 
 /**
  * Cart List Component
@@ -43,7 +45,7 @@ import { LoadingComponent } from '../../../shared/components/loading/loading.com
 export class CartListComponent implements OnInit {
   private cartService = inject(CartService);
   private authService = inject(AuthService);
-
+  private router = inject(Router);
   // State using signals
   cart = signal<Cart | null>(null);
   loading = signal(false);
@@ -226,7 +228,7 @@ export class CartListComponent implements OnInit {
    * Proceed to checkout
    */
   proceedToCheckout() {
-    // TODO: Implement checkout logic
+    this.router.navigate(['/orders/checkout']);
     alert('Checkout functionality coming soon!');
   }
 

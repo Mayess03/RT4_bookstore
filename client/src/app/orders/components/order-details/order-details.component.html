@@ -1,0 +1,58 @@
+<h2>Order Details</h2>
+
+@if (order$ | async; as order) {
+
+  <div class="order-card">
+
+    <div class="order-header">
+      <div>
+        <p class="order-id">Order #{{ order.id }}</p>
+        <span class="status" [ngClass]="order.status">
+          {{ order.status | uppercase }}
+        </span>
+      </div>
+
+      <div class="order-total">
+        {{ order.totalPrice | currency:'EUR' }}
+      </div>
+    </div>
+
+    <h3>Items</h3>
+
+    <ul class="items-list">
+      @for (item of order.items; track $index) {
+        <li class="item-row">
+          <div>
+            <strong>{{ item.title }}</strong>
+            <p>Quantity: {{ item.quantity }}</p>
+          </div>
+
+          <div class="item-prices">
+            {{ item.unitPrice | currency:'EUR' }} × {{ item.quantity }}
+            <strong>
+              {{ getItemTotal(item.unitPrice, item.quantity) | currency:'EUR' }}
+            </strong>
+          </div>
+        </li>
+      }
+    </ul>
+
+    <div class="summary">
+      <span>Total</span>
+      <strong>{{ order.totalPrice | currency:'EUR' }}</strong>
+    </div>
+
+  </div>
+  <div class="order-card">
+   
+
+    @if (order.status === 'pending') {
+      <button class="cancel-btn" (click)="cancelOrder(order.id)">
+        Cancel Order
+      </button>
+    }
+  </div>
+
+} @else {
+  <p class="loading">Loading order...</p>
+}

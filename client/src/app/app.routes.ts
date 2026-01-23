@@ -35,6 +35,13 @@ export const routes: Routes = [
     loadChildren: () => import('./cart/cart.routes').then(m => m.CART_ROUTES),
     canActivate: [authGuard]
   },
+  // Orders module - lazy loaded (protected)
+{
+  path: 'orders',
+  loadChildren: () =>
+    import('./orders/orders.routes').then(m => m.ORDERS_ROUTES),
+  canActivate: [authGuard]
+},
   
   // Admin routes (protected) - Dev 6's admin dashboard
   {
