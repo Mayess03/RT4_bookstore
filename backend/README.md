@@ -52,7 +52,7 @@ npm run seed               # 4. Insérer les données de test
 | Dev | Module | Tâches |
 |-----|--------|--------|
 | **Dev 1** | Auth | JWT Strategy, Guards, Login, Register |
-| **Dev 2** | Users | CRUD utilisateurs, Profil, Adresses |
+| **Dev 2** | Users | CRUD utilisateurs, ProfilComponent, Adresses |
 | **Dev 3** | Books | CRUD livres, Recherche, Upload images |
 | **Dev 4** | Categories | CRUD catégories, Liste par catégorie |
 | **Dev 5** | Cart | Ajouter/Supprimer, Quantités, Total |

@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Review } from 'src/database/entities';
-import { Book } from 'src/database/entities';
+import { Review } from '../../database/entities';
+import { Book } from '../../database/entities';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 
@@ -31,7 +31,7 @@ export class ReviewsService {
             where: { id: bookId },
         });
         if (!book) throw new NotFoundException('Book not found');
-        
+
         const existing = await this.reviewRepository.findOne({
             where: { userId, bookId },
         });
