@@ -1,0 +1,14 @@
+<div class="pending-orders-container">
+  <h5>
+    <i class="fa-solid fa-hourglass-half pending-icon"></i>
+    Pending Orders
+  </h5>
+
+  <p class="status-text">
+    {{ pendingCount() }} order{{ pendingCount() > 1 ? 's' : '' }} pending
+  </p>
+
+  <button class="show-more-btn" *ngIf="pendingCount() > 0" (click)="goToOrders()">
+    Show More
+  </button>
+</div>

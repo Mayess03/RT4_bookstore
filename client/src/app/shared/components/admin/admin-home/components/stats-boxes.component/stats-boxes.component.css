@@ -1,0 +1,63 @@
+/* ==============================
+   STATS BOXES
+============================== */
+.stats-container {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+  margin: 2rem 0;
+  flex-wrap: wrap; /* responsive */
+}
+
+/* Chaque boîte */
+.stat-box {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 220px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+
+/* Icône à gauche */
+.stat-left i {
+  font-size: 2.5rem;
+  color: #FFC107;
+  margin-right: 1.5rem;
+}
+
+/* Texte à droite */
+.stat-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #6c757d;
+}
+
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+/* Responsive pour stat-box */
+@media (max-width: 768px) {
+  .stats-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .stat-box {
+    width: 100%;
+    flex-direction: row;
+    padding: 1rem;
+  }
+}

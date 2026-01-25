@@ -1,37 +1,9 @@
-<div class="stats-container">
-  <div class="stat-box" *ngFor="let stat of stats()">
-    <!-- Icône à gauche -->
-    <div class="stat-left">
-      <i [attr.class]="stat.icon"></i>
-    </div>
-
-    <!-- Texte et nombre -->
-    <div class="stat-right">
-      <div class="stat-title">{{ stat.title }}</div>
-      <div class="stat-number">{{ stat.value }}</div>
-    </div>
-  </div>
-</div>
-
+<app-stats-boxes [stats]="stats"></app-stats-boxes>
 <div class="dashboard-row">
-
-  <!-- LEFT: chart -->
-  <div class="chart-container">
-    <div class="chart-header">
-      <h5>Sales Analytics (DT)</h5>
-
-      <select (change)="onPeriodChange($event)">
-        <option value="day">By Day</option>
-        <option value="month">By Month</option>
-      </select>
-    </div>
-
-    <canvas id="salesChart"></canvas>
-  </div>
-
-  <!-- RIGHT (future content) -->
-  <div class="dashboard-right">
-    <!-- réservé pour plus tard -->
-  </div>
-
+  <!-- Analytics Chart -->
+  <app-analytics-chart [selectedPeriod]="selectedPeriod"></app-analytics-chart>
+  <!-- Pending Orders -->
+  <app-pending-orders></app-pending-orders>
+  <!-- Out of Stock Books -->
+  <app-out-of-stock-books></app-out-of-stock-books>
 </div>

@@ -52,6 +52,10 @@ export class StatsController {
     async getBooksByCategory() {
         return this.statsService.getBooksByCategory();
     }
+    @Get('orders/pending')
+    async getPendingOrders() {
+        return this.statsService.getPendingOrdersCount();
+    }
 
 }
 

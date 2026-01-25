@@ -1,0 +1,66 @@
+/* ===== BASE (warning) STATE ===== */
+.out-of-stock-container {
+  background-color: #fff5f5;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Warning title */
+.out-of-stock-container h5 {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin: 0;
+  color: #d9534f;
+}
+
+.warning-icon {
+  margin-right: 0.5rem;
+  color: #d9534f;
+}
+.status-text {
+  font-weight: 600;
+  margin: 0.5rem 0 0;
+}
+/* ===== SUCCESS STATE ===== */
+.success-state {
+  background-color: #f0fff4; /* light green */
+}
+
+.success-state h5 {
+  color: #198754;
+}
+
+.success-icon {
+  margin-right: 0.5rem;
+  color: #198754;
+}
+
+.success-text {
+  font-weight: 600;
+  color: #198754;
+  margin: 0.5rem 0 0;
+}
+
+
+/* ===== BUTTON ===== */
+.show-more-btn {
+  padding: 0.4rem 1rem;
+  border: none;
+  background-color: #d9534f;
+  color: white;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  align-self: start;
+  transition: background-color 0.2s;
+}
+
+.show-more-btn:hover {
+  background-color: #c9302c;
+}

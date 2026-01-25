@@ -1,0 +1,73 @@
+/* ===== BASE PENDING STATE ===== */
+.pending-orders-container {
+  background-color: #fffbef; /* light yellow */
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%; /* match Out-of-Stock sizing */
+}
+
+/* Title */
+.pending-orders-container h5 {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.25rem; /* same as Out-of-Stock */
+  margin: 0;
+  color: #FFC107; /* dark yellow/orange */
+}
+
+.pending-icon {
+  margin-right: 0.5rem;
+  color: #FFC107; /* match title color */
+}
+
+/* Status text */
+.status-text {
+  font-weight: 600;
+  color: #000000; /* slightly darker yellow for readability */
+  margin: 0.5rem 0 0; /* same spacing as Out-of-Stock */
+  font-size: 1rem; /* same as book list text */
+}
+
+/* ===== BUTTON ===== */
+.show-more-btn {
+  padding: 0.4rem 1rem;
+  border: none;
+  background-color: #FFC107; /* same style as title color */
+  color: white;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  align-self: start;
+  transition: background-color 0.2s;
+}
+
+.show-more-btn:hover {
+  background-color: #FFD75E; /* lighter yellow hover */
+}
+
+/* Optional: keep spacing consistent with Out-of-Stock book list if you ever list orders */
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* same as .book-list */
+}
+
+.order-card {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #fff3cc; /* light yellow variant */
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #856404; /* match status-text */
+}
+
+.order-card i {
+  color: #856404;
+}
