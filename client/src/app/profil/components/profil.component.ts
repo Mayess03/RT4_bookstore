@@ -1,9 +1,11 @@
+// profil.component.ts
 import { Component, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ProfilService } from '../services/profil.service';
+import { AuthService } from '../../shared/services/auth.service';
 import { User } from '../../shared/models/user.model';
 import { Order } from '../../shared/models/order.model';
-import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -14,35 +16,42 @@ import { CommonModule } from '@angular/common';
   standalone: true,
 })
 export class ProfilComponent {
-
-  // Template-driven form models (plain objects for ngModel)
   model: Partial<User> = {
     firstName: '',
     lastName: '',
     email: ''
   } as Partial<User>;
-  passwordModel = { oldPassword: '', newPassword: '', confirmPassword: '' };
 
-  // Synchronous state: use signals for loading/error/success
+  passwordModel = {
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  };
+
   loadingFlag = signal(false);
   errorMessage = signal('');
   successMessage = signal('');
-
-  // Orders state
+  passwordChangeSuccess = signal(false);
   orders = signal<Order[]>([]);
 
-  constructor(private profilService: ProfilService) {
+  // ✅ Add delete confirmation state
+  showDeleteConfirmation = signal(false);
+  deleteConfirmationText = signal('');
+
+  constructor(
+    private profilService: ProfilService,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loadProfile();
-    this.loadOrders(); // load orders on init
+    this.loadOrders();
   }
 
-  // Helper getters for template
   loading() { return this.loadingFlag(); }
   error() { return this.errorMessage(); }
   success() { return this.successMessage(); }
-  ordersList() { return this.orders(); } // to use in template
+  ordersList() { return this.orders(); }
 
-  // Load user profile (async)
   loadProfile() {
     this.profilService.getProfil().subscribe({
       next: (user) => this.model = { ...user },
@@ -50,7 +59,6 @@ export class ProfilComponent {
     });
   }
 
-  // Load orders (async)
   loadOrders() {
     this.profilService.getOrders().subscribe({
       next: (orders) => this.orders.set(orders),
@@ -58,7 +66,6 @@ export class ProfilComponent {
     });
   }
 
-  // Save profile changes
   saveProfil(form: NgForm) {
     if (form.invalid) return;
 
@@ -66,7 +73,13 @@ export class ProfilComponent {
     this.errorMessage.set('');
     this.successMessage.set('');
 
-    this.profilService.updateProfil(this.model).subscribe({
+    const updateData = {
+      firstName: this.model.firstName,
+      lastName: this.model.lastName,
+      email: this.model.email
+    };
+
+    this.profilService.updateProfil(updateData).subscribe({
       next: (user) => {
         this.model = { ...user };
         this.successMessage.set('Profile updated!');
@@ -79,11 +92,10 @@ export class ProfilComponent {
     });
   }
 
-  // Change password
-  passwordChangeSuccess = signal(false);  // ← Add this
-
   changePassword(form: NgForm) {
-    if (form.invalid || this.passwordModel.newPassword !== this.passwordModel.confirmPassword) return;
+    if (form.invalid || this.passwordModel.newPassword !== this.passwordModel.confirmPassword) {
+      return;
+    }
 
     this.loadingFlag.set(true);
     this.errorMessage.set('');
@@ -95,10 +107,11 @@ export class ProfilComponent {
     }).subscribe({
       next: () => {
         this.passwordChangeSuccess.set(true);
-        this.successMessage.set('Password changed!');
+        this.successMessage.set('Password changed successfully!');
         this.passwordModel = { oldPassword: '', newPassword: '', confirmPassword: '' };
         form.resetForm();
         this.loadingFlag.set(false);
+
         setTimeout(() => {
           this.passwordChangeSuccess.set(false);
           this.successMessage.set('');
@@ -107,6 +120,43 @@ export class ProfilComponent {
       error: () => {
         this.errorMessage.set('Failed to change password');
         this.loadingFlag.set(false);
+      }
+    });
+  }
+
+  // ✅ Show delete confirmation modal
+  openDeleteConfirmation() {
+    this.showDeleteConfirmation.set(true);
+    this.deleteConfirmationText.set('');
+  }
+
+  // ✅ Close delete confirmation modal
+  closeDeleteConfirmation() {
+    this.showDeleteConfirmation.set(false);
+    this.deleteConfirmationText.set('');
+  }
+
+  // ✅ Delete account
+  confirmDeleteAccount() {
+    // Require user to type "DELETE" to confirm
+    if (this.deleteConfirmationText() !== 'DELETE') {
+      this.errorMessage.set('Please type DELETE to confirm');
+      return;
+    }
+
+    this.loadingFlag.set(true);
+    this.errorMessage.set('');
+
+    this.profilService.deleteAccount().subscribe({
+      next: () => {
+        // Clear tokens and redirect to home
+        this.authService.logout();
+        this.router.navigate(['/']);
+      },
+      error: () => {
+        this.errorMessage.set('Failed to delete account');
+        this.loadingFlag.set(false);
+        this.closeDeleteConfirmation();
       }
     });
   }

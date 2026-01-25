@@ -152,6 +152,71 @@
           </div>
         </div>
       </div>
+      <!-- Existing content: profile form, password form, orders, etc. -->
+
+      <!-- ✅ DANGER ZONE: Delete Account -->
+      <div class="danger-zone">
+        <h2>Danger Zone</h2>
+        <p class="danger-warning">
+          Once you delete your account, there is no going back. This action cannot be undone.
+        </p>
+        <button type="button" class="delete-account-btn" (click)="openDeleteConfirmation()">
+          Delete Account
+        </button>
+      </div>
+
+      <!-- ✅ Delete Confirmation Modal -->
+      @if (showDeleteConfirmation()) {
+        <div class="modal-overlay" (click)="closeDeleteConfirmation()">
+          <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+              <h2>⚠️ Delete Account</h2>
+              <button class="close-btn" (click)="closeDeleteConfirmation()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+              <p class="warning-text">
+                <strong>This action is permanent and cannot be undone.</strong>
+              </p>
+              <p>All your data including:</p>
+              <ul>
+                <li>Profile information</li>
+                <li>Order history</li>
+                <li>Saved preferences</li>
+              </ul>
+              <p>will be permanently deleted.</p>
+
+              <div class="confirmation-input">
+                <label for="deleteConfirm">
+                  Type <strong>DELETE</strong> to confirm:
+                </label>
+                <input
+                  type="text"
+                  id="deleteConfirm"
+                  [(ngModel)]="deleteConfirmationText"
+                  placeholder="Type DELETE"
+                  autocomplete="off">
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn-cancel"
+                (click)="closeDeleteConfirmation()">
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="btn-delete"
+                [disabled]="deleteConfirmationText() !== 'DELETE' || loading()"
+                (click)="confirmDeleteAccount()">
+                {{ loading() ? 'Deleting...' : 'Delete My Account' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      }
 
       <!-- ORDER HISTORY -->
       <div class="lg:col-span-1">

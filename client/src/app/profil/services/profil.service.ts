@@ -42,4 +42,7 @@ export class ProfilService extends ApiService {
   getOrders(): Observable<Order[]> {
     return this.http.get<Order[]>(`${this.apiUrlBase}/orders`);  // ← Fixed: ( not `
   }
+  deleteAccount(): Observable<any> {
+    return this.http.delete(`${this.apiUrlBase}/me`);
+  }
 }
