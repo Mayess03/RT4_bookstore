@@ -138,7 +138,6 @@ export class ProfilComponent {
 
   // ✅ Delete account
   confirmDeleteAccount() {
-    // Require user to type "DELETE" to confirm
     if (this.deleteConfirmationText() !== 'DELETE') {
       this.errorMessage.set('Please type DELETE to confirm');
       return;
@@ -149,8 +148,10 @@ export class ProfilComponent {
 
     this.profilService.deleteAccount().subscribe({
       next: () => {
-        // Clear tokens and redirect to home
-        this.authService.logout();
+        // Account is deleted, just clear local state
+        this.authService.clearTokens();
+
+        // Navigate to home
         this.router.navigate(['/']);
       },
       error: () => {
