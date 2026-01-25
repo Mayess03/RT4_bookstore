@@ -6,11 +6,12 @@ import { AnalyticsChartComponent } from './components/analytics-chart.component/
 import { forkJoin } from 'rxjs';
 import { OutOfStockComponent } from './components/out-of-stock.component/out-of-stock.component';
 import { PendingOrdersComponent } from './components/pending-orders.component/pending-orders.component';
+import { BestSellersComponent } from './components/best-sellers.component/best-sellers.component';
 
 @Component({
   selector: 'app-admin-home',
   standalone: true,
-  imports: [CommonModule, StatsBoxesComponent, AnalyticsChartComponent, OutOfStockComponent, PendingOrdersComponent],
+  imports: [CommonModule, StatsBoxesComponent, AnalyticsChartComponent, OutOfStockComponent, PendingOrdersComponent, BestSellersComponent],
   templateUrl: './admin-home.component.html',
   styleUrls: ['./admin-home.component.css']
 })

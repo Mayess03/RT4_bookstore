@@ -38,7 +38,17 @@ export class StatsService extends ApiService {
     return this.http.get<{ id: string; title: string; stock: number }[]>(`${this.apiUrl}/stats/out-of-stock`);
   }
   getPendingOrders() {
-  return this.http.get<{ pendingOrders: number }>(`${this.apiUrl}/stats/orders/pending`);
-}
-
+    return this.http.get<{ pendingOrders: number }>(`${this.apiUrl}/stats/orders/pending`);
+  }
+  getBestSellers() {
+    return this.http.get<{ id: string; title: string; sales: number }[]>(
+      `${this.apiUrl}/books/bestsellers?limit=5`
+    );
+  }
+  getBooksByCategory() {
+    return this.http.get<{
+      total: number;
+      byCategory: { category: string; count: number }[];
+    }>(`${this.apiUrl}/stats/books-by-category`);
+  }
 }

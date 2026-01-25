@@ -1,23 +1,33 @@
 .dashboard-row {
   display: grid;
-  /* Define 4 equal columns to match the 4 stat boxes above */
+  /* Keep the 4-column structure to align with the stat boxes above */
   grid-template-columns: repeat(4, 1fr); 
   gap: 1.5rem;
   margin-top: 2rem;
+  margin-bottom: 2rem;
   align-items: stretch;
 }
 
 .dashboard-row app-analytics-chart {
-  /* This spans the first 2 columns (under the first 2 stat boxes) */
   grid-column: span 2;
+  /* This makes the chart tall enough to sit next to BOTH rows on the right */
+  grid-row: span 2; 
 }
 
-.dashboard-row app-out-of-stock-books {
-  /* This takes the 3rd column */
-  grid-column: span 1;
-}
-
+/* Row 1, Column 3 */
 .dashboard-row app-pending-orders {
-  /* This takes the 4th column */
   grid-column: span 1;
+  grid-row: 1;
+}
+
+/* Row 1, Column 4 */
+.dashboard-row app-out-of-stock-books {
+  grid-column: span 1;
+  grid-row: 1;
+}
+
+/* Row 2, Columns 3 & 4 (Directly under the two items above) */
+.dashboard-row app-best-sellers {
+  grid-column: span 2;
+  grid-row: 2;
 }
