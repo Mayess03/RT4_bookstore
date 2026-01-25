@@ -1,0 +1,61 @@
+/* ==============================
+   CHART CONTAINER
+============================== */
+:host {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.chart-container {
+  width: 100%;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+
+/* Chart header */
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.chart-header h5 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  color: #212529;
+}
+
+/* Period toggle buttons */
+.period-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.period-buttons button {
+  padding: 0.4rem 1rem;
+  border: 1px solid #FFC107;
+  background-color: transparent;
+  color: #212529;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.period-buttons button:hover {
+  background-color: #fff3cd; /* light yellow */
+}
+
+.period-buttons button.active {
+  background-color: #FFC107;
+  color: #fff;
+  border-color: #FFC107;
+}

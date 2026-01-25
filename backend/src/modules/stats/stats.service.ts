@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { User, Book, Order, OrderItem } from 'src/database/entities';
 import { OrdersGateway } from './orders.gateway';
+import { OrderStatus } from 'src/common/enums';
 
 @Injectable()
 export class StatsService {
@@ -24,23 +25,25 @@ export class StatsService {
     }
 
     async getRevenue() {
-    // somme total des commandes
-    const result = await this.dataSource
-        .getRepository(Order)
-        .createQueryBuilder('order')
-        .select('SUM(order.totalPrice)', 'totalRevenue')
-        .getRawOne();
+        // somme total des commandes
+        const result = await this.dataSource
+            .getRepository(Order)
+            .createQueryBuilder('order')
+            .where('order.status = :status', { status: OrderStatus.DELIVERED })
+            .select('SUM(order.totalPrice)', 'totalRevenue')
+            .getRawOne();
 
-    return {
-        totalRevenue: Number(result.totalRevenue ?? 0),
-    };
-}
+        return {
+            totalRevenue: Number(result.totalRevenue ?? 0),
+        };
+    }
 
     // Ventes agrégées par jour
     async getSalesByDay() {
         const result = await this.dataSource
             .getRepository(Order)
             .createQueryBuilder('order')
+            .where('order.status = :status', { status: OrderStatus.DELIVERED })
             .select("DATE(order.created_at)", "date")
             .addSelect("SUM(order.total_price)", "totalSales")
             .addSelect("COUNT(*)", "orderCount")  // <-- Ajout du count
@@ -60,6 +63,7 @@ export class StatsService {
         const result = await this.dataSource
             .getRepository(Order)
             .createQueryBuilder('order')
+            .where('order.status = :status', { status: OrderStatus.DELIVERED })
             .select("TO_CHAR(order.created_at, 'YYYY-MM')", "month")
             .addSelect("SUM(order.total_price)", "totalSales")
             .addSelect("COUNT(*)", "orderCount")  // <-- Ajout du count
@@ -119,4 +123,14 @@ export class StatsService {
             })),
         };
     }
+    async getPendingOrdersCount() {
+        const result = await this.dataSource
+            .getRepository(Order)
+            .createQueryBuilder('order')
+            .where('order.status = :status', { status: OrderStatus.PENDING })
+            .getCount();
+
+        return { pendingOrders: result };
+    }
+
 }
