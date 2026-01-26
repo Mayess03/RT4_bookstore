@@ -53,9 +53,11 @@ export class LoginComponent {
         const role = (this.getRoleFromToken() ?? '').toLowerCase();
 
         if (role === 'admin') {
-          this.router.navigateByUrl('/admin');
+          this.router.navigate(['/admin']);
+
         } else {
-          this.router.navigateByUrl('/home');
+          this.router.navigate(['/home']);
+
         }
       },
       error: (err) => {
