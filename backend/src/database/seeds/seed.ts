@@ -18,24 +18,24 @@ export async function seed(dataSource: DataSource) {
 
   // Check if data already exists
   const existingUsers = await userRepository.count();
-  if (existingUsers > 0) {
-    console.log('⚠️  Database already seeded. Skipping...');
-    return;
-  }
+  // if (existingUsers > 0) {
+  //   console.log('⚠️  Database already seeded. Skipping...');
+  //   return;
+  // }
 
   // Hash password
   const hashedPassword = await bcrypt.hash('Password123!', 10);
 
   // Create Users
   console.log('👤 Creating users...');
-  const admin = userRepository.create({
-    email: 'admin@bookstore.com',
-    password: hashedPassword,
-    firstName: 'Admin',
-    lastName: 'User',
-    role: Role.ADMIN,
-    isActive: true,
-  });
+  // const admin = userRepository.create({
+  //   email: 'admin@bookstore.com',
+  //   password: hashedPassword,
+  //   firstName: 'Admin',
+  //   lastName: 'User',
+  //   role: Role.ADMIN,
+  //   isActive: true,
+  // });
 
   const user1 = userRepository.create({
     email: 'john.doe@example.com',
@@ -55,7 +55,7 @@ export async function seed(dataSource: DataSource) {
     isActive: true,
   });
 
-  await userRepository.save([admin, user1, user2]);
+  await userRepository.save([ user1, user2]);
   console.log('✅ Users created');
 
   // Create Carts for users

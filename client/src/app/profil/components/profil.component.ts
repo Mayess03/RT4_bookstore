@@ -84,6 +84,9 @@ export class ProfilComponent {
         this.model = { ...user };
         this.successMessage.set('Profile updated!');
         this.loadingFlag.set(false);
+        setTimeout(() => {
+          this.successMessage.set('');
+        }, 5000);
       },
       error: () => {
         this.errorMessage.set('Failed to update profile');
@@ -107,14 +110,12 @@ export class ProfilComponent {
     }).subscribe({
       next: () => {
         this.passwordChangeSuccess.set(true);
-        this.successMessage.set('Password changed successfully!');
         this.passwordModel = { oldPassword: '', newPassword: '', confirmPassword: '' };
         form.resetForm();
         this.loadingFlag.set(false);
 
         setTimeout(() => {
           this.passwordChangeSuccess.set(false);
-          this.successMessage.set('');
         }, 5000);
       },
       error: () => {

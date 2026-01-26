@@ -89,18 +89,7 @@
               <div class="px-4 sm:px-6 py-3 border-b border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 -mx-6 mb-4">
                 <h3 class="text-lg sm:text-xl font-bold text-gray-800">Change Password</h3>
               </div>
-              <!-- Success Message with Icon -->
-              @if (passwordChangeSuccess()) {
-                <div class="success-banner">
-                  <svg class="success-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div>
-                    <h3>Password Changed Successfully!</h3>
-                    <p>Your password has been updated securely.</p>
-                  </div>
-                </div>
-              }
+
 
               <form #passwordForm="ngForm" (ngSubmit)="changePassword(passwordForm)" novalidate>
                 <div class="mb-4">
@@ -148,22 +137,34 @@
                 </button>
 
               </form>
+              <!-- Success Message with Icon -->
+              @if (passwordChangeSuccess()) {
+                <div class="success-banner">
+                  <svg class="success-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <h3>Password Changed Successfully!</h3>
+                    <p>Your password has been updated securely.</p>
+                  </div>
+                </div>
+              }
             </div>
+          </div>
+          <!-- ✅ DANGER ZONE: Delete Account -->
+          <div class="danger-zone">
+            <p class="danger-warning">
+              Once you delete your account, there is no going back. This action cannot be undone.
+            </p>
+            <button type="button" class="delete-account-btn" (click)="openDeleteConfirmation()">
+              Delete Account
+            </button>
           </div>
         </div>
       </div>
       <!-- Existing content: profile form, password form, orders, etc. -->
 
-      <!-- ✅ DANGER ZONE: Delete Account -->
-      <div class="danger-zone">
-        <h2>Danger Zone</h2>
-        <p class="danger-warning">
-          Once you delete your account, there is no going back. This action cannot be undone.
-        </p>
-        <button type="button" class="delete-account-btn" (click)="openDeleteConfirmation()">
-          Delete Account
-        </button>
-      </div>
+
 
       <!-- ✅ Delete Confirmation Modal -->
       @if (showDeleteConfirmation()) {
@@ -238,19 +239,18 @@
             }
             @else {
               <div class="space-y-4">
+                <!-- Replace the order card section with this: -->
                 @for (order of orders(); track order.id) {
-                  <div class="p-4 border border-gray-200 rounded-lg hover:border-amber-300 hover:bg-amber-50 transition-all">
-                    <div class="flex justify-between items-start mb-2">
+                  <div class="order-card">
+                    <div class="order-header">
                       <div>
-                        <div class="text-sm font-semibold text-gray-800">Order #{{ order.id }}</div>
-                        <div class="text-xs text-gray-600 mt-1">{{ order.createdAt | date:'shortDate' }}</div>
+                        <div class="order-id">Order #{{ order.id }}</div>
+                        <div class="order-date">{{ order.createdAt | date:'medium' }}</div>
                       </div>
-                      <span class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
-                        {{ order.status }}
-                      </span>
+                      <span class="order-status">{{ order.status }}</span>
                     </div>
-                    <div class="text-right mt-3 pt-3 border-t border-gray-200">
-                      <span class="text-lg font-bold text-amber-600">${{ order.totalAmount }}</span>
+                    <div class="order-footer">
+                      <span class="order-total">${{ order.totalPrice }}</span>
                     </div>
                   </div>
                 }
