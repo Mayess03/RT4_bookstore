@@ -3,7 +3,7 @@ import { User } from './user.model';
 
 /**
  * Order Status - All possible states of an order
- * 
+ *
  * Enum = Predefined set of values
  * Better than strings because TypeScript catches typos
  */
@@ -37,7 +37,7 @@ export interface Order {
   userId: string;
   user?: User;               // Customer who ordered
   items: OrderItem[];        // What they bought
-  totalAmount: number;       // Total price
+  totalPrice: number;       // Total price
   status: OrderStatus;       // Current state
   shippingAddress?: string;  // Where to ship
   createdAt: Date;           // When order was placed

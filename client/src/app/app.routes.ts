@@ -12,6 +12,7 @@ import { AdminProfile } from './shared/components/admin/admin-profile/admin-prof
 import { AdminHome } from './shared/components/admin/admin-home/admin-home.component';
 import { AdminBooks } from './shared/components/admin/admin-books/admin-books';
 import { AdminCategories } from './shared/components/admin/admin-categories/admin-categories';
+import { ProfilComponent } from './profil/components/profil.component';
 export const routes: Routes = [
   { path: '', component: HomeComponent }, // Landing page (public)
 
@@ -21,8 +22,8 @@ export const routes: Routes = [
   { path: 'auth/forgot-password', component: ForgotPasswordComponent },
 
   // Protected routes
-  { path: 'profile', canActivate: [authGuard], component: HomeComponent },
-  
+  { path: 'profile', canActivate: [authGuard], component: ProfilComponent },
+
   // Books module - lazy loaded (public browsing, will need cart auth)
   {
     path: 'books',
@@ -42,7 +43,7 @@ export const routes: Routes = [
     import('./orders/orders.routes').then(m => m.ORDERS_ROUTES),
   canActivate: [authGuard]
 },
-  
+
   // Admin routes (protected) - Dev 6's admin dashboard
   {
     path: 'admin',
