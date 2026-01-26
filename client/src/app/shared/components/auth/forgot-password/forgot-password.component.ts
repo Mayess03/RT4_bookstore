@@ -43,7 +43,7 @@ export class ForgotPasswordComponent {
     this.auth.resetPasswordByEmail(this.model.email, this.model.newPassword).subscribe({
       next: (res) => {
         this.success.set(res?.message ?? 'Password updated successfully');
-        setTimeout(() => this.router.navigateByUrl('/auth/login'), 1200);
+        setTimeout(() => this.router.navigate(['/auth/login']), 1200);
       },
       error: (err) => {
         this.error.set(err?.error?.message ?? 'Reset failed');

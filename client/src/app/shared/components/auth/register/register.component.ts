@@ -51,7 +51,8 @@ export class RegisterComponent {
       next: (res) => {
         this.success.set(res?.message ?? 'Account created successfully');
         // option: redirect automatically after 1s
-        setTimeout(() => this.router.navigateByUrl('/auth/login'), 900);
+        setTimeout(() => this.router.navigate(['/auth/login']), 900);
+
       },
       error: (err) => {
         this.error.set(err?.error?.message ?? 'Registration failed');
