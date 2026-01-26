@@ -1,9 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { OrdersService } from '../../services/orders.service';
+import { OrdersService } from '../../../shared/services/orders.service';
 import { Order } from '../../models/order.model';
 import { switchMap, filter, map } from 'rxjs/operators';
+import { OrderStatus } from '../../../shared/models';
 
 @Component({
   selector: 'app-order-details',
@@ -13,7 +14,8 @@ import { switchMap, filter, map } from 'rxjs/operators';
   styleUrls: ['./order-details.component.css'],
 })
 export class OrderDetailsComponent {
-
+  OrderStatus = OrderStatus;
+  
   private route = inject(ActivatedRoute);
   private ordersService = inject(OrdersService);
 

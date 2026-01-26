@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Order } from '../../../../models';
 import { CommonModule } from '@angular/common';
-import { OrdersAdminService } from '../../../../services/orders.admin.service';
+import { OrdersService } from '../../../../services/orders.service';
 
 @Component({
   selector: 'app-order-details',
@@ -14,7 +14,7 @@ import { OrdersAdminService } from '../../../../services/orders.admin.service';
 export class OrderDetailsAdminComponent implements OnInit {
 
   private route = inject(ActivatedRoute);
-  private ordersService = inject(OrdersAdminService);
+  private ordersService = inject(OrdersService);
 
   order = signal<Order | null>(null);
   loading = signal(true);

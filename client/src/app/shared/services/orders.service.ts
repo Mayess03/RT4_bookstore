@@ -6,7 +6,26 @@ import { Order, OrderItem } from '../models';
 @Injectable({
   providedIn: 'root'
 })
-export class OrdersAdminService extends ApiService {
+export class OrdersService extends ApiService {
+
+  /**
+   * orders (User)
+   */
+  createOrder(userId: string, dto: any) {
+  return this.http.post<Order>(`${this.apiUrl}/orders`, dto);
+}
+  
+    getMyOrders() {
+  return this.http.get<Order[]>(`${this.apiUrl}/orders/my`);
+}
+
+getOrderById(id: string) {
+  return this.http.get<Order>(`${this.apiUrl}/orders/${id}`);
+}
+
+cancelOrder(id: string) {
+  return this.http.patch(`${this.apiUrl}/orders/${id}/cancel`, {});
+}
 
   /**
    * Get all orders (Admin)

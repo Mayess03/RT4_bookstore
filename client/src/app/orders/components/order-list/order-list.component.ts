@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { OrdersService } from '../../services/orders.service';
-import { Order } from '../../models/order.model';
+import { OrdersService } from '../../../shared/services/orders.service';
+import { Order } from '../../../shared/models/order.model';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';

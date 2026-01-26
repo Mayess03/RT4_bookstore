@@ -1,6 +1,6 @@
 import { Component, inject ,computed} from '@angular/core';
 import { CartService } from '../../../cart/services/cart.service';
-import { OrdersService } from '../../services/orders.service';
+import { OrdersService } from '../../../shared/services/orders.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../shared/services/auth.service';
 import { CommonModule, CurrencyPipe, AsyncPipe } from '@angular/common';

@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { OrdersAdminService } from '../../../services/orders.admin.service';
+import { OrdersService } from '../../../services/orders.service';
 import { Order } from '../../../models';
 
 @Component({
@@ -16,7 +16,7 @@ export class AdminOrders implements OnInit {
   loading = signal(false);
 
   constructor(
-    private ordersService: OrdersAdminService,
+    private ordersService: OrdersService,
     private router: Router
   ) {}
 
