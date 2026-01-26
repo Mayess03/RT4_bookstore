@@ -1,0 +1,53 @@
+<div class="admin-orders-container">
+  <h5>Order Details</h5>
+
+  <!-- Loading state -->
+  <div *ngIf="loading()" class="loading-text">Loading order...</div>
+
+  <!-- Order exists -->
+  <div *ngIf="!loading() && order()">
+    <div class="order-card">
+      <div class="order-left">
+        <div class="order-id"><strong>Order ID:</strong> {{ order()!.id }}</div>
+        <div class="order-date">
+          <strong>Created At:</strong> {{ order()!.createdAt | date:'dd/MM/yyyy' }}
+        </div>
+        <div class="order-date" *ngIf="order()!.shippingAddress">
+          <strong>Shipping Address:</strong> {{ order()!.shippingAddress }}
+        </div>
+        <div class="order-date" *ngIf="order()!.shippingCity">
+          <strong>City:</strong> {{ order()!.shippingCity }}
+        </div>
+        <div class="order-date" *ngIf="order()!.shippingZipCode">
+          <strong>ZIP Code:</strong> {{ order()!.shippingZipCode }}
+        </div>
+        <div class="order-date" *ngIf="order()!.phone">
+          <strong>Phone:</strong> {{ order()!.phone }}
+        </div>
+      </div>
+
+      <div class="order-right">
+        <span class="status-badge" [ngClass]="'status-' + order()!.status.toLowerCase()">
+          {{ order()!.status }}
+        </span>
+        <div class="order-total"><strong>Total:</strong> {{ order()!.totalPrice | currency:'USD' }}</div>
+      </div>
+    </div>
+
+    <!-- Items -->
+    <h5 style="margin-top: 1rem;">Items</h5>
+    <div class="orders-list">
+      <div *ngFor="let item of order()!.items" class="order-card">
+        <div class="order-left">
+          <div><strong>Book ID:</strong> {{ item.bookId }}</div>
+          <div><strong>Quantity:</strong> {{ item.quantity }}</div>
+          <div><strong>Unit Price:</strong> {{ item.unitPrice | currency:'USD' }}</div>
+          <div><strong>Subtotal:</strong> {{ item.subtotal | currency:'USD' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="!loading() && !order()" class="error-text">Order not found.</div>
+</div>

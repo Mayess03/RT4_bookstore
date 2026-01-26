@@ -27,7 +27,7 @@ export class PendingOrdersComponent implements OnInit {
   }
 
   goToOrders() {
-    this.router.navigate(['/admin/books']);
+    this.router.navigate(['/admin/orders']);
   }
 
   pendingCount() {

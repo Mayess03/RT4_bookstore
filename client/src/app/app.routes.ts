@@ -13,6 +13,7 @@ import { AdminHome } from './shared/components/admin/admin-home/admin-home.compo
 import { AdminBooks } from './shared/components/admin/admin-books/admin-books';
 import { AdminCategories } from './shared/components/admin/admin-categories/admin-categories';
 import { ProfilComponent } from './profil/components/profil.component';
+import { OrderDetailsAdminComponent } from './shared/components/admin/admin-orders/order-details.component/order-details.component';
 export const routes: Routes = [
   { path: '', component: HomeComponent }, // Landing page (public)
 
@@ -55,6 +56,7 @@ export const routes: Routes = [
       { path: 'books', component: AdminBooks },
       { path: 'category', component: AdminCategories },
       { path: 'orders', component: AdminOrders },
+      { path: 'orders/:id', component: OrderDetailsAdminComponent },
       { path: 'profile', component: AdminProfile }
     ]
   },
