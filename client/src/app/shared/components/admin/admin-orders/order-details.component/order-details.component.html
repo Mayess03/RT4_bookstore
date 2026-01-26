@@ -1,53 +1,90 @@
 <div class="admin-orders-container">
-  <h5>Order Details</h5>
+    <header class="admin-header">
+        <h5>Order Details <span class="order-id-badge">#{{ order()?.id }}</span></h5>
+        <button class="back-button" (click)="goBack()">
+            <span class="back-icon">&#8592;</span> Back
+        </button>
+    </header>
 
-  <!-- Loading state -->
-  <div *ngIf="loading()" class="loading-text">Loading order...</div>
+    @if (!loading() && order()) {
+        @let currentOrder = order()!;
 
-  <!-- Order exists -->
-  <div *ngIf="!loading() && order()">
-    <div class="order-card">
-      <div class="order-left">
-        <div class="order-id"><strong>Order ID:</strong> {{ order()!.id }}</div>
-        <div class="order-date">
-          <strong>Created At:</strong> {{ order()!.createdAt | date:'dd/MM/yyyy' }}
-        </div>
-        <div class="order-date" *ngIf="order()!.shippingAddress">
-          <strong>Shipping Address:</strong> {{ order()!.shippingAddress }}
-        </div>
-        <div class="order-date" *ngIf="order()!.shippingCity">
-          <strong>City:</strong> {{ order()!.shippingCity }}
-        </div>
-        <div class="order-date" *ngIf="order()!.shippingZipCode">
-          <strong>ZIP Code:</strong> {{ order()!.shippingZipCode }}
-        </div>
-        <div class="order-date" *ngIf="order()!.phone">
-          <strong>Phone:</strong> {{ order()!.phone }}
-        </div>
-      </div>
+        <div class="order-grid">
+            <div class="info-card status-card">
+                <h6>Order Status</h6>
+                <div class="status-control">
+                    <select class="status-select" 
+                        [class]="'status-border-' + currentOrder.status.toLowerCase()"
+                        [disabled]="updatingStatus()"
+                        (change)="onStatusChange($any($event.target).value)">
+                        @for (status of orderStatuses; track status) {
+                            <option [value]="status" [selected]="status === currentOrder.status">
+                                {{ status | titlecase }}
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="order-meta">
+                    <p><strong>Date:</strong> {{ currentOrder.createdAt | date:'medium' }}</p>
+                </div>
+            </div>
 
-      <div class="order-right">
-        <span class="status-badge" [ngClass]="'status-' + order()!.status.toLowerCase()">
-          {{ order()!.status }}
-        </span>
-        <div class="order-total"><strong>Total:</strong> {{ order()!.totalPrice | currency:'USD' }}</div>
-      </div>
-    </div>
+            <div class="info-card">
+                <h6>Customer Information</h6>
+                @if (user()) {
+                    @let currentUser = user()!;
+                    <p><strong>User ID: </strong> <code class="id-text">{{ currentUser.id }}</code></p>
+                    <p><strong>Name: </strong> {{ currentUser.firstName }} {{ currentUser.lastName }}</p>
+                    <p><strong>Email: </strong> {{ currentUser.email }}</p>
+                }
+            </div>
 
-    <!-- Items -->
-    <h5 style="margin-top: 1rem;">Items</h5>
-    <div class="orders-list">
-      <div *ngFor="let item of order()!.items" class="order-card">
-        <div class="order-left">
-          <div><strong>Book ID:</strong> {{ item.bookId }}</div>
-          <div><strong>Quantity:</strong> {{ item.quantity }}</div>
-          <div><strong>Unit Price:</strong> {{ item.unitPrice | currency:'USD' }}</div>
-          <div><strong>Subtotal:</strong> {{ item.subtotal | currency:'USD' }}</div>
+            <div class="info-card">
+                <h6>Shipping Details</h6>
+                <p><strong>Address: </strong>{{ currentOrder.shippingAddress }}</p>
+                <p><strong>City: </strong>{{ currentOrder.shippingCity }}</p>
+                <p><strong>ZIP Code: </strong>{{ currentOrder.shippingZipCode }}</p>
+                <p><strong>Phone: </strong>{{ currentOrder.phone }}</p>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Error state -->
-  <div *ngIf="!loading() && !order()" class="error-text">Order not found.</div>
+        <div class="items-section">
+            <div class="table-responsive">
+                <table class="items-table">
+    <thead>
+        <tr>
+            <th>Product Details</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th class="text-right">Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (item of currentOrder.items; track item.bookId) {
+            @let book = getBook(item.bookId);
+            <tr>
+                <td>
+                    <div class="book-info">
+                        <span class="book-title">{{ book?.title || 'Loading...' }}</span>
+                        <span class="book-author">{{ book?.author }}</span>
+                    </div>
+                </td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.unitPrice | currency:'USD' }}</td>
+                <td class="text-right"><strong>{{ item.subtotal | currency:'USD' }}</strong></td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr class="total-row">
+            <td colspan="3" class="total-label">Total Amount:</td>
+            <td class="text-right order-total-price">
+                {{ currentOrder.totalPrice | currency:'USD' }}
+            </td>
+        </tr>
+    </tfoot>
+</table>
+            </div>
+        </div>
+    }
 </div>

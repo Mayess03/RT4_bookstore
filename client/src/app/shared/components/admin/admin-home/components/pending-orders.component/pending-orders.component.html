@@ -5,10 +5,18 @@
   </h5>
 
   <p class="status-text">
-    {{ pendingCount() }} order{{ pendingCount() > 1 ? 's' : '' }} pending
+    @if (pendingCount() > 1) {
+      {{ pendingCount() }} orders pending
+    } @else if (pendingCount() === 1) {
+      1 order pending
+    } @else {
+      No orders pending
+    }
   </p>
 
-  <button class="show-more-btn" *ngIf="pendingCount() > 0" (click)="goToOrders()">
-    Show More
-  </button>
+  @if (pendingCount() > 0) {
+    <button class="show-more-btn" (click)="goToOrders()">
+      Show More
+    </button>
+  }
 </div>

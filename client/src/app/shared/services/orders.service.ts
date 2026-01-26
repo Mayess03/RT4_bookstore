@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable, map } from 'rxjs';
-import { Order, OrderItem } from '../models';
+import { Order, OrderItem, OrderStatus } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +44,15 @@ cancelOrder(id: string) {
   getOrderAdminById(orderId: string): Observable<Order> {
   return this.http.get<Order>(`${this.apiUrl}/orders/admin/${orderId}`)
     .pipe(map(order => this.transformOrder(order)));
+}
+updateOrderStatus(
+  orderId: string,
+  status: OrderStatus
+): Observable<Order> {
+  return this.http.patch<Order>(
+    `${this.apiUrl}/orders/admin/${orderId}/status`,
+    { status }
+  );
 }
 
   /**

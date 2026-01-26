@@ -1,24 +1,36 @@
 <div class="admin-orders-container">
-  <h5>All Orders</h5>
+  <h5>Orders</h5>
 
   <div class="orders-list">
-    <div class="order-card" *ngFor="let order of orders()">
-      <div class="order-left">
-        <div class="order-id">Order ID: {{ order.id }}</div>
-        <div class="order-date">Created At: {{ order.createdAt | date:'dd/MM/yyyy' }}</div>
-        <span class="status-badge" [ngClass]="'status-' + order.status" style="width: fit-content; margin-top: 4px;">
-          {{ order.status }}
-        </span>
-      </div>
+    @for (order of orders(); track order.id) {
+      <div class="order-card">
+        <div class="order-left">
+          <div class="order-id">Order ID: {{ order.id }}</div>
+          <div class="order-date">{{ order.createdAt | date:'dd/MM/yyyy' }}</div>
+          <span 
+            class="status-badge" 
+            [class]="'status-badge status-' + order.status"
+            style="width: fit-content; margin-top: 4px;"
+          >
+            {{ order.status }}
+          </span>
+        </div>
 
-      <div class="order-right">
-        <div class="order-total">Total: {{ order.totalPrice | currency }}</div>
-        <button class="view-details-btn" (click)="goToDetails(order.id)">
-          View Details
-        </button>
+        <div class="order-right">
+          <div class="order-total">Total: {{ order.totalPrice | currency }}</div>
+          <button class="view-details-btn" (click)="goToDetails(order.id)">
+            View Details
+          </button>
+        </div>
       </div>
-    </div>
+    } @empty {
+      @if (!loading()) {
+        <div class="no-orders">No orders found</div>
+      }
+    }
   </div>
 
-  <div *ngIf="loading()" class="loading-text">Loading orders...</div>
+  @if (loading()) {
+    <div class="loading-text">Loading orders...</div>
+  }
 </div>

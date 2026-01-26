@@ -89,6 +89,7 @@
 .status-processing { background-color: #0dcaf0; color: #212529; }
 .status-shipped { background-color: #0d6efd; }
 .status-cancelled { background-color: #dc3545; }
+.status-confirmed { background-color: #9eadc4; color: #212529; }
 
 /* View Details Button */
 .view-details-btn {

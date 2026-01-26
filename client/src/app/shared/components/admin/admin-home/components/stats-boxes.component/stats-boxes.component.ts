@@ -9,5 +9,5 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./stats-boxes.component.css']
 })
 export class StatsBoxesComponent {
-  @Input() stats = signal<{ title: string; value: number; icon: string }[]>([]);
+  @Input() stats: { title: string; value: number; icon: string }[] = [];
 }

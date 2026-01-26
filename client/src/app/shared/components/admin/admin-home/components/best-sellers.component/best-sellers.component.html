@@ -5,10 +5,14 @@
   </h5>
 
   <div class="book-list">
-    <div class="book-card" *ngFor="let book of bestSellers()">
-      <i class="fa-solid fa-book"></i>
-      <span class="book-title">{{ book.title }}</span>
-      <span class="book-sales">{{ book.sales }}</span>
-    </div>
+    @for (book of bestSellers(); track book.id) {
+      <div class="book-card">
+        <i class="fa-solid fa-book"></i>
+        <span class="book-title">{{ book.title }}</span>
+        <span class="book-sales">{{ book.sales }}</span>
+      </div>
+    } @empty {
+      <div class="no-books">No books available</div>
+    }
   </div>
 </div>

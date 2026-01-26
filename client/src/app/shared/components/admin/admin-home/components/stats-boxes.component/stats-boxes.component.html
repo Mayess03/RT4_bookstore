@@ -1,11 +1,16 @@
 <div class="stats-container">
-  <div class="stat-box" *ngFor="let stat of stats()">
-    <div class="stat-left">
-      <i [attr.class]="stat.icon"></i>
+  @for (stat of stats; track stat.title) {
+    <div class="stat-box">
+      <div class="stat-left">
+        <!-- Utiliser [class] au lieu de [attr.class] -->
+        <i [class]="stat.icon"></i>
+      </div>
+      <div class="stat-right">
+        <div class="stat-title">{{ stat.title }}</div>
+        <div class="stat-number">{{ stat.value }}</div>
+      </div>
     </div>
-    <div class="stat-right">
-      <div class="stat-title">{{ stat.title }}</div>
-      <div class="stat-number">{{ stat.value }}</div>
-    </div>
-  </div>
+  } @empty {
+    <div class="no-stats">No statistics available</div>
+  }
 </div>

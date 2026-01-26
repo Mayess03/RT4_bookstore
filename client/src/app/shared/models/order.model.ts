@@ -8,12 +8,12 @@ import { User } from './user.model';
  * Better than strings because TypeScript catches typos
  */
 export enum OrderStatus {
-  PENDING = 'PENDING',       // Order created, awaiting payment
-  PROCESSING = 'PROCESSING', // Payment confirmed, preparing shipment
-  SHIPPED = 'SHIPPED',       // Package shipped
-  DELIVERED = 'DELIVERED',   // Customer received it
-  CANCELLED = 'CANCELLED',   // Order cancelled
-  REFUNDED = 'REFUNDED'      // Money refunded
+  PENDING = 'pending',
+  CONFIRMED = 'confirmed',
+  PROCESSING = 'processing',
+  SHIPPED = 'shipped',
+  DELIVERED = 'delivered',
+  CANCELLED = 'cancelled',
 }
 
 /**
