@@ -1,42 +1,17 @@
-mat-card {
-  max-width: 300px;
-  margin: 1rem;
+/* Minimal custom styles - Tailwind handles most styling */
+.book-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 }
 
-mat-card img {
-  height: 300px;
-  object-fit: cover;
+.book-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-mat-card .description {
+/* Line clamp utility for title truncation */
+.line-clamp-2 {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  color: rgba(0, 0, 0, 0.6);
-  font-size: 0.9rem;
-}
-
-mat-card .price {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #1976d2;
-  margin: 0.5rem 0;
-}
-
-mat-card .stock {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-}
-
-mat-card .stock.out-of-stock {
-  color: #f44336;
-}
-
-mat-card .stock mat-icon {
-  font-size: 1.2rem;
-  height: 1.2rem;
-  width: 1.2rem;
 }

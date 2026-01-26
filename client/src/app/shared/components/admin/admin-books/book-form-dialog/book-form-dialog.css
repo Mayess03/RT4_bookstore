@@ -1,0 +1,43 @@
+mat-dialog-content {
+  min-width: 500px;
+  padding: 24px;
+}
+
+.book-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.half-width {
+  flex: 1;
+}
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.image-preview img {
+  max-width: 120px;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+mat-dialog-actions {
+  padding: 16px 24px;
+}

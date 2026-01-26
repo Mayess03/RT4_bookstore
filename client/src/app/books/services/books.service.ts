@@ -47,6 +47,7 @@ export class BooksService extends ApiService {
     author?: string;
     isbn?: string;
     category?: string;
+    categoryId?: string;  // Backend expects categoryId (UUID)
     minPrice?: number;
     maxPrice?: number;
     sortBy?: string;
@@ -193,5 +194,79 @@ export class BooksService extends ApiService {
     };
   }> {
     return this.getBooks({ minPrice, maxPrice });
+  }
+
+  // ==================== ADMIN METHODS ====================
+
+  /**
+   * Create a new book (ADMIN only)
+   * 
+   * @param bookData - Book creation data
+   * @returns Observable of created book
+   */
+  createBook(bookData: {
+    title: string;
+    author: string;
+    description: string;
+    price: number;
+    isbn: string;
+    stock: number;
+    coverImage?: string;
+    categoryId?: string;
+  }): Observable<Book> {
+    return this.http.post<Book>(`${this.apiUrl}/books`, bookData);
+  }
+
+  /**
+   * Update an existing book (ADMIN only)
+   * 
+   * @param id - Book UUID
+   * @param bookData - Partial book update data
+   * @returns Observable of updated book
+   */
+  updateBook(id: string, bookData: Partial<{
+    title: string;
+    author: string;
+    description: string;
+    price: number;
+    isbn: string;
+    stock: number;
+    coverImage?: string;
+    categoryId?: string;
+    isActive?: boolean;
+  }>): Observable<Book> {
+    return this.http.patch<Book>(`${this.apiUrl}/books/${id}`, bookData);
+  }
+
+  /**
+   * Delete a book (ADMIN only - soft delete)
+   * 
+   * @param id - Book UUID
+   * @returns Observable of deletion response
+   */
+  deleteBook(id: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/books/${id}`);
+  }
+
+  /**
+   * Update book stock (ADMIN only)
+   * 
+   * @param id - Book UUID
+   * @param quantity - New stock quantity
+   * @returns Observable of updated book
+   */
+  updateBookStock(id: string, quantity: number): Observable<Book> {
+    return this.http.patch<Book>(`${this.apiUrl}/books/${id}/stock`, { quantity });
+  }
+
+  /**
+   * Toggle book active status (ADMIN only)
+   * 
+   * @param id - Book UUID
+   * @param isActive - Active status
+   * @returns Observable of updated book
+   */
+  toggleBookActive(id: string, isActive: boolean): Observable<Book> {
+    return this.http.patch<Book>(`${this.apiUrl}/books/${id}/toggle-active`, { isActive });
   }
 }

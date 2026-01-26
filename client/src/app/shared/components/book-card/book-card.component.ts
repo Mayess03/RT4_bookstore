@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { Book } from '../../models';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
 
 /**
  * Book Card Component (Presentational)
@@ -23,7 +23,8 @@ import { CurrencyPipe } from '@angular/common';
     MatButtonModule,
     MatIconModule,
     RouterLink,
-    CurrencyPipe
+    CurrencyPipe,
+    DecimalPipe
   ],
   templateUrl: './book-card.component.html',
   styleUrl: './book-card.component.css'

@@ -1,0 +1,71 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Book' : 'Add New Book' }}</h2>
+
+<mat-dialog-content>
+  <form class="book-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Title</mat-label>
+      <input matInput [(ngModel)]="formData.title" name="title" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Author</mat-label>
+      <input matInput [(ngModel)]="formData.author" name="author" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput [(ngModel)]="formData.description" name="description" 
+                rows="4" required></textarea>
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Price</mat-label>
+        <input matInput type="number" [(ngModel)]="formData.price" name="price" 
+               min="0" step="0.01" required>
+        <span matPrefix>$&nbsp;</span>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Stock</mat-label>
+        <input matInput type="number" [(ngModel)]="formData.stock" name="stock" 
+               min="0" required>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>ISBN</mat-label>
+      <input matInput [(ngModel)]="formData.isbn" name="isbn" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Category</mat-label>
+      <mat-select [(ngModel)]="formData.categoryId" name="categoryId">
+        <mat-option value="">None</mat-option>
+        @for (category of data.categories; track category.id) {
+          <mat-option [value]="category.id">{{ category.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Cover Image URL</mat-label>
+      <input matInput [(ngModel)]="formData.coverImage" name="coverImage" 
+             placeholder="https://example.com/cover.jpg">
+    </mat-form-field>
+
+    @if (formData.coverImage) {
+      <div class="image-preview">
+        <img [src]="formData.coverImage" [alt]="formData.title" 
+             onerror="this.src='https://via.placeholder.com/120x180?text=Invalid+URL'">
+      </div>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!isFormValid()">
+    {{ isEditMode ? 'Update' : 'Create' }}
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,141 @@
+.admin-books-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.filters-section {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 300px;
+}
+
+.category-filter {
+  width: 250px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 48px;
+}
+
+.table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.books-table {
+  width: 100%;
+}
+
+.books-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  color: #333;
+  padding: 16px 12px;
+}
+
+.books-table td {
+  padding: 12px;
+  vertical-align: middle;
+}
+
+.book-cover {
+  width: 50px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+mat-chip {
+  font-size: 12px;
+  min-height: 24px;
+  padding: 4px 12px;
+}
+
+.low-stock {
+  background-color: #fff3cd !important;
+  color: #856404 !important;
+}
+
+.out-of-stock {
+  background-color: #f8d7da !important;
+  color: #721c24 !important;
+}
+
+.active-status {
+  background-color: #d4edda !important;
+  color: #155724 !important;
+}
+
+.inactive-status {
+  background-color: #d6d8db !important;
+  color: #383d41 !important;
+}
+
+.no-data-row {
+  height: 200px;
+}
+
+.no-data-cell {
+  border: none;
+}
+
+.no-data-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  padding: 48px;
+}
+
+.no-data-message mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.no-data-message p {
+  font-size: 16px;
+  margin: 0;
+}
+
+mat-paginator {
+  background-color: #fafafa;
+  border-top: 1px solid #e0e0e0;
+}
+
+button[mat-icon-button] mat-icon {
+  font-size: 20px;
+}
+
+button[mat-raised-button] mat-icon {
+  margin-right: 8px;
+}

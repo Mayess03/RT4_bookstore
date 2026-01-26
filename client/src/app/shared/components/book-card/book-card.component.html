@@ -1,46 +1,37 @@
-<mat-card>
-  <!-- Book Image with fallback -->
-  <img mat-card-image 
-       [src]="book().coverImage || book().imageUrl" 
-       [alt]="book().title"
-       (error)="onImageError($event)">
+<!-- Clean card with subtle elevation -->
+<article class="book-card bg-white rounded-lg overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1"
+         [routerLink]="['/books', book().id]"
+         role="button"
+         tabindex="0">
   
-  <!-- Book Info -->
-  <mat-card-header>
-    <mat-card-title>{{ book().title }}</mat-card-title>
-    <mat-card-subtitle>{{ book().author }}</mat-card-subtitle>
-  </mat-card-header>
-  
-  <mat-card-content>
-    @if (book().description) {
-      <p class="description">
-        {{ book().description }}
-      </p>
+  <!-- Cover image -->
+  <div class="aspect-[2/3] bg-stone-100 relative overflow-hidden">
+    <img [src]="book().coverImage || book().imageUrl" 
+         [alt]="book().title"
+         (error)="onImageError($event)"
+         class="w-full h-full object-cover">
+    
+    @if (book().stock === 0) {
+      <div class="absolute inset-0 bg-black/60 flex items-center justify-center">
+        <span class="text-white font-semibold text-sm px-3 py-1 bg-red-600 rounded">Out of Stock</span>
+      </div>
     }
-    <p class="price">{{ book().price | currency:'EUR' }}</p>
-    <p class="stock" [class.out-of-stock]="book().stock === 0">
-      <mat-icon>{{ book().stock > 0 ? 'check_circle' : 'cancel' }}</mat-icon>
-      {{ book().stock > 0 ? 'In Stock (' + book().stock + ')' : 'Out of Stock' }}
-    </p>
-  </mat-card-content>
-  
-  <!-- Actions -->
-  <mat-card-actions>
-    <button mat-button color="primary" [routerLink]="['/books', book().id]">
-      <mat-icon>visibility</mat-icon>
-      Details
-    </button>
-    <button mat-raised-button 
-            color="primary" 
-            (click)="onAddToCart()"
-            [disabled]="book().stock === 0 || isLoading()">
-      @if (isLoading()) {
-        <mat-icon class="animate-spin mr-1">hourglass_empty</mat-icon>
-        Adding...
-      } @else {
-        <mat-icon>shopping_cart</mat-icon>
-        Add to Cart
+  </div>
+
+  <!-- Content -->
+  <div class="p-4 space-y-3">
+    <!-- Title - serif for content hierarchy -->
+    <h3 class="font-serif font-semibold text-lg text-stone-900 line-clamp-2 leading-tight">{{ book().title }}</h3>
+    
+    <!-- Author - secondary -->
+    <p class="text-sm text-stone-600">{{ book().author }}</p>
+    
+    <!-- Price - accent color for key info -->
+    <div class="flex items-baseline justify-between">
+      <span class="text-2xl font-bold text-amber-700">${{ +book().price | number:'1.2-2' }}</span>
+      @if (book().stock > 0 && book().stock < 10) {
+        <span class="text-xs text-orange-600 font-medium">Only {{ book().stock }} left</span>
       }
-    </button>
-  </mat-card-actions>
-</mat-card>
+    </div>
+  </div>
+</article>
