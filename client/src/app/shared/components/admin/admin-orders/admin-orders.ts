@@ -1,11 +1,45 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { OrdersAdminService } from '../../../services/orders.admin.service';
+import { Order } from '../../../models';
 
 @Component({
   selector: 'app-admin-orders',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './admin-orders.html',
   styleUrl: './admin-orders.css',
 })
-export class AdminOrders {
+export class AdminOrders implements OnInit {
+  orders = signal<Order[]>([]);
+  loading = signal(false);
 
+  constructor(
+    private ordersService: OrdersAdminService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.fetchOrders();
+  }
+
+  fetchOrders(): void {
+    this.loading.set(true);
+    this.ordersService.getAllOrders().subscribe({
+      next: (data) => {
+        const sorted = data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        this.orders.set(sorted);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load orders', err);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  goToDetails(orderId: string): void {
+  this.router.navigate(['admin', 'orders', orderId]);
+}
 }

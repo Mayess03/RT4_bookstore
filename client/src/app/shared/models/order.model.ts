@@ -23,26 +23,27 @@ export interface OrderItem {
   id: string;
   orderId: string;
   bookId: string;
-  book?: Book;               // Full book details
+  book?: Book;
   quantity: number;
-  price: number;             // Price at time of purchase (frozen)
-  subtotal: number;          // price * quantity
+  unitPrice: number;   // converted from API string
+  subtotal: number;    // converted from API string
 }
 
-/**
- * Order - A completed purchase
- */
 export interface Order {
   id: string;
   userId: string;
-  user?: User;               // Customer who ordered
-  items: OrderItem[];        // What they bought
-  totalPrice: number;       // Total price
-  status: OrderStatus;       // Current state
-  shippingAddress?: string;  // Where to ship
-  createdAt: Date;           // When order was placed
+  user?: User;
+  items: OrderItem[];
+  totalPrice: number;      // converted from API string
+  status: OrderStatus;
+  shippingAddress?: string;
+  shippingCity?: string;
+  shippingZipCode?: string;
+  phone?: string;
+  createdAt: Date;
   updatedAt?: Date;
 }
+
 
 /**
  * Create Order DTO - What we SEND to create an order

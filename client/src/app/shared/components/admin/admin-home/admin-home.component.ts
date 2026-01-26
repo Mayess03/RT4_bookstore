@@ -34,7 +34,7 @@ export class AdminHome implements OnInit {
           { title: 'Users', value: global.users, icon: 'fa-solid fa-users' },
           { title: 'Books', value: global.books, icon: 'fa-solid fa-book' },
           { title: 'Orders', value: global.orders, icon: 'fa-solid fa-cart-shopping' },
-          { title: 'Revenue (DT)', value: revenue.totalRevenue, icon: 'fa-solid fa-dollar-sign' }
+          { title: 'Revenue ($)', value: revenue.totalRevenue, icon: 'fa-solid fa-dollar-sign' }
         ]);
       },
       error: err => console.error(err)
