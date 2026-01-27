@@ -58,7 +58,7 @@ export class CategoryService {
 
     // Compter le nombre de livres dans cette catégorie
     const booksCount = await this.bookRepository.count({
-      where: { category: { id } },
+      where: { categoryId: id },
     });
 
     return {
@@ -175,7 +175,7 @@ export class CategoryService {
 
     // Vérifier si la catégorie contient des livres
     const booksCount = await this.bookRepository.count({
-      where: { category: { id } },
+      where: { categoryId: id },
     });
 
     if (booksCount > 0) {
