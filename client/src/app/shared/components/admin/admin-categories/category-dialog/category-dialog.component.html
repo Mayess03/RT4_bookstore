@@ -1,0 +1,38 @@
+<h2 mat-dialog-title class="!text-2xl !font-bold !mb-4">
+  {{ isEdit ? 'Edit Category' : 'Create Category' }}
+</h2>
+
+<mat-dialog-content class="!py-4">
+  <div class="flex flex-col gap-4">
+    <!-- Category Name -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Category Name</mat-label>
+      <input 
+        matInput 
+        [(ngModel)]="categoryData.name" 
+        placeholder="e.g., Fiction, Science, History"
+        required>
+    </mat-form-field>
+
+    <!-- Description -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Description</mat-label>
+      <textarea 
+        matInput 
+        [(ngModel)]="categoryData.description" 
+        placeholder="Optional description..."
+        rows="4"></textarea>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="!gap-2">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button 
+    mat-raised-button 
+    class="!bg-gradient-to-r !from-amber-600 !via-orange-600 !to-amber-700 !text-white"
+    (click)="onSave()"
+    [disabled]="!categoryData.name.trim()">
+    {{ isEdit ? 'Update' : 'Create' }}
+  </button>
+</mat-dialog-actions>
