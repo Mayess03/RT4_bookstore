@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,6 +10,8 @@ import { BooksService } from '../../services/books.service';
 import { CartService } from '../../../cart/services/cart.service';
 import { Book } from '../../../shared/models';
 import { AuthService } from '../../../shared/services/auth.service';
+import { ReviewListComponent } from '../../../reviews/components/review-list/review-list.component';
+import { AddReviewComponent } from '../../../reviews/components/add-review/add-review.component';
 
 /**
  * Book Detail Component
@@ -35,13 +37,15 @@ import { AuthService } from '../../../shared/services/auth.service';
     MatDividerModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    ReviewListComponent,
+    AddReviewComponent,
   ],
   templateUrl: './book-detail.component.html',
   styleUrl: './book-detail.component.css',
 })
 export class BookDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
+  router = inject(Router);
   private booksService = inject(BooksService);
   private authService = inject(AuthService);
   private cartService = inject(CartService);
@@ -54,6 +58,7 @@ export class BookDetailComponent implements OnInit {
   quantity = signal(1);
   isLoggedIn = this.authService.isLoggedIn;
   isAddingToCart = signal(false);
+  refreshKey = signal(0); // Key to trigger review list refresh
 
   // Placeholder for missing covers
   readonly placeholderImage =
@@ -195,5 +200,13 @@ export class BookDetailComponent implements OnInit {
    */
   goBack() {
     this.router.navigate(['/books']);
+  }
+
+  /**
+   * Refresh reviews list after adding a review
+   */
+  onReviewAdded() {
+    // Increment to trigger re-render via ngOnChanges in review-list
+    this.refreshKey.update((k) => k + 1);
   }
 }
