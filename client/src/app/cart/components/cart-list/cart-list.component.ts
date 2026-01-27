@@ -13,7 +13,6 @@ import { Cart, CartItem } from '../../../shared/models';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 import { Router } from '@angular/router';
 
-
 /**
  * Cart List Component
  *
@@ -229,7 +228,6 @@ export class CartListComponent implements OnInit {
    */
   proceedToCheckout() {
     this.router.navigate(['/orders/checkout']);
-    alert('Checkout functionality coming soon!');
   }
 
   /**

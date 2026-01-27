@@ -18,8 +18,10 @@
           <mat-icon class="text-red-500 text-5xl mb-3">error_outline</mat-icon>
           <h2 class="text-xl font-bold text-red-900 mb-2">Unable to load book</h2>
           <p class="text-red-700 mb-4">{{ error() }}</p>
-          <button (click)="goBack()" 
-                  class="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors">
+          <button
+            (click)="goBack()"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
+          >
             <mat-icon>arrow_back</mat-icon>
             Back to Books
           </button>
@@ -70,12 +72,16 @@
               </div>
               <div>
                 @if (book()!.stock > 0) {
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-50 text-green-700 border border-green-200">
+                  <span
+                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-50 text-green-700 border border-green-200"
+                  >
                     <mat-icon class="mr-1 text-sm">check_circle</mat-icon>
                     {{ book()!.stock }} in stock
                   </span>
                 } @else {
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-50 text-red-700 border border-red-200">
+                  <span
+                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-50 text-red-700 border border-red-200"
+                  >
                     <mat-icon class="mr-1 text-sm">cancel</mat-icon>
                     Out of stock
                   </span>
@@ -117,7 +123,9 @@
                     <dd class="font-medium text-stone-900">
                       ⭐ {{ book()!.avgRating }} / 5
                       @if (book()!.reviewsCount) {
-                        <span class="text-xs text-stone-500 ml-1">({{ book()!.reviewsCount }})</span>
+                        <span class="text-xs text-stone-500 ml-1"
+                          >({{ book()!.reviewsCount }})</span
+                        >
                       }
                     </dd>
                   </div>
@@ -133,8 +141,10 @@
                     <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 text-center">
                       <mat-icon class="text-amber-600 mb-2">info</mat-icon>
                       <p class="text-amber-900 font-medium mb-3">Please login to purchase</p>
-                      <a routerLink="/login"
-                         class="inline-flex items-center gap-2 px-6 py-2 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition-colors">
+                      <a
+                        routerLink="/login"
+                        class="inline-flex items-center gap-2 px-6 py-2 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition-colors"
+                      >
                         <mat-icon>login</mat-icon>
                         Login
                       </a>
@@ -146,7 +156,8 @@
                       <button
                         (click)="decreaseQuantity()"
                         [disabled]="quantity() <= 1"
-                        class="p-2 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                        class="p-2 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                      >
                         <mat-icon class="text-stone-600">remove</mat-icon>
                       </button>
                       <span class="px-4 py-2 min-w-[3rem] text-center font-medium text-stone-900">{{
@@ -155,7 +166,8 @@
                       <button
                         (click)="increaseQuantity()"
                         [disabled]="quantity() >= book()!.stock"
-                        class="p-2 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                        class="p-2 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                      >
                         <mat-icon class="text-stone-600">add</mat-icon>
                       </button>
                     </div>
@@ -164,7 +176,8 @@
                   <button
                     (click)="onAddToCart()"
                     [disabled]="isAddingToCart()"
-                    class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 text-lg bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 text-lg bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
                     @if (isAddingToCart()) {
                       <mat-spinner diameter="20" class="mr-2"></mat-spinner>
                       Adding...
@@ -203,11 +216,52 @@
 
       <!-- Back Button (bottom) -->
       <div class="mt-8">
-        <button (click)="goBack()" 
-                class="inline-flex items-center gap-2 px-6 py-3 text-stone-700 hover:text-stone-900 hover:bg-stone-100 rounded-lg font-medium transition-colors">
+        <button
+          (click)="goBack()"
+          class="inline-flex items-center gap-2 px-6 py-3 text-stone-700 hover:text-stone-900 hover:bg-stone-100 rounded-lg font-medium transition-colors"
+        >
           <mat-icon>arrow_back</mat-icon>
           Back to Books
         </button>
+      </div>
+
+      <!-- Reviews Section -->
+      <div class="mt-12 bg-white rounded-lg shadow-sm overflow-hidden">
+        <div class="p-8 border-b border-stone-200">
+          <h2 class="text-2xl font-serif font-bold text-stone-900 mb-2">Customer Reviews</h2>
+          <p class="text-stone-600">See what readers think about this book</p>
+        </div>
+
+        <div class="p-8 space-y-8">
+          <!-- Add Review Section -->
+          @if (isLoggedIn()) {
+            <div>
+              <app-add-review
+                [bookId]="book()!.id"
+                (reviewAdded)="onReviewAdded()"
+              ></app-add-review>
+            </div>
+          } @else {
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 text-center">
+              <mat-icon class="text-amber-600 mb-2">info</mat-icon>
+              <p class="text-amber-900 font-medium mb-3">Please login to write a review</p>
+              <a
+                routerLink="/login"
+                [queryParams]="{ returnUrl: router.url }"
+                class="inline-flex items-center gap-2 px-6 py-2 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition-colors"
+              >
+                <mat-icon>login</mat-icon>
+                Login
+              </a>
+            </div>
+          }
+
+          <!-- Reviews List -->
+          <div [attr.data-refresh]="refreshKey()">
+            <h3 class="text-lg font-semibold text-stone-900 mb-4">All Reviews</h3>
+            <app-review-list [bookId]="book()!.id"></app-review-list>
+          </div>
+        </div>
       </div>
     }
   </div>
