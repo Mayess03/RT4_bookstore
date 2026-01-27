@@ -1,86 +1,336 @@
-<div class="admin-categories-container p-6">
+<div class="container mx-auto px-4 py-8">
   <!-- Header -->
-  <div class="flex justify-between items-center mb-6">
-    <div>
-      <h1 class="text-3xl font-bold text-gray-800">Category Management</h1>
-      <p class="text-gray-600 mt-1">Manage book categories for your store</p>
-    </div>
-    <button 
-      mat-raised-button 
-      class="!bg-gradient-to-r !from-amber-600 !via-orange-600 !to-amber-700 !text-white"
-      (click)="openCreateDialog()"
-      matTooltip="Add new category">
-      <mat-icon>add</mat-icon>
+  <div class="header-section flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold">Categories Management</h1>
+    <button
+      (click)="openModal()"
+      class="btn-primary btn-add flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14"/>
+        <path d="M12 5v14"/>
+      </svg>
       Add Category
     </button>
   </div>
+  <div class="mb-6">
+    <input
+      type="text"
+      placeholder="Search categories..."
+      [(ngModel)]="searchTerm"
+      class="form-input w-full"
+    />
+  </div>
 
-  <!-- Loading Spinner -->
-  @if (isLoading()) {
-    <div class="flex justify-center items-center py-12">
-      <mat-spinner diameter="50"></mat-spinner>
-    </div>
-  }
 
-  <!-- Categories Table -->
-  @if (!isLoading() && categories().length > 0) {
-    <div class="mat-elevation-z2 rounded-lg overflow-hidden bg-white">
-      <table mat-table [dataSource]="categories()" class="w-full">
-        
-        <!-- Name Column -->
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef class="!font-bold !text-gray-700">Category Name</th>
-          <td mat-cell *matCellDef="let category" class="!font-medium">{{category.name}}</td>
-        </ng-container>
-
-        <!-- Description Column -->
-        <ng-container matColumnDef="description">
-          <th mat-header-cell *matHeaderCellDef class="!font-bold !text-gray-700">Description</th>
-          <td mat-cell *matCellDef="let category" class="!text-gray-600">
-            {{category.description || 'No description'}}
-          </td>
-        </ng-container>
-
-        <!-- Actions Column -->
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef class="!font-bold !text-gray-700 !text-right">Actions</th>
-          <td mat-cell *matCellDef="let category" class="!text-right">
-            <button 
-              mat-icon-button 
-              color="primary"
-              (click)="openEditDialog(category)"
-              matTooltip="Edit category">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button 
-              mat-icon-button 
-              color="warn"
-              (click)="deleteCategory(category)"
-              matTooltip="Delete category">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="!bg-gray-50"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:!bg-gray-50 transition-colors"></tr>
-      </table>
-    </div>
-  }
-
-  <!-- Empty State -->
-  @if (!isLoading() && categories().length === 0) {
-    <div class="text-center py-12 bg-white rounded-lg shadow-sm">
-      <mat-icon class="text-gray-300 !text-6xl !h-16 !w-16 mx-auto mb-4">category</mat-icon>
-      <h3 class="text-xl font-semibold text-gray-700 mb-2">No Categories Yet</h3>
-      <p class="text-gray-500 mb-4">Start by creating your first category</p>
-      <button 
-        mat-raised-button 
-        class="!bg-gradient-to-r !from-amber-600 !via-orange-600 !to-amber-700 !text-white"
-        (click)="openCreateDialog()">
-        <mat-icon>add</mat-icon>
-        Create Category
+  <!-- Error Message -->
+  @if (error()) {
+    <div class="alert alert-error mb-6 fade-in">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span class="flex-1">{{ error() }}</span>
+      <button (click)="error.set(null)" class="btn-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18"/>
+          <path d="m6 6 12 12"/>
+        </svg>
       </button>
     </div>
   }
+
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p class="loading-text">Loading categories...</p>
+    </div>
+  }
+
+  <!-- Categories Grid -->
+  @if (!loading()) {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (category of filteredCategories(); track category.id) {
+        <div class="category-card fade-in">
+          <div class="category-header">
+            <h3 class="category-title">
+              {{ category.name }}
+            </h3>
+            <div class="category-actions">
+              <button
+                (click)="viewStats(category.id)"
+                class="btn-icon stats"
+                title="View Statistics">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"/>
+                  <path d="m19 9-5 5-4-4-3 3"/>
+                </svg>
+              </button>
+              <button
+                (click)="openModal(category)"
+                class="btn-icon edit"
+                title="Edit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                  <path d="m15 5 4 4"/>
+                </svg>
+              </button>
+              <button
+                class="btn-delete"
+                (click)="openDeleteModal(category.id, category.name, category.booksCount!)">
+                Delete
+              </button>
+            </div>
+          </div>
+
+          @if (category.description) {
+            <p class="category-description">
+              {{ category.description }}
+            </p>
+          }
+
+          @if (category.booksCount !== undefined) {
+            <div class="category-meta">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+              </svg>
+              <span>{{ category.booksCount }} book{{ category.booksCount !== 1 ? 's' : '' }}</span>
+            </div>
+          }
+
+          <div class="category-footer">
+            <div class="category-date">
+              Created: {{ category.createdAt | date:'shortDate' }}
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Empty State -->
+    @if (categories().length === 0) {
+      <div class="empty-state">
+        <svg class="empty-state-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+          <path d="M8 7h6"/>
+          <path d="M8 11h8"/>
+        </svg>
+        <h3 class="empty-state-title">No categories found</h3>
+        <p class="empty-state-text">Get started by creating your first category</p>
+        <button
+          (click)="openModal()"
+          class="btn-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/>
+            <path d="M12 5v14"/>
+          </svg>
+          Create Category
+        </button>
+      </div>
+    }
+  }
+
+  <!-- Create/Edit Modal -->
+  @if (isModalOpen()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2 class="modal-title">
+            {{ modalTitle() }}
+          </h2>
+          <button
+            (click)="closeModal()"
+            class="modal-close">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18"/>
+              <path d="m6 6 12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <form (ngSubmit)="onSubmit()" #categoryForm="ngForm">
+          <div class="form-group">
+            <label class="form-label">
+              Name *
+            </label>
+            <input
+              type="text"
+              required
+              [ngModel]="formData().name"
+              (ngModelChange)="updateFormField('name', $event)"
+              name="name"
+              #nameInput="ngModel"
+              class="form-input"
+              [class.error]="nameInput.invalid && nameInput.touched"
+              placeholder="Enter category name" />
+            @if (nameInput.invalid && nameInput.touched) {
+              <p class="form-error">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                Name is required
+              </p>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              Description
+            </label>
+            <textarea
+              [ngModel]="formData().description"
+              (ngModelChange)="updateFormField('description', $event)"
+              name="description"
+              class="form-textarea"
+              placeholder="Enter a brief description of the category"
+              rows="4"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              (click)="closeModal()"
+              class="btn-secondary">
+              Cancel
+            </button>
+            <button
+              type="submit"
+              [disabled]="categoryForm.invalid"
+              class="btn-submit">
+              {{ submitButtonText() }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- Statistics Modal -->
+  @if (isStatsModalOpen() && selectedCategoryStats()) {
+    <div class="modal-overlay" (click)="closeStatsModal()">
+      <div class="modal-content modal-stats" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2 class="modal-title">
+            {{ selectedCategoryStats()!.category.name }}
+          </h2>
+          <button
+            (click)="closeStatsModal()"
+            class="modal-close">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18"/>
+              <path d="m6 6 12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        @if (selectedCategoryStats()!.category.description) {
+          <p class="category-description mb-6">
+            {{ selectedCategoryStats()!.category.description }}
+          </p>
+        }
+
+        <div class="stats-grid">
+          <div class="stat-card blue">
+            <div class="stat-label">Total Books</div>
+            <div class="stat-value">{{ selectedCategoryStats()!.stats.totalBooks }}</div>
+          </div>
+
+          <div class="stat-card green">
+            <div class="stat-label">Total Stock</div>
+            <div class="stat-value">{{ selectedCategoryStats()!.stats.totalStock }}</div>
+          </div>
+
+          <div class="stat-card purple">
+            <div class="stat-label">Avg Price</div>
+            <div class="stat-value">${{ selectedCategoryStats()!.stats.avgPrice | number:'1.2-2' }}</div>
+          </div>
+
+          <div class="stat-card yellow">
+            <div class="stat-label">Avg Rating</div>
+            <div class="stat-value">{{ selectedCategoryStats()!.stats.avgRating | number:'1.1-1' }} ⭐</div>
+          </div>
+
+          <div class="stat-card pink">
+            <div class="stat-label">Total Reviews</div>
+            <div class="stat-value">{{ selectedCategoryStats()!.stats.totalReviews }}</div>
+          </div>
+
+          <div class="stat-card indigo">
+            <div class="stat-label">Total Sales</div>
+            <div class="stat-value">{{ selectedCategoryStats()!.stats.totalSales }}</div>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <button
+            (click)="closeStatsModal()"
+            class="btn-secondary w-full">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (isDeleteModalOpen() && categoryToDelete()) {
+    <div class="modal-overlay" (click)="closeDeleteModal()">
+      <div class="modal-content modal-danger" (click)="$event.stopPropagation()">
+
+        <!-- Header -->
+        <div class="modal-header">
+          <h2 class="modal-title text-danger">
+            Delete Category
+          </h2>
+          <button (click)="closeDeleteModal()" class="modal-close">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18"/>
+              <path d="m6 6 12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <p class="mb-4">
+          Are you sure you want to delete
+          <strong>{{ categoryToDelete()!.name }}</strong>?
+        </p>
+
+        @if (categoryToDelete()!.booksCount > 0) {
+          <div class="delete-warning">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 9v4"/>
+              <path d="M12 17h.01"/>
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            </svg>
+            <span>
+            This category contains {{ categoryToDelete()!.booksCount }} book(s).<br>
+            Deletion is not allowed until books are moved or deleted.
+          </span>
+          </div>
+        }
+
+        <!-- Actions -->
+        <div class="mt-6 grid grid-cols-2 gap-3">
+          <button (click)="closeDeleteModal()" class="btn-secondary w-full">
+            Cancel
+          </button>
+
+          <button
+            (click)="confirmDelete()"
+            [disabled]="!isDeleteAllowed()"
+            class="btn-delete">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
 </div>
