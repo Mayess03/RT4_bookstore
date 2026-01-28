@@ -1,5 +1,4 @@
 <div class="best-sellers-container">
-  <h5><i class="fa fa-id-card"></i> User Details</h5>
 
   @if (loading()) {
     <p class="info-text">Chargement...</p>
@@ -12,7 +11,6 @@
       <p><strong>Email:</strong> {{ user()!.email }}</p>
       <p><strong>First name:</strong> {{ user()!.firstName }}</p>
       <p><strong>Last name:</strong> {{ user()!.lastName }}</p>
-      <p><strong>Role:</strong> {{ user()!.role }}</p>
       <p><strong>Status:</strong> {{ user()!.isActive ? 'active' : 'blocked' }}</p>
       <p><strong>Created:</strong> {{ user()!.createdAt | date:'medium' }}</p>
 

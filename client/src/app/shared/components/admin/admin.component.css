@@ -3,3 +3,23 @@
   padding-left: 24px;
   padding-right: 24px;
 }
+
+.order-toast {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background-color: #ffc107;
+  color: #212529;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  font-weight: 600;
+  animation: slideIn 0.3s ease;
+  z-index: 9999;
+  cursor: pointer; /* 🔹 montre que c’est cliquable */
+  transition: transform 0.2s ease;
+}
+
+.order-toast:hover {
+  transform: scale(1.05);
+}
