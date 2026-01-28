@@ -4,13 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Cart, CartItem, AddToCartDto, UpdateCartItemDto } from '../../shared/models';
 import { ApiService } from '../../shared/services/api.service';
 
-/**
- * Cart Service
- *
- * Purpose: Handle all cart operations with backend API
- * Compatible with: Backend cart module
- * Used by: Dev 3 (Cart Page)
- */
+
 @Injectable({
   providedIn: 'root',
 })

@@ -10,18 +10,6 @@ import { ReviewsService } from '../../services/reviews.service';
 import { CreateReviewDto, UpdateReviewDto, Review } from '../../../shared/models/review.model';
 import { AuthService } from '../../../shared/services/auth.service';
 
-/**
- * Add Review Component
- *
- * Purpose: Display form for user to add/update a review to a book
- * Features:
- * - Star rating selector (1-5)
- * - Optional comment textarea
- * - Submit and cancel buttons
- * - Loading state during submission
- * - Check for existing review and allow updates
- * - Emits refresh event on successful submission
- */
 @Component({
   selector: 'app-add-review',
   standalone: true,

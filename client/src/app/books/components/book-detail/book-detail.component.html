@@ -187,6 +187,9 @@
                     }
                   </button>
                 </div>
+                <div class="mt-4">
+                  <app-wishlist-button [bookId]="book()!.id"></app-wishlist-button>
+                </div>
               } @else {
                 <div class="bg-stone-100 rounded-lg p-4 text-center">
                   <mat-icon class="text-stone-400 text-4xl mb-2">inventory_2</mat-icon>
