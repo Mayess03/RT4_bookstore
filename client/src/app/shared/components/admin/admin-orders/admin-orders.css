@@ -114,3 +114,28 @@
   color: #FFC107;
   margin-top: 1rem;
 }
+
+/* Filters bar */
+.filters-bar {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.filters-bar input,
+.filters-bar select {
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.filters-bar input {
+  flex: 1;
+}
+
+.filters-bar input:focus,
+.filters-bar select:focus {
+  border-color: #FFC107;
+}

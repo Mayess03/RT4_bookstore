@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { OrdersService } from '../../../services/orders.service';
@@ -42,4 +42,19 @@ export class AdminOrders implements OnInit {
   goToDetails(orderId: string): void {
   this.router.navigate(['admin', 'orders', orderId]);
 }
+searchTerm = signal('');
+selectedStatus = signal('ALL');
+
+filteredOrders = computed(() => {
+  return this.orders().filter(order => {
+    const matchesSearch =
+      order.id.toLowerCase().includes(this.searchTerm().toLowerCase());
+
+    const matchesStatus =
+      this.selectedStatus() === 'ALL' ||
+      order.status === this.selectedStatus();
+
+    return matchesSearch && matchesStatus;
+  });
+});
 }
