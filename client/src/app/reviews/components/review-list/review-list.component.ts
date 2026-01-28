@@ -17,17 +17,6 @@ import { ReviewsService } from '../../services/reviews.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-/**
- * Review List Component
- *
- * Purpose: Display all reviews for a book
- * Features:
- * - Show rating with stars
- * - Display user name and date
- * - Show comment text
- * - Allow delete if user is owner
- * - Auto-refresh when bookId changes
- */
 @Component({
   selector: 'app-review-list',
   standalone: true,

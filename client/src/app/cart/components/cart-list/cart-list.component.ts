@@ -13,18 +13,6 @@ import { Cart, CartItem } from '../../../shared/models';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 import { Router } from '@angular/router';
 
-/**
- * Cart List Component
- *
- * Purpose: Display user's shopping cart with items
- * Features:
- * - Display all cart items with book details
- * - Adjust quantities
- * - Remove items
- * - Calculate totals
- * - Empty cart state
- *
- */
 @Component({
   selector: 'app-cart-list',
   standalone: true,

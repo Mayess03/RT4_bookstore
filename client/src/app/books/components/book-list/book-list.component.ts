@@ -17,21 +17,20 @@ import { debounceTime, Subject } from 'rxjs';
 
 /**
  * Book List Component
- * 
+ *
  * Purpose: Display paginated grid of books
  * Features:
  * - Grid layout of book cards
  * - Pagination
  * - Loading state
  * - Error handling
- * 
+ *
  * Used by: Dev 2 (Books module)
  */
 @Component({
   selector: 'app-book-list',
   standalone: true,
   imports: [
-    RouterLink,
     FormsModule,
     MatIconModule,
     MatFormFieldModule,
@@ -40,10 +39,9 @@ import { debounceTime, Subject } from 'rxjs';
     MatButtonModule,
     MatSnackBarModule,
     BookCardComponent,
-    LoadingComponent
   ],
   templateUrl: './book-list.component.html',
-  styleUrl: './book-list.component.css'
+  styleUrl: './book-list.component.css',
 })
 export class BookListComponent implements OnInit {
   private booksService = inject(BooksService);
@@ -57,7 +55,7 @@ export class BookListComponent implements OnInit {
   books = signal<Book[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
-  
+
   // Pagination signals
   currentPage = signal(1);
   totalBooks = signal(0);
@@ -72,18 +70,16 @@ export class BookListComponent implements OnInit {
   sortBy = signal<string>('title');
   sortOrder = signal<'ASC' | 'DESC'>('ASC'); // Backend expects uppercase
   categories = signal<Array<{ id: string; name: string }>>([]);
-  
+
   // Cart loading state
   addingToCartBookId = signal<string | null>(null);
 
   ngOnInit() {
     this.loadCategories();
     this.loadBooks();
-    
+
     // Debounce search input - wait 750ms after user stops typing
-    this.searchSubject.pipe(
-      debounceTime(750)
-    ).subscribe(searchValue => {
+    this.searchSubject.pipe(debounceTime(750)).subscribe((searchValue) => {
       // Trim whitespace to avoid strict matching issues
       const trimmedSearch = searchValue.trim();
       this.searchTerm.set(trimmedSearch);
@@ -102,7 +98,7 @@ export class BookListComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load categories:', err);
-      }
+      },
     });
   }
 
@@ -118,7 +114,7 @@ export class BookListComponent implements OnInit {
       page: this.currentPage(),
       limit: this.booksPerPage,
       sortBy: this.sortBy(),
-      order: this.sortOrder() // Backend expects 'order', not 'sortOrder'
+      order: this.sortOrder(), // Backend expects 'order', not 'sortOrder'
     };
 
     // Add optional filters
@@ -141,7 +137,7 @@ export class BookListComponent implements OnInit {
         this.totalBooks.set(response.meta.total);
         this.totalPages.set(response.meta.totalPages);
         this.loading.set(false);
-        
+
         // Only scroll to top on pagination, not on filters
         if (scrollToTop) {
           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -151,7 +147,7 @@ export class BookListComponent implements OnInit {
         console.error('❌ Error loading books:', err);
         this.error.set('Failed to load books. Please try again.');
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -211,15 +207,18 @@ export class BookListComponent implements OnInit {
   onAddToCart(book: Book) {
     // Check if user is logged in
     if (!this.authService.isLoggedIn()) {
-      this.snackBar.open('Please login to add items to your cart', 'Login', {
-        duration: 5000,
-        horizontalPosition: 'end',
-        verticalPosition: 'bottom'
-      }).onAction().subscribe(() => {
-        this.router.navigate(['/login'], {
-          queryParams: { returnUrl: this.router.url }
+      this.snackBar
+        .open('Please login to add items to your cart', 'Login', {
+          duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'bottom',
+        })
+        .onAction()
+        .subscribe(() => {
+          this.router.navigate(['/login'], {
+            queryParams: { returnUrl: this.router.url },
+          });
         });
-      });
       return;
     }
 
@@ -229,45 +228,46 @@ export class BookListComponent implements OnInit {
         duration: 5000,
         horizontalPosition: 'end',
         verticalPosition: 'bottom',
-        panelClass: ['error-snackbar']
+        panelClass: ['error-snackbar'],
       });
       return;
     }
 
     this.addingToCartBookId.set(book.id);
 
-    this.cartService.addToCart({
-      userId: user.id,
-      bookId: book.id,
-      quantity: 1
-    }).subscribe({
-      next: () => {
-        this.addingToCartBookId.set(null);
-        this.snackBar.open(
-          `Added "${book.title}" to cart!`,
-          'View Cart',
-          {
+    this.cartService
+      .addToCart({
+        userId: user.id,
+        bookId: book.id,
+        quantity: 1,
+      })
+      .subscribe({
+        next: () => {
+          this.addingToCartBookId.set(null);
+          this.snackBar
+            .open(`Added "${book.title}" to cart!`, 'View Cart', {
+              duration: 5000,
+              horizontalPosition: 'end',
+              verticalPosition: 'bottom',
+              panelClass: ['success-snackbar'],
+            })
+            .onAction()
+            .subscribe(() => {
+              this.router.navigate(['/cart']);
+            });
+        },
+        error: (error) => {
+          this.addingToCartBookId.set(null);
+          console.error('Error adding to cart:', error);
+          const errorMessage = error?.error?.message || 'Failed to add to cart';
+          this.snackBar.open(errorMessage, 'Close', {
             duration: 5000,
             horizontalPosition: 'end',
             verticalPosition: 'bottom',
-            panelClass: ['success-snackbar']
-          }
-        ).onAction().subscribe(() => {
-          this.router.navigate(['/cart']);
-        });
-      },
-      error: (error) => {
-        this.addingToCartBookId.set(null);
-        console.error('Error adding to cart:', error);
-        const errorMessage = error?.error?.message || 'Failed to add to cart';
-        this.snackBar.open(errorMessage, 'Close', {
-          duration: 5000,
-          horizontalPosition: 'end',
-          verticalPosition: 'bottom',
-          panelClass: ['error-snackbar']
-        });
-      }
-    });
+            panelClass: ['error-snackbar'],
+          });
+        },
+      });
   }
 
   /**
@@ -275,7 +275,7 @@ export class BookListComponent implements OnInit {
    */
   nextPage() {
     if (this.currentPage() < this.totalPages()) {
-      this.currentPage.update(page => page + 1);
+      this.currentPage.update((page) => page + 1);
       this.loadBooks(true); // Scroll to top on pagination
     }
   }
@@ -285,7 +285,7 @@ export class BookListComponent implements OnInit {
    */
   previousPage() {
     if (this.currentPage() > 1) {
-      this.currentPage.update(page => page - 1);
+      this.currentPage.update((page) => page - 1);
       this.loadBooks(true); // Scroll to top on pagination
     }
   }

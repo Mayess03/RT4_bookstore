@@ -12,6 +12,7 @@ import { Book } from '../../../shared/models';
 import { AuthService } from '../../../shared/services/auth.service';
 import { ReviewListComponent } from '../../../reviews/components/review-list/review-list.component';
 import { AddReviewComponent } from '../../../reviews/components/add-review/add-review.component';
+import { WishlistButtonComponent } from '../../../wishlist/components/wishlist-button/wishlist-button.component';
 
 /**
  * Book Detail Component
@@ -39,6 +40,7 @@ import { AddReviewComponent } from '../../../reviews/components/add-review/add-r
     MatSnackBarModule,
     ReviewListComponent,
     AddReviewComponent,
+    WishlistButtonComponent,
   ],
   templateUrl: './book-detail.component.html',
   styleUrl: './book-detail.component.css',

@@ -6,10 +6,7 @@ import { Review, CreateReviewDto, UpdateReviewDto } from '../../shared/models/re
 
 /**
  * Reviews Service
- *
- * Purpose: Handle all review-related API calls
- * Extends ApiService to inherit apiUrl and http client
- *
+
  * Backend endpoints (from ReviewsController):
  * POST   /api/reviews/:bookId           - Add review (USER only)
  * PATCH  /api/reviews/:bookId           - Update review (USER + owner)

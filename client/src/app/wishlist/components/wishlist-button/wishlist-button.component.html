@@ -1,0 +1,26 @@
+<button
+  (click)="toggleWishlist()"
+  [disabled]="loading() || !isLoggedIn()"
+  [matTooltip]="isInWishlist() ? 'Remove from wishlist' : 'Add to wishlist'"
+  class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors"
+  [class.bg-red-100]="isInWishlist()"
+  [class.text-red-600]="isInWishlist()"
+  [class.hover:bg-red-200]="isInWishlist()"
+  [class.bg-stone-100]="!isInWishlist()"
+  [class.text-stone-600]="!isInWishlist()"
+  [class.hover:bg-stone-200]="!isInWishlist()"
+  [class.disabled:opacity-50]="loading()"
+  [class.disabled:cursor-not-allowed]="loading()"
+>
+  @if (loading()) {
+    <span class="inline-block animate-spin">⏳</span>
+  } @else {
+    @if (isInWishlist()) {
+      <mat-icon class="text-lg">favorite</mat-icon>
+      <span>Saved</span>
+    } @else {
+      <mat-icon class="text-lg">favorite_border</mat-icon>
+      <span>Save</span>
+    }
+  }
+</button>
