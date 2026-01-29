@@ -68,6 +68,7 @@ export const routes: Routes = [
       { path: 'orders', component: AdminOrders },
       { path: 'orders/:id', component: OrderDetailsAdminComponent },
       { path: 'users/:id', component: AdminUserDetailsComponent },
+      { path: 'profile', component: ProfilComponent}
     ],
   },
 

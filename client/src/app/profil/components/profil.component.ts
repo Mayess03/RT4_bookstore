@@ -1,12 +1,12 @@
-// profil.component.ts
-import { Component, signal } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ProfilService } from '../services/profil.service';
-import { AuthService } from '../../shared/services/auth.service';
-import { User } from '../../shared/models/user.model';
-import { Order } from '../../shared/models/order.model';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal, effect, computed } from '@angular/core'
+import { FormsModule, NgForm } from '@angular/forms'
+import { Router } from '@angular/router'
+import { toSignal } from '@angular/core/rxjs-interop'
+import { ProfilService } from '../services/profil.service'
+import { AuthService } from '../../shared/services/auth.service'
+import { User } from '../../shared/models/user.model'
+import { CommonModule } from '@angular/common'
+import { Subject, switchMap, of, EMPTY } from 'rxjs'
 
 @Component({
   selector: 'app-profil',
@@ -16,150 +16,200 @@ import { CommonModule } from '@angular/common';
   standalone: true,
 })
 export class ProfilComponent {
-  model: Partial<User> = {
-    firstName: '',
-    lastName: '',
-    email: ''
-  } as Partial<User>;
+  private profilService = inject(ProfilService)
+  private authService = inject(AuthService)
+  private router = inject(Router)
+
+  firstName = ''
+  lastName = ''
+  email = ''
 
   passwordModel = {
     oldPassword: '',
     newPassword: '',
     confirmPassword: ''
-  };
-
-  loadingFlag = signal(false);
-  errorMessage = signal('');
-  successMessage = signal('');
-  passwordChangeSuccess = signal(false);
-  orders = signal<Order[]>([]);
-
-  // ✅ Add delete confirmation state
-  showDeleteConfirmation = signal(false);
-  deleteConfirmationText = signal('');
-
-  constructor(
-    private profilService: ProfilService,
-    private authService: AuthService,
-    private router: Router
-  ) {
-    this.loadProfile();
-    this.loadOrders();
   }
 
-  loading() { return this.loadingFlag(); }
-  error() { return this.errorMessage(); }
-  success() { return this.successMessage(); }
-  ordersList() { return this.orders(); }
+  private passwordFormRef: NgForm | null = null
 
-  loadProfile() {
-    this.profilService.getProfil().subscribe({
-      next: (user) => this.model = { ...user },
-      error: () => this.errorMessage.set('Failed to load profile')
-    });
+  loadingFlag = signal(false)
+  errorMessage = signal('')
+  successMessage = signal('')
+  passwordChangeSuccess = signal(false)
+  showDeleteConfirmation = signal(false)
+  deleteConfirmationText = ''
+
+  isAdmin = computed(() => {
+    const user = this.authService.getCurrentUser()
+    return user?.role?.toUpperCase() === 'ADMIN'
+  })
+
+  private profileLoad$ = new Subject<void>()
+  private ordersLoad$ = new Subject<void>()
+  private profileUpdate$ = new Subject<Partial<User>>()
+  private passwordChange$ = new Subject<{ oldPassword: string; newPassword: string }>()
+  private accountDelete$ = new Subject<void>()
+
+  profile = toSignal(
+    this.profileLoad$.pipe(
+      switchMap(() => {
+        this.loadingFlag.set(true)
+        this.errorMessage.set('')
+        return this.profilService.getProfil()
+      })
+    )
+  )
+
+  orders = toSignal(
+    this.ordersLoad$.pipe(
+      switchMap(() => this.profilService.getOrders())
+    )
+  )
+
+  profileUpdateResult = toSignal(
+    this.profileUpdate$.pipe(
+      switchMap((data) => {
+        this.loadingFlag.set(true)
+        this.errorMessage.set('')
+        this.successMessage.set('')
+        return this.profilService.updateProfil(data)
+      })
+    )
+  )
+
+  passwordChangeResult = toSignal(
+    this.passwordChange$.pipe(
+      switchMap((data) => {
+        this.loadingFlag.set(true)
+        this.errorMessage.set('')
+        this.successMessage.set('')
+        return this.profilService.changePassword(data)
+      })
+    )
+  )
+
+  accountDeleteResult = toSignal(
+    this.accountDelete$.pipe(
+      switchMap(() => {
+        this.loadingFlag.set(true)
+        this.errorMessage.set('')
+        return this.profilService.deleteAccount()
+      })
+    )
+  )
+
+  constructor() {
+    effect(() => {
+      const profileData = this.profile()
+      if (profileData) {
+        this.firstName = profileData.firstName || ''
+        this.lastName = profileData.lastName || ''
+        this.email = profileData.email || ''
+        this.loadingFlag.set(false)
+      }
+    })
+
+    effect(() => {
+      const result = this.profileUpdateResult()
+      if (result) {
+        this.firstName = result.firstName || ''
+        this.lastName = result.lastName || ''
+        this.email = result.email || ''
+        this.successMessage.set('Profile updated successfully!')
+        this.loadingFlag.set(false)
+        setTimeout(() => {
+          this.successMessage.set('')
+        }, 5000)
+      }
+    })
+
+    effect(() => {
+      const result = this.passwordChangeResult()
+      if (result !== undefined) {
+        this.passwordChangeSuccess.set(true)
+        this.passwordModel = { oldPassword: '', newPassword: '', confirmPassword: '' }
+
+        if (this.passwordFormRef) {
+          this.passwordFormRef.resetForm()
+        }
+
+        this.loadingFlag.set(false)
+        setTimeout(() => {
+          this.passwordChangeSuccess.set(false)
+        }, 5000)
+      }
+    })
+
+    effect(() => {
+      const result = this.accountDeleteResult()
+      if (result !== undefined) {
+        this.authService.clearTokens()
+        this.router.navigate(['/'])
+      }
+    })
+
+    effect(() => {
+      if (!this.isAdmin()) {
+        this.ordersLoad$.next()
+      }
+    })
+
+    this.profileLoad$.next()
   }
 
-  loadOrders() {
-    this.profilService.getOrders().subscribe({
-      next: (orders) => this.orders.set(orders),
-      error: () => this.errorMessage.set('Failed to load orders')
-    });
-  }
+  loading() { return this.loadingFlag() }
+  error() { return this.errorMessage() }
+  success() { return this.successMessage() }
+
+
 
   saveProfil(form: NgForm) {
-    if (form.invalid) return;
-
-    this.loadingFlag.set(true);
-    this.errorMessage.set('');
-    this.successMessage.set('');
+    if (form.invalid) return
 
     const updateData = {
-      firstName: this.model.firstName,
-      lastName: this.model.lastName,
-      email: this.model.email
-    };
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email
+    }
 
-    this.profilService.updateProfil(updateData).subscribe({
-      next: (user) => {
-        this.model = { ...user };
-        this.successMessage.set('Profile updated!');
-        this.loadingFlag.set(false);
-        setTimeout(() => {
-          this.successMessage.set('');
-        }, 5000);
-      },
-      error: () => {
-        this.errorMessage.set('Failed to update profile');
-        this.loadingFlag.set(false);
-      }
-    });
+    this.profileUpdate$.next(updateData)
   }
 
   changePassword(form: NgForm) {
     if (form.invalid || this.passwordModel.newPassword !== this.passwordModel.confirmPassword) {
-      return;
+      return
     }
 
-    this.loadingFlag.set(true);
-    this.errorMessage.set('');
-    this.successMessage.set('');
+    this.passwordFormRef = form
 
-    this.profilService.changePassword({
+    this.passwordChange$.next({
       oldPassword: this.passwordModel.oldPassword,
       newPassword: this.passwordModel.newPassword
-    }).subscribe({
-      next: () => {
-        this.passwordChangeSuccess.set(true);
-        this.passwordModel = { oldPassword: '', newPassword: '', confirmPassword: '' };
-        form.resetForm();
-        this.loadingFlag.set(false);
-
-        setTimeout(() => {
-          this.passwordChangeSuccess.set(false);
-        }, 5000);
-      },
-      error: () => {
-        this.errorMessage.set('Failed to change password');
-        this.loadingFlag.set(false);
-      }
-    });
+    })
   }
 
-  // ✅ Show delete confirmation modal
   openDeleteConfirmation() {
-    this.showDeleteConfirmation.set(true);
-    this.deleteConfirmationText.set('');
-  }
-
-  // ✅ Close delete confirmation modal
-  closeDeleteConfirmation() {
-    this.showDeleteConfirmation.set(false);
-    this.deleteConfirmationText.set('');
-  }
-
-  // ✅ Delete account
-  confirmDeleteAccount() {
-    if (this.deleteConfirmationText() !== 'DELETE') {
-      this.errorMessage.set('Please type DELETE to confirm');
-      return;
+    if (this.isAdmin()) {
+      this.errorMessage.set('Admin accounts cannot be deleted. Please contact the system administrator.')
+      setTimeout(() => this.errorMessage.set(''), 5000)
+      return
     }
 
-    this.loadingFlag.set(true);
-    this.errorMessage.set('');
+    this.showDeleteConfirmation.set(true)
+    this.deleteConfirmationText = ''
+  }
 
-    this.profilService.deleteAccount().subscribe({
-      next: () => {
-        // Account is deleted, just clear local state
-        this.authService.clearTokens();
+  closeDeleteConfirmation() {
+    this.showDeleteConfirmation.set(false)
+    this.deleteConfirmationText = ''
+  }
 
-        // Navigate to home
-        this.router.navigate(['/']);
-      },
-      error: () => {
-        this.errorMessage.set('Failed to delete account');
-        this.loadingFlag.set(false);
-        this.closeDeleteConfirmation();
-      }
-    });
+  confirmDeleteAccount() {
+    if (this.deleteConfirmationText !== 'DELETE') {
+      this.errorMessage.set('Please type DELETE to confirm')
+      return
+    }
+
+    this.accountDelete$.next()
   }
 }
