@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, signal, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,7 +26,7 @@ import { WishlistItem } from '../../../models/wishlist.model';
   templateUrl: './wishlist-page.component.html',
   styleUrl: './wishlist-page.component.css',
 })
-export class WishlistPageComponent implements OnInit {
+export class WishlistPageComponent {
   private wishlistService = inject(WishlistService);
   private authService = inject(AuthService);
   private cartService = inject(CartService);
@@ -41,13 +41,12 @@ export class WishlistPageComponent implements OnInit {
   readonly placeholderImage =
     'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2YwZjBmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBDb3ZlcjwvdGV4dD48L3N2Zz4=';
 
-  ngOnInit() {
-    this.loadWishlist();
+  constructor() {
+    effect(() => {
+      this.loadWishlist();
+    });
   }
 
-  /**
-   * Load user's wishlist
-   */
   loadWishlist() {
     this.loading.set(true);
     this.error.set(null);
@@ -65,9 +64,6 @@ export class WishlistPageComponent implements OnInit {
     });
   }
 
-  /**
-   * Remove item from wishlist
-   */
   removeFromWishlist(item: WishlistItem) {
     this.removingItemId.set(item.id);
 
@@ -95,9 +91,6 @@ export class WishlistPageComponent implements OnInit {
     });
   }
 
-  /**
-   * Add item to cart from wishlist
-   */
   addToCart(item: WishlistItem) {
     if (!item.book) return;
 
@@ -123,39 +116,30 @@ export class WishlistPageComponent implements OnInit {
 
     this.addingToCartId.set(item.bookId);
 
-    this.cartService
-      .addToCart({
-        userId: user.id,
-        bookId: item.bookId,
-        quantity: 1,
-      })
-      .subscribe({
-        next: () => {
-          this.addingToCartId.set(null);
-          this.snackBar.open(`Added "${item.book!.title}" to cart!`, 'View Cart', {
-            duration: 5000,
-            horizontalPosition: 'end',
-            verticalPosition: 'bottom',
-            panelClass: ['success-snackbar'],
-          });
-        },
-        error: (err) => {
-          this.addingToCartId.set(null);
-          console.error('Error adding to cart:', err);
-          const errorMessage = err?.error?.message || 'Failed to add to cart';
-          this.snackBar.open(errorMessage, 'Close', {
-            duration: 5000,
-            horizontalPosition: 'end',
-            verticalPosition: 'bottom',
-            panelClass: ['error-snackbar'],
-          });
-        },
-      });
+    this.cartService.addToCart({ userId: user.id, bookId: item.bookId, quantity: 1 }).subscribe({
+      next: () => {
+        this.addingToCartId.set(null);
+        this.snackBar.open(`Added "${item.book!.title}" to cart!`, 'View Cart', {
+          duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'bottom',
+          panelClass: ['success-snackbar'],
+        });
+      },
+      error: (err) => {
+        this.addingToCartId.set(null);
+        console.error('Error adding to cart:', err);
+        const errorMessage = err?.error?.message || 'Failed to add to cart';
+        this.snackBar.open(errorMessage, 'Close', {
+          duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'bottom',
+          panelClass: ['error-snackbar'],
+        });
+      },
+    });
   }
 
-  /**
-   * Handle image loading errors
-   */
   onImageError(event: Event) {
     const img = event.target as HTMLImageElement;
     img.src = this.placeholderImage;

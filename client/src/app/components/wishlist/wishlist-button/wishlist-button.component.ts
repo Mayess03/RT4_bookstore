@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, signal, inject } from '@angular/core';
+import { Component, signal, inject, effect, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,8 +15,8 @@ import { Router } from '@angular/router';
   templateUrl: './wishlist-button.component.html',
   styleUrl: './wishlist-button.component.css',
 })
-export class WishlistButtonComponent implements OnInit {
-  @Input() bookId: string = '';
+export class WishlistButtonComponent {
+  bookId = input<string>();
 
   private wishlistService = inject(WishlistService);
   private authService = inject(AuthService);
@@ -27,31 +27,22 @@ export class WishlistButtonComponent implements OnInit {
   loading = signal(false);
   isLoggedIn = this.authService.isLoggedIn;
 
-  ngOnInit() {
-    this.checkIfInWishlist();
-  }
+  constructor() {
+    effect(() => {
+      const id = this.bookId();
+      if (!id || !this.isLoggedIn()) return;
 
-  /**
-   * Check if book is in user's wishlist
-   */
-  checkIfInWishlist() {
-    if (!this.isLoggedIn()) {
-      return;
-    }
-
-    this.wishlistService.getWishlist().subscribe({
-      next: (items) => {
-        this.isInWishlist.set(items.some((item) => item.bookId === this.bookId));
-      },
-      error: (err) => {
-        console.error('Failed to check wishlist:', err);
-      },
+      this.wishlistService.getWishlist().subscribe({
+        next: (items) => {
+          this.isInWishlist.set(items.some((item) => item.bookId === id));
+        },
+        error: (err) => {
+          console.error('Failed to check wishlist:', err);
+        },
+      });
     });
   }
 
-  /**
-   * Toggle wishlist status
-   */
   toggleWishlist() {
     if (!this.isLoggedIn()) {
       this.snackBar
@@ -70,9 +61,15 @@ export class WishlistButtonComponent implements OnInit {
     }
 
     this.loading.set(true);
+    const id = this.bookId();
+
+    if (!id) {
+      this.loading.set(false);
+      return;
+    }
 
     if (this.isInWishlist()) {
-      this.wishlistService.removeBook(this.bookId).subscribe({
+      this.wishlistService.removeBook(id).subscribe({
         next: () => {
           this.loading.set(false);
           this.isInWishlist.set(false);
@@ -95,7 +92,7 @@ export class WishlistButtonComponent implements OnInit {
         },
       });
     } else {
-      this.wishlistService.addBook(this.bookId).subscribe({
+      this.wishlistService.addBook(id).subscribe({
         next: () => {
           this.loading.set(false);
           this.isInWishlist.set(true);

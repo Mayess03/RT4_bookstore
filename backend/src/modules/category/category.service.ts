@@ -20,9 +20,6 @@ export class CategoryService {
     private readonly bookRepository: Repository<Book>,
   ) {}
 
-  /**
-   * CAT-01: Afficher la liste des catégories
-   */
   async findAll(withBookCount: boolean = false) {
     if (withBookCount) {
       const categories = await this.categoryRepository
@@ -44,9 +41,6 @@ export class CategoryService {
     });
   }
 
-  /**
-   * CAT-02: Voir les détails d'une catégorie
-   */
   async findOne(id: string) {
     const category = await this.categoryRepository.findOne({
       where: { id },
@@ -56,7 +50,6 @@ export class CategoryService {
       throw new NotFoundException(`Category with ID ${id} not found`);
     }
 
-    // Compter le nombre de livres dans cette catégorie
     const booksCount = await this.bookRepository.count({
       where: { categoryId: id },
     });
@@ -67,16 +60,12 @@ export class CategoryService {
     };
   }
 
-  /**
-   * CAT-03: Voir les livres d'une catégorie avec pagination
-   */
   async findBooksByCategory(
     id: string,
     options: { limit?: number; page?: number } = {},
   ) {
     const { limit = 10, page = 1 } = options;
 
-    // Vérifier que la catégorie existe
     const category = await this.categoryRepository.findOne({
       where: { id },
     });
@@ -85,7 +74,6 @@ export class CategoryService {
       throw new NotFoundException(`Category with ID ${id} not found`);
     }
 
-    // Récupérer les livres avec pagination
     const query = this.bookRepository
       .createQueryBuilder('book')
       .leftJoinAndSelect('book.category', 'category')
@@ -124,11 +112,7 @@ export class CategoryService {
     };
   }
 
-  /**
-   * CAT-04: Ajouter une nouvelle catégorie (ADMIN)
-   */
   async create(createCategoryDto: CreateCategoryDto) {
-    // Vérifier si une catégorie avec ce nom existe déjà
     const existingCategory = await this.categoryRepository.findOne({
       where: { name: createCategoryDto.name },
       withDeleted: false,
@@ -140,17 +124,14 @@ export class CategoryService {
       );
     }
 
-    const category = this.categoryRepository.create(createCategoryDto);
-    return this.categoryRepository.save(category);
+    return this.categoryRepository.save({
+      ...createCategoryDto,
+    });
   }
 
-  /**
-   * CAT-05: Modifier une catégorie (ADMIN)
-   */
   async update(id: string, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.findOne(id);
 
-    // Vérifier si le nouveau nom existe déjà (si changé)
     if (updateCategoryDto.name && updateCategoryDto.name !== category.name) {
       const existingCategory = await this.categoryRepository.findOne({
         where: { name: updateCategoryDto.name },
@@ -167,9 +148,6 @@ export class CategoryService {
     return this.categoryRepository.save(category);
   }
 
-  /**
-   * CAT-06: Supprimer une catégorie (ADMIN - soft delete)
-   */
   async remove(id: string) {
     const category = await this.findOne(id);
 
@@ -194,9 +172,6 @@ export class CategoryService {
     };
   }
 
-  /**
-   * CAT-07: Obtenir les statistiques d'une catégorie (ADMIN)
-   */
   async getCategoryStats(id: string) {
     const category = await this.findOne(id);
 
@@ -231,9 +206,6 @@ export class CategoryService {
     };
   }
 
-  /**
-   * Obtenir toutes les catégories pour les filtres
-   */
   async getCategories() {
     return this.categoryRepository.find({
       order: { name: 'ASC' },

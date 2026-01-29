@@ -1,21 +1,13 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  signal,
-  inject,
-  OnChanges,
-  SimpleChanges,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, signal, inject, ChangeDetectionStrategy, effect, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
 import { Review } from '../../../models/review.model';
 import { ReviewsService } from '../../../services/reviews.service';
 import { AuthService } from '../../../services/auth.service';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-review-list',
@@ -25,8 +17,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   styleUrl: './review-list.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ReviewListComponent implements OnInit, OnChanges {
-  @Input() bookId: string = '';
+export class ReviewListComponent {
+  bookId = input<string>();
 
   private reviewsService = inject(ReviewsService);
   private authService = inject(AuthService);
@@ -37,26 +29,19 @@ export class ReviewListComponent implements OnInit, OnChanges {
   error = signal<string | null>(null);
   currentUserId = this.authService.currentUser()?.id;
 
-  ngOnInit() {
-    this.loadReviews();
+  constructor() {
+    effect(() => {
+      const id = this.bookId();
+      if (!id) return;
+      this.loadReviews(id);
+    });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['bookId'] && !changes['bookId'].firstChange) {
-      this.loadReviews();
-    }
-  }
-
-  /**
-   * Load reviews for the book
-   */
-  loadReviews() {
-    if (!this.bookId) return;
-
+  private loadReviews(id: string) {
     this.loading.set(true);
     this.error.set(null);
 
-    this.reviewsService.getReviewsByBook(this.bookId).subscribe({
+    this.reviewsService.getReviewsByBook(id).subscribe({
       next: (reviews) => {
         this.reviews.set(reviews);
         this.loading.set(false);
@@ -69,31 +54,21 @@ export class ReviewListComponent implements OnInit, OnChanges {
     });
   }
 
-  /**
-   * Generate array of stars for rating display
-   */
   getStars(rating: number): boolean[] {
-    return Array(5)
-      .fill(false)
-      .map((_, i) => i < rating);
+    return Array.from({ length: 5 }, (_, i) => i < rating);
   }
 
-  /**
-   * Check if current user is the review owner
-   */
   isOwner(userId: string): boolean {
     return this.currentUserId === userId;
   }
 
-  /**
-   * Delete a review
-   */
   deleteReview(review: Review) {
-    if (!confirm('Are you sure you want to delete your review?')) {
-      return;
-    }
+    if (!confirm('Are you sure you want to delete your review?')) return;
 
-    this.reviewsService.removeReview(this.bookId).subscribe({
+    const id = this.bookId();
+    if (!id) return;
+
+    this.reviewsService.removeReview(id).subscribe({
       next: () => {
         this.reviews.update((reviews) => reviews.filter((r) => r.id !== review.id));
         this.snackBar.open('Review deleted successfully', 'Close', {
@@ -103,8 +78,7 @@ export class ReviewListComponent implements OnInit, OnChanges {
           panelClass: ['success-snackbar'],
         });
       },
-      error: (err) => {
-        console.error('Failed to delete review:', err);
+      error: () => {
         this.snackBar.open('Failed to delete review', 'Close', {
           duration: 3000,
           horizontalPosition: 'end',

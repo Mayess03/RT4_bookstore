@@ -4,53 +4,36 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Cart, CartItem, AddToCartDto, UpdateCartItemDto } from '../models';
 import { ApiService } from './api.service';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class CartService extends ApiService {
-  // Cart-specific endpoint
   private readonly cartApiUrl = `${this.apiUrl}/cart`;
 
-  // Cart state
   private cartSubject = new BehaviorSubject<Cart | null>(null);
   public cart$ = this.cartSubject.asObservable();
 
-  // Loading state
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public loading$ = this.loadingSubject.asObservable();
 
-  // Error state
   private errorSubject = new BehaviorSubject<string | null>(null);
   public error$ = this.errorSubject.asObservable();
 
-  /**
-   * Get or create cart for user
-   */
   getCart(userId: string): Observable<Cart> {
     this.loadingSubject.next(true);
     return this.http.get<Cart>(`${this.cartApiUrl}/${userId}`);
   }
 
-  /**
-   * Add item to cart
-   */
   addToCart(addToCartDto: AddToCartDto): Observable<CartItem> {
     this.loadingSubject.next(true);
     return this.http.post<CartItem>(`${this.cartApiUrl}/add`, addToCartDto);
   }
 
-  /**
-   * Update cart item quantity
-   */
   updateItemQuantity(updateDto: UpdateCartItemDto): Observable<CartItem> {
     this.loadingSubject.next(true);
     return this.http.patch<CartItem>(`${this.cartApiUrl}/item`, updateDto);
   }
 
-  /**
-   * Remove item from cart
-   */
   removeItem(userId: string, bookId: string): Observable<void> {
     this.loadingSubject.next(true);
     const params = new HttpParams().set('userId', userId).set('bookId', bookId);
@@ -58,17 +41,11 @@ export class CartService extends ApiService {
     return this.http.delete<void>(`${this.cartApiUrl}/item`, { params });
   }
 
-  /**
-   * Clear entire cart
-   */
   clearCart(userId: string): Observable<void> {
     this.loadingSubject.next(true);
     return this.http.delete<void>(`${this.cartApiUrl}/${userId}/clear`);
   }
 
-  /**
-   * Calculate total with tax
-   */
   calculateTotal(
     userId: string,
     tax: number = 0,
@@ -80,7 +57,6 @@ export class CartService extends ApiService {
     );
   }
 
-  // Utils
   setCart(cart: Cart | null) {
     this.cartSubject.next(cart);
   }
