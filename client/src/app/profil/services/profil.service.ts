@@ -19,7 +19,6 @@ export class ProfilService extends ApiService {
   }
 
   updateProfil(data: Partial<User>): Observable<User> {
-    // ✅ Only send allowed fields to avoid 400 error
     const allowedFields = {
       firstName: data.firstName,
       lastName: data.lastName,
