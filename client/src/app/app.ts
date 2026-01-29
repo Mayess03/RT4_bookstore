@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from './shared/components/header/header.component';
+import { HeaderComponent } from './components/header/header.component';
 //import { LoadingComponent } from './shared/components/loading/loading.component';
 // import { BookCardComponent } from './shared/components/book-card/book-card.component';
 // import { Book } from './shared/models';
