@@ -12,15 +12,17 @@
       Add Category
     </button>
   </div>
+
+  <!-- Search Input -->
   <div class="mb-6">
     <input
       type="text"
       placeholder="Search categories..."
-      [(ngModel)]="searchTerm"
+      [ngModel]="searchTerm()"
+      (ngModelChange)="searchTerm.set($event)"
       class="form-input w-full"
     />
   </div>
-
 
   <!-- Error Message -->
   @if (error()) {
@@ -149,7 +151,7 @@
           </button>
         </div>
 
-        <form (ngSubmit)="onSubmit()" #categoryForm="ngForm">
+        <form (ngSubmit)="onSubmit(categoryForm)" #categoryForm="ngForm">
           <div class="form-group">
             <label class="form-label">
               Name *
@@ -157,8 +159,7 @@
             <input
               type="text"
               required
-              [ngModel]="formData().name"
-              (ngModelChange)="updateFormField('name', $event)"
+              [(ngModel)]="formName"
               name="name"
               #nameInput="ngModel"
               class="form-input"
@@ -181,8 +182,7 @@
               Description
             </label>
             <textarea
-              [ngModel]="formData().description"
-              (ngModelChange)="updateFormField('description', $event)"
+              [(ngModel)]="formDescription"
               name="description"
               class="form-textarea"
               placeholder="Enter a brief description of the category"
@@ -275,6 +275,7 @@
     </div>
   }
 
+  <!-- Delete Confirmation Modal -->
   @if (isDeleteModalOpen() && categoryToDelete()) {
     <div class="modal-overlay" (click)="closeDeleteModal()">
       <div class="modal-content modal-danger" (click)="$event.stopPropagation()">

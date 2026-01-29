@@ -1,6 +1,6 @@
 /**
  * Book Model - Matches backend Book entity
- * 
+ *
  * This represents a book in your bookstore
  */
 
@@ -15,7 +15,7 @@ export interface Book {
   coverImage?: string;     // Optional - cover image URL (backend field name)
   imageUrl?: string;       // Optional - alias for coverImage (for compatibility)
   categoryId?: string;     // Optional - which category it belongs to
-  category?: Category;     // Optional - full category object (populated by backend)
+  category?: CategoryBook;     // Optional - full category object (populated by backend)
   isActive?: boolean;      // Optional - is book active/visible
   publishedDate?: Date;    // Optional
   createdAt?: Date;        // When added to database
@@ -28,12 +28,60 @@ export interface Book {
 /**
  * Category Model
  */
-export interface Category {
+export interface CategoryBook {
   id: string;
   name: string;            // e.g., "Fiction", "Science"
   description?: string;
 }
+export interface Category {
+  id: string;
+  name: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+  booksCount?: number;
+}
 
+export interface CreateCategoryDto {
+  name: string;
+  description?: string;
+}
+
+export interface UpdateCategoryDto {
+  name?: string;
+  description?: string;
+}
+
+export interface CategoryBooksResponse {
+  category: {
+    id: string;
+    name: string;
+    description?: string;
+  };
+  data: any[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface CategoryStatsResponse {
+  category: {
+    id: string;
+    name: string;
+    description?: string;
+  };
+  stats: {
+    totalBooks: number;
+    totalStock: number;
+    avgPrice: number;
+    avgRating: number;
+    totalReviews: number;
+    totalSales: number;
+  };
+}
 /**
  * Create Book DTO - What we SEND when admin creates a book
  */
