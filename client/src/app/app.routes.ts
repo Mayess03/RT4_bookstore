@@ -17,23 +17,19 @@ import { AdminUserDetailsComponent } from './components/admin/admin-user-details
 import { WishlistPageComponent } from './components/wishlist/wishlist-page/wishlist-page.component';
 import { CartListComponent } from './components/cart-list/cart-list.component';
 export const routes: Routes = [
-  { path: '', component: HomeComponent }, // Landing page (public)
+  { path: '', component: HomeComponent },
 
-  // Auth routes (public)
   { path: 'auth/login', component: LoginComponent },
   { path: 'auth/register', component: RegisterComponent },
   { path: 'auth/forgot-password', component: ForgotPasswordComponent },
 
-  // Protected routes
   { path: 'profile', canActivate: [authGuard], component: ProfilComponent },
 
-  // Books module - lazy loaded (public browsing, will need cart auth)
   {
     path: 'books',
     loadChildren: () => import('./routes/books.routes').then((m) => m.BOOKS_ROUTES),
   },
 
-  // Cart module - lazy loaded (protected)
   {
     path: 'cart',
     component: CartListComponent,
@@ -41,21 +37,18 @@ export const routes: Routes = [
     data: { title: 'Shopping Cart' },
   },
 
-  // Wishlist module - lazy loaded (protected)
   {
     path: 'wishlist',
     component: WishlistPageComponent,
     canActivate: [authGuard],
   },
 
-  // Orders module - lazy loaded (protected)
   {
     path: 'orders',
     loadChildren: () => import('./routes/orders.routes').then((m) => m.ORDERS_ROUTES),
     canActivate: [authGuard],
   },
 
-  // Admin routes (protected) - Dev 6's admin dashboard
   {
     path: 'admin',
     component: AdminComponent,
@@ -68,9 +61,9 @@ export const routes: Routes = [
       { path: 'orders', component: AdminOrders },
       { path: 'orders/:id', component: OrderDetailsAdminComponent },
       { path: 'users/:id', component: AdminUserDetailsComponent },
-      { path: 'profile', component: ProfilComponent}
+      { path: 'profile', component: ProfilComponent },
     ],
   },
 
-  { path: '**', redirectTo: '' }, // Redirect unknown routes to home
+  { path: '**', redirectTo: '' },
 ];
