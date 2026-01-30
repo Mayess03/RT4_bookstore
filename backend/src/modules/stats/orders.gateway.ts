@@ -1,5 +1,3 @@
-// web socket gateway pour les notifications de nouvelles commandes en temps reel
-
 import {
   WebSocketGateway,
   WebSocketServer,

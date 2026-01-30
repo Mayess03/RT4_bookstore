@@ -1,8 +1,7 @@
 <div class="stats-container">
-  @for (stat of stats; track stat.title) {
+  @for (stat of stats(); track stat.title) {
     <div class="stat-box">
       <div class="stat-left">
-        <!-- Utiliser [class] au lieu de [attr.class] -->
         <i [class]="stat.icon"></i>
       </div>
       <div class="stat-right">

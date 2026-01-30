@@ -9,7 +9,7 @@ export class StatsService {
     constructor(private readonly dataSource: DataSource, private readonly ordersGateway: OrdersGateway,) { }
 
     async getStats() {
-        // nb des utilisateurs (exclure les admins)
+        // nb des utilisateurs (exclure l'admins)
         const userCount = await this.dataSource
             .getRepository(User)
             .createQueryBuilder('user')

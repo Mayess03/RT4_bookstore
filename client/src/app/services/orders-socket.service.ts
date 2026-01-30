@@ -10,21 +10,15 @@ export class OrdersSocketService {
 
   constructor() {
     this.socket = io('http://localhost:3000/orders');
-
     this.socket.on('connect', () => {
-      console.log('Socket connected!');
-
-      // 🔹 Si quelqu’un a déjà appelé onNewOrder, on peut brancher le listener ici
     });
-
-    // Optionnel : gérer les erreurs de connexion
     this.socket.on('connect_error', (err) => {
       console.error('Socket connection error:', err);
     });
   }
 
   onNewOrder(callback: (order: Order) => void) {
-    // 🔹 Toujours attendre que la connexion soit établie avant d’écouter
+    // attendre que la connexion soit établie avant d’écouter
     if (this.socket.connected) {
       this.socket.on('newOrder', callback);
     } else {

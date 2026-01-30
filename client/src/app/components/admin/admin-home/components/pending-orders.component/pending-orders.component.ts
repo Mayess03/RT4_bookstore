@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StatsService } from '../../../../../services/stats.service';
 import { Router, RouterModule } from '@angular/router';
@@ -10,19 +10,18 @@ import { Router, RouterModule } from '@angular/router';
   templateUrl: './pending-orders.component.html',
   styleUrls: ['./pending-orders.component.css']
 })
-export class PendingOrdersComponent implements OnInit {
+export class PendingOrdersComponent {
   private router = inject(Router);
-  pendingOrders = signal<number>(0);
   private statsService = inject(StatsService);
 
-  ngOnInit() {
-    this.loadPendingOrders();
-  }
+  pendingOrders = signal<number>(0);
 
-  loadPendingOrders() {
-    this.statsService.getPendingOrders().subscribe({
-      next: (res: { pendingOrders: number }) => this.pendingOrders.set(res.pendingOrders),
-      error: (err) => console.error('Error fetching pending orders', err)
+  constructor() {
+    effect(() => {
+      this.statsService.getPendingOrders().subscribe({
+        next: (res: { pendingOrders: number }) => this.pendingOrders.set(res.pendingOrders),
+        error: (err) => console.error('Error fetching pending orders', err)
+      });
     });
   }
 

@@ -15,7 +15,7 @@ export class AdminNavbarComponent {
   private router = inject(Router);
 
   logout() {
-    this.authService.clearTokens(); // supprime les tokens
+    this.authService.clearTokens();
     this.router.navigate(['/auth/login']);
   }
 }

@@ -8,28 +8,24 @@ import { Order, OrderItem, OrderStatus } from '../models';
 })
 export class OrdersService extends ApiService {
 
-  /**
-   * orders (User)
-   */
+  //USER
   createOrder(userId: string, dto: any) {
-  return this.http.post<Order>(`${this.apiUrl}/orders`, dto);
-}
-  
-    getMyOrders() {
-  return this.http.get<Order[]>(`${this.apiUrl}/orders/my`);
-}
+    return this.http.post<Order>(`${this.apiUrl}/orders`, dto);
+  }
 
-getOrderById(id: string) {
-  return this.http.get<Order>(`${this.apiUrl}/orders/${id}`);
-}
+  getMyOrders() {
+    return this.http.get<Order[]>(`${this.apiUrl}/orders/my`);
+  }
 
-cancelOrder(id: string) {
-  return this.http.patch(`${this.apiUrl}/orders/${id}/cancel`, {});
-}
+  getOrderById(id: string) {
+    return this.http.get<Order>(`${this.apiUrl}/orders/${id}`);
+  }
 
-  /**
-   * Get all orders (Admin)
-   */
+  cancelOrder(id: string) {
+    return this.http.patch(`${this.apiUrl}/orders/${id}/cancel`, {});
+  }
+
+  //ADMIN
   getAllOrders(): Observable<Order[]> {
     return this.http.get<Order[]>(`${this.apiUrl}/orders/admin`).pipe(
       map(orders =>
@@ -38,26 +34,20 @@ cancelOrder(id: string) {
     );
   }
 
-  /**
-   * Get single order by ID
-   */
   getOrderAdminById(orderId: string): Observable<Order> {
-  return this.http.get<Order>(`${this.apiUrl}/orders/admin/${orderId}`)
-    .pipe(map(order => this.transformOrder(order)));
-}
-updateOrderStatus(
-  orderId: string,
-  status: OrderStatus
-): Observable<Order> {
-  return this.http.patch<Order>(
-    `${this.apiUrl}/orders/admin/${orderId}/status`,
-    { status }
-  );
-}
+    return this.http.get<Order>(`${this.apiUrl}/orders/admin/${orderId}`)
+      .pipe(map(order => this.transformOrder(order)));
+  }
+  updateOrderStatus(
+    orderId: string,
+    status: OrderStatus
+  ): Observable<Order> {
+    return this.http.patch<Order>(
+      `${this.apiUrl}/orders/admin/${orderId}/status`,
+      { status }
+    );
+  }
 
-  /**
-   * Transform API order into proper types (numbers, dates)
-   */
   private transformOrder(order: any): Order {
     return {
       ...order,

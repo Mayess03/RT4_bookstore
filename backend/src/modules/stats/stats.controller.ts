@@ -52,6 +52,8 @@ export class StatsController {
     async getBooksByCategory() {
         return this.statsService.getBooksByCategory();
     }
+
+    // DASH-08 : Nombre de nouvelles commandes en attente
     @Get('orders/pending')
     async getPendingOrders() {
         return this.statsService.getPendingOrdersCount();

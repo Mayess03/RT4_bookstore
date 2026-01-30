@@ -11,11 +11,9 @@ export class StatsService extends ApiService {
   }
 
   getGlobalStats() {
-    // Calls GET /api/stats/global
     return this.http.get<{ users: number, books: number, orders: number }>(`${this.apiUrl}/stats/global`);
   }
   getRevenue() {
-    // Calls GET /api/stats/revenue
     return this.http.get<{ totalRevenue: number }>(`${this.apiUrl}/stats/revenue`);
   }
   getSalesByDay() {
@@ -34,7 +32,6 @@ export class StatsService extends ApiService {
     }[]>(`${this.apiUrl}/stats/sales/month`);
   }
   getOutOfStockBooks() {
-    // Calls GET /api/stats/out-of-stock
     return this.http.get<{ id: string; title: string; stock: number }[]>(`${this.apiUrl}/stats/out-of-stock`);
   }
   getPendingOrders() {
