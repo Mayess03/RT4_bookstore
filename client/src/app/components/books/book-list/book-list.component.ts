@@ -133,7 +133,7 @@ export class BookListComponent {
   /**
    * Trigger books load with current filter params
    */
-  private triggerBooksLoad(scrollToTop: boolean = false) {
+  triggerBooksLoad(scrollToTop: boolean = false) {
     // Build params matching backend QueryBookDto
     const params: any = {
       page: this.currentPage(),
