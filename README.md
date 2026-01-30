@@ -1,7 +1,8 @@
-```markdown
 # RT4 Bookstore 📚
 
-A full-stack online bookstore application built with NestJS, TypeORM/Postgres, and Angular 21, featuring JWT-based authentication, role-based access control, real-time stats, and admin dashboards.
+A full-stack online bookstore application built with NestJS, TypeORM/PostgreSQL, and Angular 21, featuring JWT-based authentication, role-based access control, real-time stats, and admin dashboards.
+
+---
 
 ## Project Overview ✨
 
@@ -9,43 +10,36 @@ RT4 Bookstore is a full-stack bookstore application:
 
 - **Backend**: NestJS API with PostgreSQL, authentication (JWT), role-based access (Admin/User), real-time notifications via Socket.IO, and seed/test tooling.
 - **Frontend**: Angular SPA with Tailwind CSS & Angular Material, consuming backend APIs and real-time events.
-- Fully functional admin dashboard with real-time order notifications.
+- **Fully functional admin dashboard** with real-time order notifications.
+- Ready for local development or Docker-based deployment.
+
+---
 
 ## Features 🔧
 
-- **User Authentication**: Login/Register with JWT, token refresh.
-- **Role-based access**: Admin vs User.
-- **Book management**: List, detail, search.
-- **Categories management**.
-- **Cart & wishlist management**.
-- **Order processing & checkout**.
-- **Reviews management**.
-- **Real-time stats & order notifications (Socket.IO)**.
-- **Admin dashboard** with user/book/order management.
+- ✅ **User Authentication**: Login/Register with JWT, token refresh.
+- ✅ **Role-based access**: Admin vs User.
+- ✅ **Book management**: List, detail, search.
+- ✅ **Categories management**.
+- ✅ **Cart & wishlist management**.
+- ✅ **Order processing & checkout**.
+- ✅ **Reviews management**.
+- ✅ **Real-time stats & order notifications** (Socket.IO).
+- ✅ **Admin dashboard** with user/book/order management.
+
+---
 
 ## Tech Stack 🏗️
 
-### Backend
-- **Framework**: NestJS, TypeScript
-- **ORM**: TypeORM
-- **Database**: PostgreSQL
-- **Authentication**: JWT, Passport.js
+- **Backend**: NestJS, TypeScript, TypeORM, PostgreSQL
+- **Frontend**: Angular 21, Tailwind CSS, Angular Material
 - **Real-time**: Socket.IO
-- **Documentation**: Swagger
+- **Testing**: Jest, Angular Testing Library
+- **Dev tools**: Docker, Docker Compose, Swagger
 
-### Frontend
-- **Framework**: Angular 21
-- **Styling**: Tailwind CSS, Angular Material
-- **State Management**: RxJS, Services
-- **Testing**: Angular Testing Library
+---
 
-### DevOps & Tools
-- **Containerization**: Docker, Docker Compose
-- **Version Control**: Git
-- **Package Manager**: npm
-- **Code Quality**: ESLint, Prettier
-
-## Quickstart — Run Locally
+## Quickstart — Run Locally ✅
 
 ### Prerequisites
 
@@ -66,6 +60,7 @@ npm install
 2. **Start database**:
 
    - **Docker**:
+
      ```bash
      docker-compose up -d
      ```
@@ -76,33 +71,41 @@ npm install
 
 4. **Run server**:
 
-```bash
-# Development
-npm run start:dev
+   ```bash
+   # Development
+   npm run start:dev
 
-# Production
-npm run build && npm run start:prod
-```
+   # Production
+   npm run build && npm run start:prod
+   ```
 
-6. **Swagger API docs**: http://localhost:3000/api/docs
-   - API prefix: `/api`
+5. **Seed sample data (optional)**:
+
+   ```bash
+   npm run seed
+   ```
+
+- **Swagger API docs**: http://localhost:3000/api/docs
+- **API prefix**: `/api`
 
 ### Frontend (client)
 
 1. **Install dependencies**:
 
-```bash
-cd client
-npm install
-```
+   ```bash
+   cd client
+   npm install
+   ```
 
 2. **Start dev server**:
 
-```bash
-ng serve
-```
+   ```bash
+   npm run start
+   ```
 
 3. **Open**: http://localhost:4200
+
+---
 
 ## Environment Variables (.env) ⚙️
 
@@ -116,112 +119,88 @@ DB_USERNAME=postgres
 DB_PASSWORD=postgres
 DB_NAME=rt4_bookstore
 
-# JWT Authentication
+# JWT
 JWT_SECRET=your_jwt_secret
 JWT_ACCESS_SECRET=your_access_secret
 JWT_REFRESH_SECRET=your_refresh_secret
 JWT_EXPIRES_IN=3600s
 
-# Application
+# App
 NODE_ENV=development
 PORT=3000
 FRONTEND_URL=http://localhost:4200
 ```
 
+---
+
 ## Scripts 📋
 
 ### Backend
 
-| Command | Description |
-|---------|-------------|
-| `npm run start` | Start server |
-| `npm run start:dev` | Start in watch mode (dev) |
-| `npm run build` | Build project |
-| `npm run seed` | Populate database with sample data |
-| `npm run lint` | ESLint checks + fixes |
-| `npm run format` | Prettier formatting |
-| `npm run test` | Run unit tests |
-| `npm run test:e2e` | Run end-to-end tests |
+| Command           | Description                            |
+| ----------------- | -------------------------------------- |
+| `npm run start`   | Start server                           |
+| `npm run start:dev` | Start in watch mode (dev)              |
+| `npm run build`   | Build project                          |
+| `npm run seed`    | Populate database with sample data     |
+| `npm run lint`    | ESLint checks + fixes                  |
+| `npm run format`  | Prettier formatting                    |
+| `npm run test`    | Run unit tests                         |
+| `npm run test:e2e`| Run end-to-end tests                   |
 
 ### Frontend
 
-| Command | Description |
-|---------|-------------|
-| `npm run start` | Angular dev server |
-| `npm run build` | Build web app |
-| `npm run test` | Run frontend tests |
+| Command         | Description                  |
+| --------------- | ---------------------------- |
+| `npm run start` | Angular dev server           |
+| `npm run build` | Build web app                |
+| `npm run test`  | Run frontend tests           |
 
-## Docker Deployment 🐳
+---
 
-Docker Compose sets up Postgres + pgAdmin for easy DB management.
+## Docker Compose
 
-```bash
-# Start all services
-docker-compose up -d
+Sets up Postgres + pgAdmin for easy DB management.
 
-# Stop services
-docker-compose down
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rt4_bookstore
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
-# View logs
-docker-compose logs -f
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@rt4.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - '5050:80'
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
 ```
 
-## API Reference 📡
+Run: `docker-compose up -d`
 
-High-level endpoints (all prefixed with `/api`):
-
-| Module | Endpoints | Description |
-|--------|-----------|-------------|
-| **auth** | `/login`, `/register`, `/refresh`, `/logout` | JWT authentication |
-| **users** | `/profile`, `/admin` | User profile & admin user management |
-| **books** | `/`, `/:id`, `/search` | List, details, search books |
-| **category** | `/`, `/create`, `/update/:id` | Manage categories |
-| **cart** | `/`, `/add`, `/remove` | Cart operations |
-| **orders** | `/`, `/create`, `/update/:id` | Orders & checkout |
-| **reviews** | `/`, `/create`, `/update/:id` | Reviews CRUD |
-| **wishlist** | `/`, `/add`, `/remove` | Wishlist management |
-| **admin** | `/dashboard`, `/users`, `/books` | Admin-only endpoints |
-| **stats** | `/realtime` | Real-time stats (Socket.IO) |
+---
 
 Full Swagger docs available at `/api/docs`.
 
-## Frontend Features 🎨
+---
+
+## Frontend Overview 🎨
 
 - Responsive design with Tailwind + Angular Material.
 - Admin vs User views.
 - Auth-aware navigation and route guards.
-- Real-time order notifications.
-- Interactive cart and wishlist.
-
-## Project Structure 📁
-
-```
-rt4-bookstore/
-├── backend/
-│   ├── src/
-│   │   ├── modules/       # Feature modules (auth, books, orders, etc.)
-│   │   ├── entities/      # TypeORM entities
-│   │   ├── middleware/    # Custom middleware
-│   │   ├── guards/        # Auth guards
-│   │   ├── interceptors/  # Response interceptors
-│   │   ├── pipes/         # Validation pipes
-│   │   ├── decorators/    # Custom decorators
-│   │   └── shared/        # Shared utilities
-│   ├── test/
-│   ├── .env
-│   ├── docker-compose.yml
-│   └── package.json
-├── client/
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── components/  # Reusable components
-│   │   │   ├── pages/       # Page components
-│   │   │   ├── services/    # API services
-│   │   │   ├── guards/      # Route guards
-│   │   │   ├── interceptors/# HTTP interceptors
-│   │   │   └── models/      # TypeScript interfaces
-│   │   ├── assets/
-│   │   └── environments/    # Environment configs
-│   └── package.json
-└── README.md
-```
