@@ -28,9 +28,8 @@ npm run seed               # 4. Insérer les données de test
 
 | Email | Password | Role |
 |-------|----------|------|
-| admin@bookstore.com | Password123! | ADMIN |
-| john.doe@example.com | Password123! | USER |
-| jane.smith@example.com | Password123! | USER |
+| admin@bookstore.com | admin123 | ADMIN |
+
 
 ## 🗄️ Entities (10)
 
@@ -47,18 +46,6 @@ npm run seed               # 4. Insérer les données de test
 
 **Relations**: UUID, timestamps, soft delete, CASCADE/RESTRICT appropriés
 
-## 👥 Modules à Développer (6 personnes)
-
-| Dev | Module | Tâches |
-|-----|--------|--------|
-| **Dev 1** | Auth | JWT Strategy, Guards, Login, Register |
-| **Dev 2** | Users | CRUD utilisateurs, ProfilComponent, Adresses |
-| **Dev 3** | Books | CRUD livres, Recherche, Upload images |
-| **Dev 4** | Categories | CRUD catégories, Liste par catégorie |
-| **Dev 5** | Cart | Ajouter/Supprimer, Quantités, Total |
-| **Dev 6** | Orders | Créer commande, Historique, Statuts |
-
-**Secondaires**: Reviews (Dev 1), Wishlist (Dev 2)
 
 ## 📝 Scripts Disponibles
 
@@ -102,19 +89,6 @@ src/
 └── main.ts            # Bootstrap (CORS, Swagger, Validation)
 ```
 
-## 🤝 Workflow Équipe
-
-1. Branche par module: `feature/auth`, `feature/books`, etc.
-2. **Ne jamais modifier les entities** sans accord
-3. DTOs pour validation (class-validator)
-4. Decorators Swagger (@ApiTags, @ApiOperation)
-5. Tests unitaires
-6. Pull Request + Review
-
-**Conventions**:
-- Entities: PascalCase (User, Book)
-- Endpoints: /api/resource (pluriel)
-- DTOs: CreateUserDto, UpdateBookDto
 
 ## 🐛 Troubleshooting
 

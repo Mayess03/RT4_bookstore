@@ -5,30 +5,20 @@ import * as bcrypt from 'bcrypt';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import {
-  User,
-  Book,
-  Category,
-  Order,
-  OrderItem,
-  Cart,
-  CartItem,
-  Review,
-  Wishlist,
-  Address,
-} from './database/entities';
+
 import { BooksModule } from './modules/books/books.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { CartModule } from './modules/cart/cart.module';
 import { CategoryModule } from './modules/category/category.module';
-import {OrdersModule } from './modules/orders/orders.module';
+import { OrdersModule } from './modules/orders/orders.module';
 import { StatsModule } from './modules/stats/stats.module';
-import { UsersService } from './modules/users/users.service';
-import { Role } from './common/enums';
 import { WishlistModule } from './modules/wishlist/wishlist.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
+
+import { UsersService } from './modules/users/users.service';
+import { Role } from './common/enums';
 
 @Module({
   imports: [
@@ -36,6 +26,7 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -46,22 +37,15 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [
-          User,
-          Book,
-          Category,
-          Order,
-          OrderItem,
-          Cart,
-          CartItem,
-          Review,
-          Wishlist,
-          Address,
-        ],
+
+       
+        autoLoadEntities: true,
+
         synchronize: configService.get('NODE_ENV') !== 'production',
         logging: configService.get('NODE_ENV') === 'development',
       }),
     }),
+
     BooksModule,
     AuthModule,
     UsersModule,
@@ -70,7 +54,6 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
     CategoryModule,
     OrdersModule,
     StatsModule,
-    CategoryModule,
     WishlistModule,
     ReviewsModule,
   ],
