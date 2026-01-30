@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -23,7 +23,7 @@ import { Book } from '../../../../models';
   templateUrl: './book-form-dialog.html',
   styleUrl: './book-form-dialog.css'
 })
-export class BookFormDialog implements OnInit {
+export class BookFormDialog {
   isEditMode = false;
   
   formData: {
@@ -52,9 +52,8 @@ export class BookFormDialog implements OnInit {
       book?: Book; 
       categories: Array<{ id: string; name: string }> 
     }
-  ) {}
-
-  ngOnInit(): void {
+  ) {
+    // Initialize form data based on edit mode
     if (this.data.book) {
       this.isEditMode = true;
       this.formData = {

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,6 +23,7 @@ import { AuthService } from '../../../shared/services/auth.service';
  * - Back navigation
  *
  * Used by: Dev 2 (Books module)
+ * Modern Angular 21: Uses inject() and constructor initialization
  */
 @Component({
   selector: 'app-book-detail',
@@ -39,7 +40,7 @@ import { AuthService } from '../../../shared/services/auth.service';
   templateUrl: './book-detail.component.html',
   styleUrl: './book-detail.component.css',
 })
-export class BookDetailComponent implements OnInit {
+export class BookDetailComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private booksService = inject(BooksService);
@@ -59,7 +60,8 @@ export class BookDetailComponent implements OnInit {
   readonly placeholderImage =
     'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2YwZjBmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBDb3ZlcjwvdGV4dD48L3N2Zz4=';
 
-  ngOnInit() {
+  constructor() {
+    // Load book data on component creation
     const bookId = this.route.snapshot.paramMap.get('id');
     if (bookId) {
       this.loadBook(bookId);

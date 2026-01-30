@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
@@ -37,7 +37,7 @@ import { Book } from '../../../models';
   templateUrl: './admin-books.html',
   styleUrl: './admin-books.css',
 })
-export class AdminBooks implements OnInit {
+export class AdminBooks {
   // Signals for reactive state
   books = signal<Book[]>([]);
   categories = signal<Array<{ id: string; name: string }>>([]);
@@ -62,9 +62,8 @@ export class AdminBooks implements OnInit {
     private booksService: BooksService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
-  ) {}
-
-  ngOnInit(): void {
+  ) {
+    // Initialize data on component creation
     this.loadCategories();
     this.loadBooks();
   }

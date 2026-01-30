@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,6 +26,7 @@ import { debounceTime, Subject } from 'rxjs';
  * - Error handling
  * 
  * Used by: Dev 2 (Books module)
+ * Modern Angular 21: Uses inject() and constructor initialization
  */
 @Component({
   selector: 'app-book-list',
@@ -45,7 +46,7 @@ import { debounceTime, Subject } from 'rxjs';
   templateUrl: './book-list.component.html',
   styleUrl: './book-list.component.css'
 })
-export class BookListComponent implements OnInit {
+export class BookListComponent {
   private booksService = inject(BooksService);
   private cartService = inject(CartService);
   private authService = inject(AuthService);
@@ -76,7 +77,8 @@ export class BookListComponent implements OnInit {
   // Cart loading state
   addingToCartBookId = signal<string | null>(null);
 
-  ngOnInit() {
+  constructor() {
+    // Initialize data on component creation
     this.loadCategories();
     this.loadBooks();
     
