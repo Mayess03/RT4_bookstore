@@ -1,6 +1,6 @@
 # RT4 Bookstore 📚
 
-A full-stack online bookstore application built with NestJS, TypeORM/PostgreSQL, and Angular 21, featuring JWT-based authentication, role-based access control, real-time stats, and admin dashboards.
+A full-stack online bookstore application built with NestJS, TypeORM/PostgreSQL, and Angular 21, featuring JWT-based authentication, role-based access control, and admin dashboards.
 
 ---
 
@@ -9,9 +9,8 @@ A full-stack online bookstore application built with NestJS, TypeORM/PostgreSQL,
 RT4 Bookstore is a full-stack bookstore application:
 
 - **Backend**: NestJS API with PostgreSQL, authentication (JWT), role-based access (Admin/User), real-time notifications via Socket.IO, and seed/test tooling.
-- **Frontend**: Angular SPA with Tailwind CSS & Angular Material, consuming backend APIs and real-time events.
+- **Frontend**: Angular SPA with Tailwind CSS & Angular Material, consuming backend APIs.
 - **Fully functional admin dashboard** with real-time order notifications.
-- Ready for local development or Docker-based deployment.
 
 ---
 
@@ -24,7 +23,7 @@ RT4 Bookstore is a full-stack bookstore application:
 - ✅ **Cart & wishlist management**.
 - ✅ **Order processing & checkout**.
 - ✅ **Reviews management**.
-- ✅ **Real-time stats & order notifications** (Socket.IO).
+- ✅ **Real-time order notifications** (Socket.IO).
 - ✅ **Admin dashboard** with user/book/order management.
 
 ---
@@ -34,7 +33,6 @@ RT4 Bookstore is a full-stack bookstore application:
 - **Backend**: NestJS, TypeScript, TypeORM, PostgreSQL
 - **Frontend**: Angular 21, Tailwind CSS, Angular Material
 - **Real-time**: Socket.IO
-- **Testing**: Jest, Angular Testing Library
 - **Dev tools**: Docker, Docker Compose, Swagger
 
 ---
@@ -79,12 +77,6 @@ npm install
    npm run build && npm run start:prod
    ```
 
-5. **Seed sample data (optional)**:
-
-   ```bash
-   npm run seed
-   ```
-
 - **Swagger API docs**: http://localhost:3000/api/docs
 - **API prefix**: `/api`
 
@@ -100,7 +92,7 @@ npm install
 2. **Start dev server**:
 
    ```bash
-   npm run start
+   ng serve
    ```
 
 3. **Open**: http://localhost:4200
@@ -190,11 +182,3 @@ services:
 volumes:
   postgres_data:
 ```
-
-Run: `docker-compose up -d`
-
----
-
-Full Swagger docs available at `/api/docs`.
-
----
