@@ -95,7 +95,6 @@ export class AdminBooks {
         this.isLoading.set(false);
       },
       error: (error) => {
-        console.error('Error loading books:', error);
         this.snackBar.open(error.error?.message || 'Failed to load books', 'Close', { duration: 3000 });
         this.isLoading.set(false);
       }
@@ -108,7 +107,6 @@ export class AdminBooks {
         this.categories.set(categories);
       },
       error: (error) => {
-        console.error('Error loading categories:', error);
         this.snackBar.open('Failed to load categories', 'Close', { duration: 3000 });
       }
     });
@@ -169,7 +167,6 @@ export class AdminBooks {
         this.loadBooks();
       },
       error: (error) => {
-        console.error('Error creating book:', error);
         this.snackBar.open(error.error?.message || 'Failed to create book', 'Close', { duration: 3000 });
         this.isLoading.set(false);
       }
@@ -185,7 +182,6 @@ export class AdminBooks {
         this.loadBooks();
       },
       error: (error) => {
-        console.error('Error updating book:', error);
         this.snackBar.open(error.error?.message || 'Failed to update book', 'Close', { duration: 3000 });
         this.isLoading.set(false);
       }
@@ -202,7 +198,6 @@ export class AdminBooks {
           this.loadBooks();
         },
         error: (error) => {
-          console.error('Error deleting book:', error);
           this.snackBar.open(error.error?.message || 'Failed to delete book', 'Close', { duration: 3000 });
           this.isLoading.set(false);
         }
@@ -219,7 +214,6 @@ export class AdminBooks {
         this.loadBooks();
       },
       error: (error) => {
-        console.error('Error toggling book status:', error);
         this.snackBar.open('Failed to update book status', 'Close', { duration: 3000 });
       }
     });
@@ -242,7 +236,6 @@ export class AdminBooks {
           this.loadBooks();
         },
         error: (error) => {
-          console.error('Error updating stock:', error);
           this.snackBar.open('Failed to update stock', 'Close', { duration: 3000 });
         }
       });

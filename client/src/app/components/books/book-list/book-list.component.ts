@@ -104,8 +104,8 @@ export class BookListComponent {
       next: (categories) => {
         this.categories.set(categories);
       },
-      error: (err) => {
-        console.error('Failed to load categories:', err);
+      error: () => {
+        // Silently fail - categories are optional for filtering
       },
     });
   }
@@ -151,8 +151,7 @@ export class BookListComponent {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       },
-      error: (err) => {
-        console.error('❌ Error loading books:', err);
+      error: () => {
         this.error.set('Failed to load books. Please try again.');
         this.loading.set(false);
       },
@@ -266,7 +265,6 @@ export class BookListComponent {
         },
         error: (error) => {
           this.addingToCartBookId.set(null);
-          console.error('Error adding to cart:', error);
           const errorMessage = error?.error?.message || 'Failed to add to cart';
           this.snackBar.open(errorMessage, 'Close', {
             duration: 5000,

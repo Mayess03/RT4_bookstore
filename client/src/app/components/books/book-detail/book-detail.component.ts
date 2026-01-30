@@ -90,8 +90,7 @@ export class BookDetailComponent {
         this.book.set(book);
         this.loading.set(false);
       },
-      error: (err) => {
-        console.error('Failed to load book:', err);
+      error: () => {
         this.error.set('Failed to load book details. Please try again.');
         this.loading.set(false);
       },
@@ -187,7 +186,6 @@ export class BookDetailComponent {
         },
         error: (error) => {
           this.isAddingToCart.set(false);
-          console.error('Error adding to cart:', error);
           const errorMessage = error?.error?.message || 'Failed to add to cart. Please try again.';
           this.snackBar.open(errorMessage, 'Close', {
             duration: 5000,
