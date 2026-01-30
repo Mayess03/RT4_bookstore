@@ -71,7 +71,7 @@ confirmOrder() {
 
   this.ordersService.createOrder(user.id, dto).subscribe({
     next: () => {
-      //alert('Order created successfully!');
+      
       this.router.navigate(['/orders']);
     },
     error: (err) => {
