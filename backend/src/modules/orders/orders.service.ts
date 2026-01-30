@@ -26,12 +26,12 @@ export class OrdersService {
 
     @InjectRepository(OrderItem)
     private readonly orderItemRepo: Repository<OrderItem>,
-    private readonly cartService: CartService,   // ✅
-    private readonly booksService: BooksService, // ✅
+    private readonly cartService: CartService,   
+    private readonly booksService: BooksService, 
 
   ) { }
   async createOrder(userId: string, dto: CreateOrderDto): Promise<Order> {
-    // 1️⃣ récupérer panier
+    
     const cart = await this.cartService.getCart(userId);
 
     if (!cart || cart.items.length === 0) {
@@ -40,7 +40,7 @@ export class OrdersService {
 
     let totalPrice = 0;
 
-    // 2️⃣ créer commande
+   
     const order = this.orderRepo.create({
       userId,
       status: OrderStatus.PENDING,
@@ -53,7 +53,7 @@ export class OrdersService {
 
     const savedOrder = await this.orderRepo.save(order);
 
-    // 3️⃣ items
+    
     const orderItems: OrderItem[] = [];
 
     for (const item of cart.items) {
@@ -84,7 +84,7 @@ export class OrdersService {
     savedOrder.totalPrice = totalPrice;
     await this.orderRepo.save(savedOrder);
 
-    // 4️⃣ vider panier
+    //vider le panier 
     await this.cartService.clearCart(userId);
     this.ordersGateway.newOrder(savedOrder);
 
@@ -93,51 +93,10 @@ export class OrdersService {
 
 
 
-  // ================= USER =================
-
-  // ORDER-01
-  /* async createOrder(userId: string, dto: CreateOrderDto): Promise<Order> {
-     // 🔴 PANIER MOCK
-     const cartItems = [
-       { bookId: '3fa85f64-5717-4562-b3fc-2c963f66afa6', quantity: 2, unitPrice: 30 },
-       { bookId: '550e8400-e29b-41d4-a716-446655440000', quantity: 1, unitPrice: 50 },
-     ];
- 
-     const totalPrice = cartItems.reduce(
- 
-       (sum, i) => sum + i.quantity * i.unitPrice,
-       0,
-     );
- 
-     const order = this.orderRepo.create({
-       userId,
-       totalPrice,
-       status: OrderStatus.PENDING,
-       shippingAddress: dto.shippingAddress,
-       shippingCity: dto.shippingCity,
-       shippingZipCode: dto.shippingZipCode,
-       phone: dto.phone,
-     });
- 
-     const savedOrder = await this.orderRepo.save(order);
- 
-     const items = cartItems.map((item) =>
-       this.orderItemRepo.create({
-         order: savedOrder,
-         bookId: item.bookId,
-         quantity: item.quantity,
-         unitPrice: item.unitPrice,
-         subtotal: item.quantity * item.unitPrice,
-       }),
-     );
- 
-     await this.orderItemRepo.save(items);
-     return savedOrder;
-   }
-   */
+  
 
 
-  // ORDER-04
+  
   async confirmOrder(id: string, userId: string): Promise<Order> {
     const order = await this.findUserOrder(id, userId);
 
@@ -149,7 +108,7 @@ export class OrdersService {
     return this.orderRepo.save(order);
   }
 
-  // ORDER-05
+  
   async findMyOrders(userId: string): Promise<Order[]> {
     return this.orderRepo.find({
       where: { userId },
@@ -158,7 +117,7 @@ export class OrdersService {
     });
   }
 
-  // ORDER-06
+  
   async findUserOrder(id: string, userId: string): Promise<Order> {
     const order = await this.orderRepo.findOne({
       where: { id },
@@ -172,13 +131,13 @@ export class OrdersService {
     return order;
   }
 
-  // ORDER-07
+  
   async getStatus(id: string, userId: string): Promise<OrderStatus> {
     const order = await this.findUserOrder(id, userId);
     return order.status;
   }
 
-  // ORDER-08
+  
   async cancelOrder(id: string, userId: string): Promise<Order> {
     const order = await this.findUserOrder(id, userId);
 
@@ -192,7 +151,7 @@ export class OrdersService {
 
   // ================= ADMIN =================
 
-  // ORDER-10 / ORDER-11
+  
   async findAll(
     status?: OrderStatus,
     userId?: string,
@@ -212,7 +171,7 @@ export class OrdersService {
     return query.getMany();
   }
 
-  // ORDER-12
+ 
   async findOneAdmin(id: string): Promise<Order> {
     const order = await this.orderRepo.findOne({
       where: { id },
@@ -223,7 +182,7 @@ export class OrdersService {
     return order;
   }
 
-  // ORDER-13
+  
   async updateStatus(
     id: string,
     status: OrderStatus,
@@ -233,12 +192,12 @@ export class OrdersService {
     return this.orderRepo.save(order);
   }
 
-  // ORDER-14
+  
   async refundOrder(id: string): Promise<Order> {
     const order = await this.findOneAdmin(id);
 
     order.status = OrderStatus.CANCELLED;
-    // 💸 remboursement simulé ici
+    // remboursement simulé ici
     return this.orderRepo.save(order);
   }
 }
