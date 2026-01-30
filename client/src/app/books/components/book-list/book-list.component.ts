@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,7 +14,7 @@ import { AuthService } from '../../../shared/services/auth.service';
 import { Book } from '../../../shared/models';
 import { BookCardComponent } from '../../../shared/components/book-card/book-card.component';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 /**
  * Book List Component
@@ -83,8 +84,11 @@ export class BookListComponent {
     this.loadBooks();
     
     // Debounce search input - wait 750ms after user stops typing
+    //  takeUntilDestroyed auto-cleans up subscription
     this.searchSubject.pipe(
-      debounceTime(750)
+      debounceTime(750),
+      distinctUntilChanged(), // Skip if value hasn't changed
+      takeUntilDestroyed()    // Auto-cleanup when component destroyed
     ).subscribe(searchValue => {
       // Trim whitespace to avoid strict matching issues
       const trimmedSearch = searchValue.trim();
