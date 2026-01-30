@@ -1,58 +1,66 @@
-<mat-toolbar color="primary" class="navbar">
-  <!-- Logo/Brand -->
-  <a routerLink="/" class="brand">
-    <mat-icon>menu_book</mat-icon>
-    <span>RT4 Bookstore</span>
-  </a>
+@if (!isAdmin()) {
+  <nav class="user-navbar">
+    <div class="navbar-container">
+      
+      <!-- LEFT: Brand -->
+      <div class="navbar-left">
+        <a routerLink="/" class="brand">
+          RT4 Bookstore
+        </a>
+      </div>
 
-  <span class="spacer"></span>
+      <!-- CENTER: Pages -->
+      <div class="navbar-center">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-link">
+          <mat-icon>home</mat-icon>
+          Home
+        </a>
+        <a routerLink="/books" routerLinkActive="active" class="nav-link">
+          <mat-icon>book</mat-icon>
+          Books
+        </a>
+        @if (isLoggedIn()) {
+          <a routerLink="/cart" routerLinkActive="active" class="nav-link">
+            <mat-icon>shopping_cart</mat-icon>
+            Cart
+          </a>
+          <a routerLink="/orders" routerLinkActive="active" class="nav-link">
+            <mat-icon>receipt</mat-icon>
+            Orders
+          </a>
+          <a routerLink="/wishlist" routerLinkActive="active" class="nav-link">
+            <mat-icon>favorite</mat-icon>
+            Wishlist
+          </a>
+          <a routerLink="/profile" routerLinkActive="active" class="nav-link">
+            <mat-icon>person</mat-icon>
+            Profile
+          </a>
+        }
+      </div>
 
-  <!-- Navigation Links -->
-  <nav class="nav-links">
-    <button mat-button routerLink="/">
-      <mat-icon>home</mat-icon>
-      Home
-    </button>
+      <!-- RIGHT: Auth buttons -->
+      <div class="navbar-right">
+        @if (!isLoggedIn()) {
+          <button class="auth-btn register-btn" routerLink="/auth/register">
+            Register
+          </button>
+          <button class="auth-btn login-btn" routerLink="/auth/login">
+            Login
+          </button>
+        }
+        @if (isLoggedIn()) {
+          <button class="auth-btn logout-btn" (click)="onLogout()">
+            Logout
+          </button>
+        }
+      </div>
 
-    <button mat-button routerLink="/books">
-      <mat-icon>book</mat-icon>
-      Books
-    </button>
-
-    @if (isLoggedIn()) {
-      <button mat-button routerLink="/cart">
-        <mat-icon>shopping_cart</mat-icon>
-        Cart
-      </button>
-
-      <button mat-button routerLink="/orders">
-        <mat-icon>receipt</mat-icon>
-        Orders
-      </button>
-
-      <button mat-button routerLink="/profile">
-        <mat-icon>person</mat-icon>
-        Profile
-      </button>
-
-      <button mat-button routerLink="/wishlist">
-        <mat-icon>favorite</mat-icon>
-        Wishlist
-      </button>
-
-      <button mat-button (click)="onLogout()" class="logout-btn">
-        <mat-icon>logout</mat-icon>
-        Logout
-      </button>
-    }
-
-    @if (!isLoggedIn()) {
-      <button mat-button routerLink="/auth/login">
-        <mat-icon>login</mat-icon>
-        Login
-      </button>
-
-      <button mat-raised-button color="accent" routerLink="/auth/register">Register</button>
-    }
+    </div>
   </nav>
-</mat-toolbar>
+}
+
+
+@if (isAdmin()) {
+  <app-admin-navbar></app-admin-navbar>
+}

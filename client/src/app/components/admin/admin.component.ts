@@ -7,7 +7,7 @@ import { Order } from '../../models';
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [RouterOutlet, AdminNavbarComponent],
+  imports: [RouterOutlet],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
 })

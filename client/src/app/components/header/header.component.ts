@@ -1,16 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { AdminNavbarComponent } from '../admin/admin-navbar/admin-navbar.component';
 
-/**
- * Header Component (Smart Component)
- * 
- * Purpose: Navigation bar shown on every page
- * Features: Auth-aware navigation, responsive design
- */
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -18,7 +13,8 @@ import { AuthService } from '../../services/auth.service';
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
-    RouterLink
+    RouterModule,
+    AdminNavbarComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
@@ -26,25 +22,27 @@ import { AuthService } from '../../services/auth.service';
 export class HeaderComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
-  
-  // Signal: reactive authentication state (auto-updates when auth changes)
+  isAdmin = this.authService.isAdmin;
   isLoggedIn = this.authService.isLoggedIn;
-  
+  constructor() {
+    // Log initial value
+    console.log('Initial isAdmin:', this.isAdmin());
+    
+    // React to changes
+    effect(() => {
+      console.log('isAdmin updated:', this.isAdmin());
+    });
+  }
   onLogout() {
     console.log('Logout clicked, isLoggedIn before:', this.isLoggedIn());
-    
-    // Clear state immediately (clearTokens also sets currentUserSignal to null)
     this.authService.clearTokens();
-    
-    console.log('Tokens cleared, isLoggedIn after:', this.isLoggedIn());
-    
-    // Try to call API but ignore errors
+
+    // Call logout API but ignore errors (user may be already logged out server-side)
     this.authService.logout().subscribe({
       next: () => console.log('Logout API success'),
       error: (err) => console.log('Logout API failed (ignored):', err.status)
     });
     
-    // Navigate to home
     this.router.navigate(['/']);
   }
 }

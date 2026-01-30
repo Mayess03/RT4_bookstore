@@ -1,7 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
-import { AuthResponse, LoginDto, RegisterDto, User } from '../models/user.model';
+import { AuthResponse, LoginDto, RegisterDto, Role, User } from '../models/user.model';
 
 
 @Injectable({ providedIn: 'root' })
@@ -15,6 +15,8 @@ export class AuthService extends ApiService {
   // Computed signals 
   currentUser = computed(() => this.currentUserSignal());
   isLoggedIn = computed(() => !!this.currentUserSignal());
+  isAdmin = computed(() => this.currentUserSignal()?.role?.toLowerCase() === 'admin');
+
 
   constructor() {
     super();

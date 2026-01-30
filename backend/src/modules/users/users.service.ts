@@ -36,9 +36,10 @@ export class UsersService {
     });
   }
  findAll(): Promise<User[]> {
-     return this.userRepository.find();
-}
-
+    return this.userRepository.find({
+      where: { role: Role.USER },
+    });
+  }
 
   
   async create(createUserDto: CreateUserDto): Promise<User> {

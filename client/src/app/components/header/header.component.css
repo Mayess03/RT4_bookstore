@@ -1,70 +1,164 @@
-.navbar {
+/* ===================== NAVBAR ===================== */
+.user-navbar {
   position: sticky;
   top: 0;
+  left: 0;
+  width: 100%;
+  height: 72px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
 }
 
-.brand {
+/* Navbar container */
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100%;
+}
+
+/* LEFT: Brand */
+.navbar-left .brand {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #B45309;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.navbar-left .brand mat-icon {
+  font-size: 1.75rem;
+}
+
+/* CENTER: Pages */
+.navbar-center {
+  display: flex;
+  flex: 1;
+  justify-content: center; /* center links */
+  gap: 2rem;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 500;
+  color: #6c757d; /* default gray */
+  text-decoration: none;
+  transition: color 0.2s ease, border-bottom 0.2s ease;
+}
+
+.nav-link.active,
+.nav-link:hover {
+  color: #B45309; 
+  border-bottom: 2px solid #B45309;
+  padding-bottom: 4px;
+}
+
+.nav-link mat-icon {
+  font-size: 1.2rem;
+}
+
+/* RIGHT: Auth buttons */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.auth-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
   text-decoration: none;
   color: white;
-  font-size: 1.25rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
 }
 
-.brand:hover {
-  opacity: 0.9;
+.auth-btn mat-icon {
+  font-size: 1.2rem;
 }
 
-.brand mat-icon {
-  font-size: 1.75rem;
-  width: 1.75rem;
-  height: 1.75rem;
-}
-
-.spacer {
-  flex: 1 1 auto;
-}
-
-.nav-links {
+/* ===================== AUTH BUTTONS ===================== */
+.auth-btn {
   display: flex;
-  gap: 0.5rem;
   align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  height: 40px; /* fixed height */
+  box-sizing: border-box; /* include border in size */
 }
 
-.nav-links button {
-  font-weight: 500;
+/* Login button (solid) */
+.login-btn {
+  background-color: #B45309;
+  color: white;
+  border: 2px solid #B45309; /* same thickness as register */
 }
 
-.nav-links button mat-icon {
-  margin-right: 0.25rem;
+.login-btn:hover {
+  background-color: #c7702d;
+  border-color: #c7702d;
 }
 
+/* Register button (outline) */
+.register-btn {
+  background-color: transparent;
+  color: #B45309;
+  border: 2px solid #B45309;
+}
+
+.register-btn:hover {
+  background-color: #B45309;
+  color: white;
+  border-color: #B45309;
+}
+
+/* Logout button (solid) */
 .logout-btn {
-  margin-left: 1rem;
+  background-color: #B45309;
+  color: white;
+  border: 2px solid #B45309;
 }
+
+.logout-btn:hover {
+  background-color: #c7702d;
+  border-color: #c7702d;
+}
+
+
 
 /* Responsive */
 @media (max-width: 768px) {
-  .brand span {
+  .navbar-center {
+    gap: 1rem;
+  }
+
+  .nav-link span {
+    display: none; /* hide text if needed for small screens */
+  }
+
+  .auth-btn span {
     display: none;
-  }
-  
-  .nav-links button span {
-    display: none;
-  }
-  
-  .nav-links button mat-icon {
-    margin-right: 0;
-  }
-  
-  .nav-links {
-    gap: 0.25rem;
   }
 }
-

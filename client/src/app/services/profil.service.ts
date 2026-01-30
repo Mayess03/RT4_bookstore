@@ -14,6 +14,7 @@ export class ProfilService extends ApiService {
         ...user,
         firstName: (user as any).first_name ?? user.firstName,
         lastName: (user as any).last_name ?? user.lastName,
+        role: (user as any).role ?? 'USER',
       }))
     );
   }

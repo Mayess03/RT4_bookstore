@@ -6,6 +6,11 @@
  * 
  * Why? Type safety - prevents bugs by catching errors before runtime
  */
+export enum Role {
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+}
+
 
 export interface User {
   id: string;              // UUID from database
