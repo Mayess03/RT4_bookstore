@@ -1,12 +1,13 @@
 import { Component, inject, computed, effect } from '@angular/core';
+import { CommonModule, CurrencyPipe, AsyncPipe } from '@angular/common';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+
 import { CartService } from '../../../services/cart.service';
 import { OrdersService } from '../../../services/orders.service';
-import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { CommonModule, CurrencyPipe, AsyncPipe } from '@angular/common';
-import { Observable } from 'rxjs';
 import { Cart } from '../../../models';
-import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-checkout',
@@ -41,7 +42,6 @@ export class CheckoutComponent {
         return;
       }
 
-     
       this.cartObs = this.cartService.getCart(id);
       this.cart$ = this.cartService.getCart(id);
     });
