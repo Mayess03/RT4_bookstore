@@ -2,32 +2,27 @@
   <h1 class="checkout-title">Checkout</h1>
 
   <div class="checkout-grid">
-   
+    <!-- ITEMS -->
     <div class="checkout-card">
       <h2>Order Items</h2>
 
-      @if (cartObs | async; as cart) {
+      @if (cart(); as cart) {
         <ul class="checkout-items">
           @for (item of cart.items; track item.bookId) {
             <li class="checkout-item">
-              <div class="item-info">
-                <strong>Book</strong>
-                <strong>{{ item.book?.title }}</strong>
-              </div>
-              <div class="item-qty">
-                × {{ item.quantity }}
-              </div>
+              <strong>{{ item.book?.title }}</strong>
+              <span>× {{ item.quantity }}</span>
             </li>
           }
         </ul>
       }
     </div>
 
-    
+    <!-- SUMMARY -->
     <div class="checkout-card summary-card">
       <h2>Order Summary</h2>
 
-      @if (cartObs | async; as cart) {
+      @if (cart(); as cart) {
         <div class="summary-row">
           <span>Items</span>
           <span>{{ cart.items.length }}</span>
@@ -35,14 +30,14 @@
 
         <div class="summary-row total">
           <span>Total</span>
-<span>{{ getCartTotal(cart) | currency:'EUR' }}</span>
+          <span>{{ total() | currency:'EUR' }}</span>
         </div>
       }
-
-      
     </div>
   </div>
-   <div class="checkout-card form-card">
+
+  <!-- SHIPPING FORM -->
+  <div class="checkout-card form-card">
     <h2>Shipping Information</h2>
 
     <form [formGroup]="checkoutForm" (ngSubmit)="confirmOrder()" class="checkout-form">
