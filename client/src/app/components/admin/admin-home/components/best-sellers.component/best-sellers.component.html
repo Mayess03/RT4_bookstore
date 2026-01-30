@@ -1,0 +1,18 @@
+<div class="best-sellers-container">
+  <h5>
+    <i class="fa-solid fa-star"></i>
+    Top 5 Best Sellers
+  </h5>
+
+  <div class="book-list">
+    @for (book of bestSellers(); track book.id) {
+      <div class="book-card">
+        <i class="fa-solid fa-book"></i>
+        <span class="book-title">{{ book.title }}</span>
+        <span class="book-sales">{{ book.sales }}</span>
+      </div>
+    } @empty {
+      <div class="no-books">No books available</div>
+    }
+  </div>
+</div>

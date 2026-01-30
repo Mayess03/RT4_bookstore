@@ -1,0 +1,38 @@
+<div
+  class="out-of-stock-container"
+  [ngClass]="{ 'success-state': outOfStockCount() === 0 }"
+>
+  <h5>
+    <i
+      class="fa-solid"
+      [class]="outOfStockCount() === 0
+        ? 'fa-circle-check success-icon'
+        : 'fa-triangle-exclamation warning-icon'">
+    </i>
+
+    @if (outOfStockCount() === 0) {
+      Stock Status
+    } @else {
+      Out of Stock Books
+    }
+  </h5>
+  <p
+    class="status-text"
+    [class.success-text]="outOfStockCount() === 0"
+  >
+    @if (outOfStockCount() === 0) {
+      No books out of stock
+    } @else {
+      {{ outOfStockCount() }} books out of stock
+    }
+  </p>
+  @if (outOfStockCount() > 0) {
+    <button
+      class="show-more-btn"
+      [disabled]="outOfStockCount() === 0"
+      (click)="goToBooks()"
+    >
+      Show More
+    </button>
+  }
+</div>

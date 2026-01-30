@@ -1,0 +1,25 @@
+.details-card {
+  background-color: #f8f9fa;
+  border-left: 4px solid #ffc107;
+  padding: 1rem;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.details-card p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.back-btn {
+  margin-top: 1rem;
+  align-self: flex-start;
+  background: #ffc107;
+  border: none;
+  color: #212529;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+}

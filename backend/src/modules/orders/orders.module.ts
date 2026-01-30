@@ -8,14 +8,17 @@ import { Order } from '../../database/entities/order.entity';
 import { OrderItem } from '../../database/entities/order-item.entity';
 import { CartModule } from '../cart/cart.module';
 import { BooksModule } from '../books/books.module';
+import { OrdersGateway } from '../stats/orders.gateway';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Order, OrderItem]),
     CartModule, // ✅
-    BooksModule, // ✅ (si stock/prix)
+    BooksModule, // ✅ (si stock/prix)  
   ],
   controllers: [OrdersController],
-  providers: [OrdersService],
+  providers: [OrdersService,
+    OrdersGateway
+  ],
   exports: [OrdersService],
 })
 export class OrdersModule {}

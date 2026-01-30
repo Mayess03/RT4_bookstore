@@ -1,0 +1,53 @@
+<div class="best-sellers-container">
+  <h5><i class="fa fa-users"></i> Users</h5>
+
+  @if (loading()) {
+    <p class="info-text">Chargement...</p>
+  }
+
+  @if (error()) {
+    <p class="error-text">{{ error() }}</p>
+  }
+
+  @if (!loading() && !error()) {
+
+    <div class="book-list">
+
+      @for (u of users(); track u.id) {
+        <div class="book-card">
+
+          <div class="user-left">
+            <i class="fa fa-user"></i>
+
+            <div class="user-text">
+              <div class="book-title" [routerLink]="['/admin/users', u.id]" style="cursor: pointer;">
+  {{ u.firstName }} {{ u.lastName }}
+  <span class="role-badge">{{ u.role }}</span>
+</div>
+
+
+              <div class="muted">{{ u.email }}</div>
+              <div class="muted small">ID: {{ u.id }}</div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <span class="status" [class.inactive]="!u.isActive">
+              {{ u.isActive ? 'active' : 'blocked' }}
+            </span>
+
+            <button class="delete-btn" (click)="deleteUser(u)">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+
+        </div>
+      }
+
+      @if (users().length === 0) {
+        <p class="info-text">Aucun utilisateur.</p>
+      }
+
+    </div>
+  }
+</div>

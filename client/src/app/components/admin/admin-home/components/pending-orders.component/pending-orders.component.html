@@ -1,0 +1,22 @@
+<div class="pending-orders-container">
+  <h5>
+    <i class="fa-solid fa-hourglass-half pending-icon"></i>
+    Pending Orders
+  </h5>
+
+  <p class="status-text">
+    @if (pendingCount() > 1) {
+      {{ pendingCount() }} orders pending
+    } @else if (pendingCount() === 1) {
+      1 order pending
+    } @else {
+      No orders pending
+    }
+  </p>
+
+  @if (pendingCount() > 0) {
+    <button class="show-more-btn" (click)="goToOrders()">
+      Show More
+    </button>
+  }
+</div>

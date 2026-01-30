@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Wishlist } from 'src/database/entities';
-import { Book } from 'src/database/entities';
+import { Wishlist } from '../../database/entities';
+import { Book } from '../../database/entities';
 
 @Injectable()
 export class WishlistService {

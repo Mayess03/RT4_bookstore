@@ -1,0 +1,77 @@
+<div class="space-y-6">
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="flex justify-center py-8">
+      <p class="text-stone-600">Loading reviews...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error() && !loading()) {
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+      <p class="text-red-700 text-sm">{{ error() }}</p>
+    </div>
+  }
+
+  <!-- No Reviews State -->
+  @if (!loading() && reviews().length === 0) {
+    <div class="text-center py-8">
+      <mat-icon class="text-stone-400 text-4xl mb-2">rate_review</mat-icon>
+      <p class="text-stone-600">No reviews yet. Be the first to review this book!</p>
+    </div>
+  }
+
+  <!-- Reviews List -->
+  @if (!loading() && reviews().length > 0) {
+    <div class="space-y-4">
+      @for (review of reviews(); track review.id) {
+        <div class="border border-stone-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+          <!-- Review Header -->
+          <div class="flex justify-between items-start mb-3">
+            <div>
+              <!-- Rating Stars -->
+              <div class="flex items-center gap-2 mb-2">
+                <div class="flex gap-1">
+                  @for (filled of getStars(review.rating); track $index) {
+                    @if (filled) {
+                      <mat-icon class="text-yellow-400 text-sm">star</mat-icon>
+                    } @else {
+                      <mat-icon class="text-stone-300 text-sm">star_border</mat-icon>
+                    }
+                  }
+                </div>
+                <span class="font-semibold text-stone-900">{{ review.rating }}/5</span>
+              </div>
+
+              <!-- User Info -->
+              <p class="text-sm text-stone-600">
+                @if (review.user?.firstName) {
+                  {{ review.user?.firstName }} {{ review.user?.lastName }}
+                } @else {
+                  Anonymous User
+                }
+                <span class="text-stone-400"> • {{ review.createdAt | date: 'short' }} </span>
+              </p>
+            </div>
+
+            <!-- Delete Button (if owner) -->
+            @if (isOwner(review.userId)) {
+              <button
+                (click)="deleteReview(review)"
+                class="p-2 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                title="Delete review"
+              >
+                <mat-icon class="text-lg">delete</mat-icon>
+              </button>
+            }
+          </div>
+
+          <!-- Comment -->
+          @if (review.comment) {
+            <p class="text-stone-700 leading-relaxed">{{ review.comment }}</p>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,10 @@
+<app-stats-boxes [stats]="stats()" />
+<div class="dashboard-row">
+  <!-- Analytics Chart -->
+  <app-analytics-chart [selectedPeriod]="selectedPeriod"></app-analytics-chart>
+  <!-- Pending Orders -->
+  <app-pending-orders></app-pending-orders>
+  <!-- Out of Stock Books -->
+  <app-out-of-stock-books></app-out-of-stock-books>
+  <app-best-sellers></app-best-sellers>
+</div>
