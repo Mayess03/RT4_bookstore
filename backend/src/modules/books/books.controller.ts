@@ -106,8 +106,6 @@ export class BooksController {
   }
 
   // ==================== ENDPOINTS ADMIN ====================
-  // TODO: Ajouter @UseGuards(JwtAuthGuard, RolesGuard) et @Roles(Role.ADMIN)
-  // après implémentation du module Auth
 
   /**
    * BOOK-10: Ajouter un nouveau livre (ADMIN)
