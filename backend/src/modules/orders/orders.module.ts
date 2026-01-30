@@ -12,8 +12,8 @@ import { OrdersGateway } from '../stats/orders.gateway';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Order, OrderItem]),
-    CartModule, // ✅
-    BooksModule, // ✅ (si stock/prix)  
+    CartModule,
+    BooksModule,  
   ],
   controllers: [OrdersController],
   providers: [OrdersService,
