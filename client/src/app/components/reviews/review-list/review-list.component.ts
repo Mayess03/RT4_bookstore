@@ -35,6 +35,14 @@ export class ReviewListComponent {
       if (!id) return;
       this.loadReviews(id);
     });
+
+    effect(() => {
+      this.reviewsService.reviewsChanged$.subscribe((bookId) => {
+        if (bookId === this.bookId()) {
+          this.loadReviews(bookId);
+        }
+      });
+    });
   }
 
   private loadReviews(id: string) {

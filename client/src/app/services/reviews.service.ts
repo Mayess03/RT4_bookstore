@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ApiService } from './api.service';
 import { Review, CreateReviewDto, UpdateReviewDto } from '../models/review.model';
 
@@ -7,6 +7,9 @@ import { Review, CreateReviewDto, UpdateReviewDto } from '../models/review.model
   providedIn: 'root',
 })
 export class ReviewsService extends ApiService {
+  private reviewsChanged = new Subject<string>();
+  public reviewsChanged$ = this.reviewsChanged.asObservable();
+
   getReviewsByBook(bookId: string): Observable<Review[]> {
     return this.http.get<Review[]>(`${this.apiUrl}/reviews/book/${bookId}`);
   }
@@ -21,5 +24,9 @@ export class ReviewsService extends ApiService {
 
   removeReview(bookId: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/reviews/${bookId}`);
+  }
+
+  notifyReviewsChanged(bookId: string) {
+    this.reviewsChanged.next(bookId);
   }
 }

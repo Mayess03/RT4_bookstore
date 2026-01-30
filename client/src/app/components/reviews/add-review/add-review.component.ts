@@ -144,6 +144,7 @@ export class AddReviewComponent {
           },
         );
         this.reviewAdded.emit();
+        this.reviewsService.notifyReviewsChanged(bookId);
         if (!this.isUpdating()) this.resetForm();
       },
       error: (err) => {
@@ -188,6 +189,8 @@ export class AddReviewComponent {
           panelClass: ['success-snackbar'],
         });
         this.reviewAdded.emit();
+        // Notify that reviews have changed
+        this.reviewsService.notifyReviewsChanged(bookId);
       },
       error: () => {
         this.submitting.set(false);
