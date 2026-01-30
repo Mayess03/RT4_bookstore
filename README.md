@@ -198,9 +198,3 @@ Run: `docker-compose up -d`
 Full Swagger docs available at `/api/docs`.
 
 ---
-
-## Frontend Overview 🎨
-
-- Responsive design with Tailwind + Angular Material.
-- Admin vs User views.
-- Auth-aware navigation and route guards.
