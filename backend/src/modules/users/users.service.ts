@@ -23,7 +23,7 @@ export class UsersService {
     
   ) {}
  
-  // FIND METHODS
+
   findByEmail(email: string): Promise<User | null> {
     return this.userRepository.findOne({
       where: { email },
@@ -40,7 +40,7 @@ export class UsersService {
 }
 
 
-  // CREATE USER (SAVE DIRECT)
+  
   async create(createUserDto: CreateUserDto): Promise<User> {
     return this.userRepository.save({
       email: createUserDto.email,
@@ -52,7 +52,6 @@ export class UsersService {
     });
   }
 
-  // USER-01 : UPDATE PROFILE (PRELOAD)
   async updateProfile(
     userId: string,
     updateUserDto: UpdateUserDto,
@@ -69,7 +68,6 @@ export class UsersService {
     return this.userRepository.save(user);
   }
   
-  // USER-02 : CHANGE / RESET PASSWORD (PRELOAD)
   async changePassword(
     userId: string,
     dto: ChangePasswordDto,
@@ -101,8 +99,7 @@ throw new UnauthorizedException('Wrong password');      }
     await this.userRepository.save(updatedUser);
   }
 
-  // USER-04 : ORDER HISTORY (STUB)
-  // USER-04 : ORDER HISTORY
+ 
 async getOrderHistory(userId: string) {
   return this.ordersService.findMyOrders(userId);
 }
@@ -123,7 +120,7 @@ async resetPasswordById(
 
   await this.userRepository.save(user);
 }
- // delete account
+
   async deleteAccount(userId: string): Promise<void> {
     const user = await this.findById(userId);
     if (!user) {
@@ -133,7 +130,7 @@ async resetPasswordById(
     await this.userRepository.delete(userId);
   }
  
-  // EMAIL VERIFICATION
+  
   async activateUser(userId: string): Promise<void> {
     await this.userRepository.update(userId, {
       isActive: true,

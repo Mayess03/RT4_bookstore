@@ -1,28 +1,23 @@
-/**
- * Book Model - Matches backend Book entity
- *
- * This represents a book in your bookstore
- */
 
 export interface Book {
-  id: string;              // UUID
-  title: string;           // Book title
-  author: string;          // Author name
-  isbn: string;            // Unique book identifier
-  price: number;           // Price in currency (e.g., 19.99)
-  stock: number;           // Available quantity
-  description?: string;    // Optional - book description
-  coverImage?: string;     // Optional - cover image URL (backend field name)
-  imageUrl?: string;       // Optional - alias for coverImage (for compatibility)
-  categoryId?: string;     // Optional - which category it belongs to
-  category?: CategoryBook;     // Optional - full category object (populated by backend)
-  isActive?: boolean;      // Optional - is book active/visible
-  publishedDate?: Date;    // Optional
-  createdAt?: Date;        // When added to database
-  updatedAt?: Date;        // Last modification
-  avgRating?: number;      // Optional - average rating from reviews (calculated by backend)
-  reviewsCount?: number;   // Optional - number of reviews (calculated by backend)
-  totalSales?: number;     // Optional - total number of sales
+  id: string;              
+  title: string;           
+  author: string;        
+  isbn: string;            
+  price: number;           
+  stock: number;          
+  description?: string;    
+  coverImage?: string;    
+  imageUrl?: string;       
+  categoryId?: string;   
+  category?: CategoryBook;    
+  isActive?: boolean;     
+  publishedDate?: Date;    
+  createdAt?: Date;        
+  updatedAt?: Date;        
+  avgRating?: number;      
+  reviewsCount?: number;   
+  totalSales?: number;     
 }
 
 /**
@@ -82,9 +77,7 @@ export interface CategoryStatsResponse {
     totalSales: number;
   };
 }
-/**
- * Create Book DTO - What we SEND when admin creates a book
- */
+
 export interface CreateBookDto {
   title: string;
   author: string;
@@ -97,10 +90,7 @@ export interface CreateBookDto {
   publishedDate?: Date;
 }
 
-/**
- * Update Book DTO - What we SEND when admin updates a book
- * All fields optional because we might update only one field
- */
+
 export interface UpdateBookDto {
   title?: string;
   author?: string;

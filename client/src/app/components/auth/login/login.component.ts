@@ -16,9 +16,9 @@ export class LoginComponent {
   private router = inject(Router);
 
   loading = signal(false);
-  error = signal<string | null>(null);
+  error = signal<string | null>(null); //ken login echoue => msg d erreur
 
-  //  Model (Template-driven)
+ 
   model = {
     email: '',
     password: '',
@@ -30,7 +30,7 @@ export class LoginComponent {
 
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload?.role ?? null; // ex: "admin" or "ADMIN"
+      return payload?.role ?? null; 
     } catch {
       return null;
     }
@@ -38,7 +38,8 @@ export class LoginComponent {
 
   submit(formulaire: NgForm) {
     if (formulaire.invalid) {
-      Object.values(formulaire.controls).forEach((c) => c.markAsTouched());
+      //object.values c pour transformer en tab
+      Object.values(formulaire.controls).forEach((c) => c.markAsTouched()); // controls feha les champs mtaa l form
       return;
     }
 
@@ -49,7 +50,7 @@ export class LoginComponent {
       next: (res) => {
         this.auth.saveTokens(res);
 
-        //  Redirect based on role (handles "admin" and "ADMIN")
+        
         const role = (this.getRoleFromToken() ?? '').toLowerCase();
 
         if (role === 'admin') {

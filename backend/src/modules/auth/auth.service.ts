@@ -21,7 +21,7 @@ export class AuthService {
     private readonly cartService: CartService,
   ) {}
 
-  // REGISTER
+
   async register(dto: RegisterDto) {
     const exists = await this.usersService.findByEmail(dto.email);
     if (exists) {
@@ -53,7 +53,7 @@ export class AuthService {
     };
   }
 
-  // LOGIN
+  
   async login(dto: LoginDto) {
     const user = await this.usersService.findByEmail(dto.email);
     if (!user || !user.isActive) {
@@ -76,19 +76,18 @@ export class AuthService {
     };
   }
 
-  // REFRESH
   async refresh(userId: string) {
     return {
       accessToken: await this.jwt.signAsync({ sub: userId }),
     };
   }
 
-  // LOGOUT
+  
   logout() {
     return { message: 'Logged out' };
   }
 
-  // FORGOT PASSWORD
+  
   async forgotPassword(email: string) {
     const user = await this.usersService.findByEmail(email);
     if (!user) return;
@@ -104,7 +103,7 @@ export class AuthService {
     return { message: 'Reset email sent' };
   }
 
-  // RESET PASSWORD
+  
 async resetPasswordByEmail(email: string, newPassword: string) {
   const user = await this.usersService.findByEmail(email);
   if (!user) {

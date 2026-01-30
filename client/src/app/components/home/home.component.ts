@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { BooksService } from '../../services/services/books.service';
+import { BooksService } from '../../services/books.service';
 import { BookCardComponent } from '../book-card/book-card.component';
 import { Book } from '../../models';
 

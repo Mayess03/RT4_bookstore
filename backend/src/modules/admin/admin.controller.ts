@@ -21,25 +21,23 @@ import { Role } from '../../common/enums/role.enum';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  // ADMIN-01 : LIST USERS
+  
   @Get('users')
   findAllUsers() {
     return this.adminService.findAllUsers();
   }
 
-  // ADMIN-03 : USER DETAILS
   @Get('users/:id')
   findUser(@Param('id') id: string) {
     return this.adminService.findUserById(id);
   }
-
-  // ADMIN-02 : BLOCK / UNBLOCK
+//block/unblock
   @Patch('users/:id/toggle')
   toggleUser(@Param('id') id: string) {
     return this.adminService.toggleUserStatus(id);
   }
 
-  // ADMIN-04 : DELETE USER
+  
   @Delete('users/:id')
   deleteUser(@Param('id') id: string) {
     return this.adminService.deleteUser(id);

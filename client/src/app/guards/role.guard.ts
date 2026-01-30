@@ -6,8 +6,8 @@ function getRoleFromToken(): 'admin' | 'user' | null {
   if (!token) return null;
 
   try {
-    const payloadPart = token.split('.')[1];
-    const payload = JSON.parse(atob(payloadPart));
+    const payloadPart = token.split('.')[1]; // 1 yrepresenti payload (0:header,1:payload,2:signature)
+    const payload = JSON.parse(atob(payloadPart)); //transformiw l objet js
     return payload?.role ?? null;
   } catch {
     return null;

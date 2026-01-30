@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { OrdersService } from '../../../../services/orders.service';
 import { AdminUsersService } from '../../../../services/admin-users.service';
-import { BooksService } from '../../../../services/services/books.service';
+import { BooksService } from '../../../../services/books.service';
 import { Order, User, Book, OrderStatus } from '../../../../models';
 
 @Component({

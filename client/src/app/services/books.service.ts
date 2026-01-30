@@ -1,22 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { ApiService } from '../api.service';
-import { Book } from '../../models';
+import { ApiService } from './api.service';
+import { Book } from '../models';
 import { Observable } from 'rxjs';
 
-/**
- * Books Service
- * 
- * Purpose: Handle all book-related API calls
- * Extends ApiService to inherit apiUrl and http client
- * 
- * Backend endpoints (from BooksController):
- * GET    /api/books              - List all books (with filters)
- * GET    /api/books/:id          - Get single book details
- * POST   /api/books              - Create book (ADMIN only)
- * PATCH  /api/books/:id          - Update book (ADMIN only)
- * DELETE /api/books/:id          - Delete book (ADMIN only)
- */
+
 @Injectable({
   providedIn: 'root'
 })

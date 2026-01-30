@@ -3,20 +3,16 @@ import { tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { AuthResponse, LoginDto, RegisterDto, User } from '../models/user.model';
 
-/**
- *
- * Uses signals for reactive auth state management
- * Automatically updates all components when auth state changes
- */
+
 @Injectable({ providedIn: 'root' })
 export class AuthService extends ApiService {
   private readonly accessKey = 'accessToken';
   private readonly refreshKey = 'refreshToken';
 
-  // Signal state
+  // Signal 
   private currentUserSignal = signal<User | null>(null);
 
-  // Computed signals (reactive, auto-update components)
+  // Computed signals 
   currentUser = computed(() => this.currentUserSignal());
   isLoggedIn = computed(() => !!this.currentUserSignal());
 
@@ -29,7 +25,7 @@ export class AuthService extends ApiService {
   private initializeAuth() {
     const token = this.accessToken;
     if (token) {
-      // User is logged in (token exists)
+      // ken token existe (user logged in)
       // Decode JWT to get user info
       const user = this.decodeToken(token);
       if (user) {
@@ -38,9 +34,7 @@ export class AuthService extends ApiService {
     }
   }
 
-  /**
-   * Decode JWT token to extract user info
-   */
+
   private decodeToken(token: string): User | null {
     try {
       const base64Url = token.split('.')[1];
@@ -66,7 +60,7 @@ export class AuthService extends ApiService {
     }
   }
 
-  //  LOGIN => POST /api/auth/login
+  
   login(dto: LoginDto) {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, dto).pipe(
       tap((res) => {
@@ -80,17 +74,16 @@ export class AuthService extends ApiService {
     );
   }
 
-  //  REGISTER => POST /api/auth/register
+  
   register(dto: RegisterDto) {
     return this.http.post<{ message: string }>(`${this.apiUrl}/auth/register`, dto);
   }
 
-  //  FORGOT PASSWORD => POST /api/auth/forgot-password
   forgotPassword(email: string) {
     return this.http.post<{ message: string }>(`${this.apiUrl}/auth/forgot-password`, { email });
   }
 
-  //  RESET PASSWORD => POST /api/auth/reset-password
+  
   resetPasswordByEmail(email: string, newPassword: string) {
     return this.http.post<{ message: string }>(`${this.apiUrl}/auth/reset-password`, {
       email,
@@ -117,7 +110,7 @@ export class AuthService extends ApiService {
     );
   }
 
-  // ---------- Token helpers ----------
+  
   saveTokens(res: AuthResponse) {
     localStorage.setItem(this.accessKey, res.accessToken);
     localStorage.setItem(this.refreshKey, res.refreshToken);
@@ -141,9 +134,6 @@ export class AuthService extends ApiService {
     return localStorage.getItem(this.refreshKey);
   }
 
-  /**
-   * Get current user
-   */
   getCurrentUser(): User | null {
     return this.currentUserSignal();
   }

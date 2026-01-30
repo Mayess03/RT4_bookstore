@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { BooksService } from '../../../services/services/books.service';
+import { BooksService } from '../../../services/books.service';
 import { CartService } from '../../../services/cart.service';
 import { Book } from '../../../models';
 import { AuthService } from '../../../services/auth.service';

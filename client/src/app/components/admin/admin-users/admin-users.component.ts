@@ -1,26 +1,27 @@
-import { Component, signal, OnInit, inject, computed } from '@angular/core';
+import { Component, signal, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { User } from '../../../models';
 import { AdminUsersService } from '../../../services/admin-users.service';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-admin-users',
   standalone: true,
-  imports: [CommonModule,RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './admin-users.component.html',
-  styleUrls: ['./admin-users.component.css']
+  styleUrls: ['./admin-users.component.css'],
 })
-export class AdminUsersComponent implements OnInit {
-
+export class AdminUsersComponent {
   private adminService = inject(AdminUsersService);
 
   users = signal<User[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
 
-  ngOnInit() {
-    this.loadUsers();
+  constructor() {
+    effect(() => {
+      this.loadUsers(); 
+    });
   }
 
   loadUsers() {
@@ -35,7 +36,7 @@ export class AdminUsersComponent implements OnInit {
       error: (err) => {
         this.error.set(err?.error?.message ?? 'Erreur chargement');
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -45,11 +46,10 @@ export class AdminUsersComponent implements OnInit {
 
     this.adminService.delete(user.id).subscribe({
       next: () => {
-        this.users.update(list => list.filter(u => u.id !== user.id));
+        this.users.update((list) => list.filter((u) => u.id !== user.id));
       },
-      error: () => {
-        alert('Erreur suppression');
-      }
+      error: () => alert('Erreur suppression'),
     });
   }
 }
+//nejmou zeda bel tosignal nekhdmou donc nwaliw maghir subscribe(automatiquement tsir)

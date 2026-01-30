@@ -19,13 +19,13 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
   
-  // USER-01 : GET PROFILE
+  
   @Get('me')
   async getProfile(@Req() req) {
     return this.usersService.findById(req.user.userId);
   }
 
-  // USER-01 : UPDATE PROFILE
+  
   @Patch('me')
   async updateProfile(
 
@@ -39,7 +39,7 @@ export class UsersController {
     );
   }
   
-  // USER-02 : CHANGE PASSWORD
+  
   @Patch('change-password')
   async changePassword(
     @Req() req,
@@ -53,13 +53,13 @@ export class UsersController {
     return { message: 'Password updated successfully' };
   }
 
-  // USER-04 : ORDER HISTORY (STUB)
+ 
   @Get('orders')
   async getOrderHistory(@Req() req) {
     return this.usersService.getOrderHistory(req.user.userId);
   }
 
-  // USER-05 : DELETE ACCOUNT
+  
   @Delete('me')
   async deleteAccount(@Req() req) {
     await this.usersService.deleteAccount(req.user.userId);
