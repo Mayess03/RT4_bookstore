@@ -9,26 +9,45 @@
   </div>
 
   <!-- Filters -->
-  <div class="filters-section">
-    <mat-form-field class="search-field" appearance="outline">
-      <mat-label>Search by title, author, or ISBN</mat-label>
-      <input matInput [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" (keyup.enter)="onSearch()" placeholder="Search books...">
-      <mat-icon matPrefix>search</mat-icon>
-      <button mat-icon-button matSuffix (click)="onSearch()" *ngIf="searchTerm()">
+<div class="filters-section">
+  <mat-form-field class="search-field" appearance="outline">
+    <mat-label>Search by title, author, or ISBN</mat-label>
+
+    <input
+      matInput
+      [value]="searchTerm()"
+      (input)="searchTerm.set($any($event.target).value)"
+      (keyup.enter)="onSearch()"
+      placeholder="Search books..."
+    />
+
+    <mat-icon matPrefix>search</mat-icon>
+
+    @if (searchTerm()) {
+      <button mat-icon-button matSuffix (click)="onSearch()">
         <mat-icon>arrow_forward</mat-icon>
       </button>
-    </mat-form-field>
+    }
+  </mat-form-field>
 
-    <mat-form-field class="category-filter" appearance="outline">
-      <mat-label>Category</mat-label>
-      <mat-select [value]="selectedCategoryId()" (selectionChange)="selectedCategoryId.set($event.value); onCategoryChange()">
-        <mat-option value="">All Categories</mat-option>
-        @for (category of categories(); track category.id) {
-          <mat-option [value]="category.id">{{ category.name }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-  </div>
+  <mat-form-field class="category-filter" appearance="outline">
+    <mat-label>Category</mat-label>
+
+    <mat-select
+      [value]="selectedCategoryId()"
+      (selectionChange)="selectedCategoryId.set($event.value); onCategoryChange()"
+    >
+      <mat-option value="">All Categories</mat-option>
+
+      @for (category of categories(); track category.id) {
+        <mat-option [value]="category.id">
+          {{ category.name }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
 
   <!-- Loading Spinner -->
   @if (isLoading()) {
