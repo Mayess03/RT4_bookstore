@@ -11,6 +11,7 @@ export class OrdersSocketService {
   constructor() {
     this.socket = io('http://localhost:3000/orders');
     this.socket.on('connect', () => {
+      console.log('Connected to orders socket with ID:', this.socket.id);
     });
     this.socket.on('connect_error', (err) => {
       console.error('Socket connection error:', err);

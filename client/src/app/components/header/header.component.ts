@@ -25,13 +25,7 @@ export class HeaderComponent {
   isAdmin = this.authService.isAdmin;
   isLoggedIn = this.authService.isLoggedIn;
   constructor() {
-    // Log initial value
-    console.log('Initial isAdmin:', this.isAdmin());
-    
-    // React to changes
-    effect(() => {
-      console.log('isAdmin updated:', this.isAdmin());
-    });
+
   }
   onLogout() {
     console.log('Logout clicked, isLoggedIn before:', this.isLoggedIn());

@@ -91,7 +91,6 @@ export class OrderDetailsAdminComponent {
         next: (updatedOrder) => {
           this.order.set(updatedOrder); // UI refresh
           this.updatingStatus.set(false);
-          console.log('Order status updated:', updatedOrder.status);
         },
         error: (err) => {
           console.error(err);
