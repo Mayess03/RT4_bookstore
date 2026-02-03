@@ -1,4 +1,4 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, inject, signal, ViewChild, computed } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -54,21 +54,31 @@ export class BookDetailComponent {
   private cartService = inject(CartService);
   private snackBar = inject(MatSnackBar);
 
-  // State
   book = signal<Book | null>(null);
   loading = signal(true);
   error = signal<string | null>(null);
   quantity = signal(1);
   isLoggedIn = this.authService.isLoggedIn;
   isAddingToCart = signal(false);
-  refreshKey = signal(0); // Key to trigger review list refresh
+  refreshKey = signal(0);
 
-  // Placeholder for missing covers
+  isInStock = computed(() => {
+    const currentBook = this.book();
+    return currentBook ? currentBook.stock > 0 : false;
+  });
+
+  canIncreaseQuantity = computed(() => {
+    const currentBook = this.book();
+    return currentBook ? this.quantity() < currentBook.stock : false;
+  });
+
+  canDecreaseQuantity = computed(() => this.quantity() > 1);
+
   readonly placeholderImage =
     'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2YwZjBmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBDb3ZlcjwvdGV4dD48L3N2Zz4=';
 
   constructor() {
-    // Load book data on component creation
+
     const bookId = this.route.snapshot.paramMap.get('id');
     if (bookId) {
       this.loadBook(bookId);
@@ -109,8 +119,7 @@ export class BookDetailComponent {
    * Increase quantity
    */
   increaseQuantity() {
-    const currentBook = this.book();
-    if (currentBook && this.quantity() < currentBook.stock) {
+    if (this.canIncreaseQuantity()) {
       this.quantity.update((q) => q + 1);
     }
   }
@@ -119,7 +128,7 @@ export class BookDetailComponent {
    * Decrease quantity
    */
   decreaseQuantity() {
-    if (this.quantity() > 1) {
+    if (this.canDecreaseQuantity()) {
       this.quantity.update((q) => q - 1);
     }
   }
@@ -128,7 +137,6 @@ export class BookDetailComponent {
    * Add to cart
    */
   onAddToCart() {
-    // Check if user is logged in
     if (!this.isLoggedIn()) {
       this.snackBar
         .open('Please login to add items to your cart', 'Login', {
@@ -181,7 +189,6 @@ export class BookDetailComponent {
               this.router.navigate(['/cart']);
             });
 
-          // Reset quantity
           this.quantity.set(1);
         },
         error: (error) => {
@@ -208,7 +215,6 @@ export class BookDetailComponent {
    * Refresh reviews list after adding a review
    */
   onReviewAdded() {
-    // Increment to trigger re-render via ngOnChanges in review-list
     this.refreshKey.update((k) => k + 1);
   }
 }

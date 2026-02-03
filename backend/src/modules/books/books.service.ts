@@ -50,7 +50,6 @@ export class BooksService {
       .groupBy('book.id')
       .addGroupBy('category.id');
 
-    // BOOK-03: Global search - searches title, author, AND ISBN (case-insensitive)
     if (search) {
       const trimmedSearch = search.trim();
       query.andWhere(
@@ -59,32 +58,26 @@ export class BooksService {
       );
     }
 
-    // BOOK-03: Specific author filter (if needed separately)
     if (author) {
       query.andWhere('book.author ILIKE :author', { author: `%${author.trim()}%` });
     }
 
-    // BOOK-03: Specific ISBN search (exact match)
     if (isbn) {
       query.andWhere('book.isbn = :isbn', { isbn: isbn.trim() });
     }
 
-    // BOOK-04: Filtrer par catégorie
     if (categoryId) {
       query.andWhere('book.categoryId = :categoryId', { categoryId });
     }
 
-    // BOOK-05: Filtrer par prix min
     if (minPrice !== undefined) {
       query.andWhere('book.price >= :minPrice', { minPrice });
     }
 
-    // BOOK-05: Filtrer par prix max
     if (maxPrice !== undefined) {
       query.andWhere('book.price <= :maxPrice', { maxPrice });
     }
 
-    // BOOK-06: Tri
     switch (sortBy) {
       case 'price':
         query.orderBy('book.price', order);
@@ -102,7 +95,6 @@ export class BooksService {
         query.orderBy('book.createdAt', order);
     }
 
-    // Pagination
     const total = await query.getCount();
     const books = await query
       .skip((page - 1) * limit)
@@ -138,7 +130,6 @@ export class BooksService {
       throw new NotFoundException(`Book with ID ${id} not found`);
     }
 
-    // Calculer la note moyenne
     const avgRating =
       book.reviews.length > 0
         ? book.reviews.reduce((acc, review) => acc + review.rating, 0) /
@@ -205,10 +196,9 @@ export class BooksService {
    * BOOK-10: Ajouter un nouveau livre (ADMIN)
    */
   async create(createBookDto: CreateBookDto) {
-    // Vérifier si ISBN existe déjà (excluding soft-deleted books)
     const existingBook = await this.bookRepository.findOne({
       where: { isbn: createBookDto.isbn },
-      withDeleted: false, // Only check active books
+      withDeleted: false, // Only check active books et ingonrer les soft deleted books 
     });
 
     if (existingBook) {
@@ -227,7 +217,6 @@ export class BooksService {
   async update(id: string, updateBookDto: UpdateBookDto) {
     const book = await this.findOne(id);
 
-    // Vérifier si le nouvel ISBN existe déjà (si changé)
     if (updateBookDto.isbn && updateBookDto.isbn !== book.isbn) {
       const existingBook = await this.bookRepository.findOne({
         where: { isbn: updateBookDto.isbn },
@@ -240,7 +229,7 @@ export class BooksService {
       }
     }
 
-    Object.assign(book, updateBookDto);
+    Object.assign(book, updateBookDto);  // Maj partielle ( kima patch )
     return this.bookRepository.save(book);
   }
 

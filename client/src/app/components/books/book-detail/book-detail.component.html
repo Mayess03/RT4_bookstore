@@ -71,7 +71,7 @@
                 </p>
               </div>
               <div>
-                @if (book()!.stock > 0) {
+                @if (isInStock()) {
                   <span
                     class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-50 text-green-700 border border-green-200"
                   >
@@ -135,7 +135,7 @@
 
             <!-- Quantity & Add to Cart -->
             <div class="border-t border-stone-200 pt-6">
-              @if (book()!.stock > 0) {
+              @if (isInStock()) {
                 <div class="space-y-4">
                   @if (!isLoggedIn()) {
                     <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 text-center">
@@ -155,7 +155,7 @@
                     <div class="inline-flex items-center border border-stone-300 rounded-lg">
                       <button
                         (click)="decreaseQuantity()"
-                        [disabled]="quantity() <= 1"
+                        [disabled]="!canDecreaseQuantity()"
                         class="p-2 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                       >
                         <mat-icon class="text-stone-600">remove</mat-icon>
@@ -165,7 +165,7 @@
                       }}</span>
                       <button
                         (click)="increaseQuantity()"
-                        [disabled]="quantity() >= book()!.stock"
+                        [disabled]="!canIncreaseQuantity()"
                         class="p-2 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                       >
                         <mat-icon class="text-stone-600">add</mat-icon>

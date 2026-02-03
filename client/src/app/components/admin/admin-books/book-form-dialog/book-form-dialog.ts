@@ -53,7 +53,6 @@ export class BookFormDialog {
       categories: Array<{ id: string; name: string }> 
     }
   ) {
-    // Initialize form data based on edit mode
     if (this.data.book) {
       this.isEditMode = true;
       this.formData = {

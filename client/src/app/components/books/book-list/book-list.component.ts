@@ -1,7 +1,6 @@
-import { Component, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal, effect, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,7 +10,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { BooksService } from '../../../services/books.service';
 import { CartService } from '../../../services/cart.service';
 import { AuthService } from '../../../services/auth.service';
-import { Book } from '../../../models';
+import { Book, QueryBooksParams } from '../../../models';
 import { BookCardComponent } from '../../book-card/book-card.component';
 import { LoadingComponent } from '../../loading/loading.component';
 import { debounceTime, distinctUntilChanged, Subject, switchMap, map, tap } from 'rxjs';
@@ -25,15 +24,11 @@ import { debounceTime, distinctUntilChanged, Subject, switchMap, map, tap } from
  * - Pagination
  * - Loading state
  * - Error handling
- *
- * Used by: Dev 2 (Books module)
- * Modern Angular 21: Uses inject() and constructor initialization
  */
 @Component({
   selector: 'app-book-list',
   standalone: true,
   imports: [
-    FormsModule,
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
@@ -53,10 +48,11 @@ export class BookListComponent {
   private snackBar = inject(MatSnackBar);
   
   private searchSubject = new Subject<string>();
+  private priceRangeSubject = new Subject<{ min: number | null; max: number | null }>();
   private booksLoad$ = new Subject<any>();
   private categoriesLoad$ = new Subject<void>();
 
-  // State using signals (Modern Angular 21 best practice)
+  
   loading = signal(false);
   error = signal<string | null>(null);
 
@@ -77,10 +73,20 @@ export class BookListComponent {
   // Cart loading state
   addingToCartBookId = signal<string | null>(null);
 
+  canGoNext = computed(() => this.currentPage() < this.totalPages());
+  canGoPrevious = computed(() => this.currentPage() > 1);
+  
+  hasActiveFilters = computed(() => 
+    this.searchTerm() !== '' ||
+    this.selectedCategory() !== 'all' ||
+    this.minPrice() !== null ||
+    this.maxPrice() !== null
+  );
+
   // Reactive data streams
   categories = toSignal(
     this.categoriesLoad$.pipe(
-      switchMap(() => this.booksService.getCategories())
+      switchMap(() => this.booksService.getCategories()) // Appelle a l'api
     ),
     { initialValue: [] as Array<{ id: string; name: string }> }
   );
@@ -109,13 +115,11 @@ export class BookListComponent {
   );
 
   constructor() {
-    // Load categories once on init
     this.categoriesLoad$.next();
 
-    // Debounce search input - wait 750ms after user stops typing
     toSignal(
       this.searchSubject.pipe(
-        debounceTime(750),
+        debounceTime(500),
         distinctUntilChanged(),
         tap((searchValue) => {
           const trimmedSearch = searchValue.trim();
@@ -126,7 +130,21 @@ export class BookListComponent {
       )
     );
 
-    // Initial load
+    toSignal(
+      this.priceRangeSubject.pipe(
+        debounceTime(500),
+        distinctUntilChanged((prev, curr) => 
+          prev.min === curr.min && prev.max === curr.max
+        ),
+        tap(({ min, max }) => {
+          this.minPrice.set(min);
+          this.maxPrice.set(max);
+          this.currentPage.set(1);
+          this.triggerBooksLoad();
+        })
+      )
+    );
+
     this.triggerBooksLoad();
   }
 
@@ -134,11 +152,10 @@ export class BookListComponent {
    * Trigger books load with current filter params
    */
   triggerBooksLoad(scrollToTop: boolean = false) {
-    // Build params matching backend QueryBookDto
-    const params: any = {
+    const params: QueryBooksParams = {
       page: this.currentPage(),
       limit: this.booksPerPage,
-      sortBy: this.sortBy(),
+      sortBy: this.sortBy() as any,
       order: this.sortOrder(),
     };
 
@@ -150,15 +167,15 @@ export class BookListComponent {
       params.categoryId = this.selectedCategory();
     }
     if (this.minPrice()) {
-      params.minPrice = this.minPrice();
+      params.minPrice = this.minPrice() ?? undefined;
     }
     if (this.maxPrice()) {
-      params.maxPrice = this.maxPrice();
+      params.maxPrice = this.maxPrice() ?? undefined;
     }
 
     this.booksLoad$.next(params);
 
-    // Scroll to top if needed (for pagination)
+   
     if (scrollToTop) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -182,13 +199,10 @@ export class BookListComponent {
   }
 
   /**
-   * Handle price range filter
+   * Handle price range filter - debounced
    */
   onPriceRangeChange(min: number | null, max: number | null) {
-    this.minPrice.set(min);
-    this.maxPrice.set(max);
-    this.currentPage.set(1);
-    this.triggerBooksLoad();
+    this.priceRangeSubject.next({ min, max });
   }
 
   /**

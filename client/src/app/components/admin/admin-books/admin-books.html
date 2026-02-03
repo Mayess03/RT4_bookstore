@@ -16,18 +16,11 @@
     <input
       matInput
       [value]="searchTerm()"
-      (input)="searchTerm.set($any($event.target).value)"
-      (keyup.enter)="onSearch()"
+      (input)="onSearch($any($event.target).value)"
       placeholder="Search books..."
     />
 
     <mat-icon matPrefix>search</mat-icon>
-
-    @if (searchTerm()) {
-      <button mat-icon-button matSuffix (click)="onSearch()">
-        <mat-icon>arrow_forward</mat-icon>
-      </button>
-    }
   </mat-form-field>
 
   <mat-form-field class="category-filter" appearance="outline">
@@ -59,7 +52,7 @@
   <!-- Books Table -->
   @if (!isLoading()) {
     <div class="table-container">
-      <table mat-table [dataSource]="books()" class="books-table">
+      <table mat-table [dataSource]="booksData()" class="books-table">
         
         <!-- Cover Image Column -->
         <ng-container matColumnDef="coverImage">
@@ -143,7 +136,7 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
         <!-- No data row -->
-        @if (books().length === 0) {
+        @if (booksData().length === 0) {
           <tr class="mat-row no-data-row">
             <td [attr.colspan]="displayedColumns.length" class="no-data-cell">
               <div class="no-data-message">

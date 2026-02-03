@@ -31,8 +31,6 @@ import { Role } from '../../common/enums/role.enum';
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
-  // ==================== ENDPOINTS PUBLICS ====================
-
   /**
    * BOOK-01: Afficher la liste des livres avec pagination
    * BOOK-03: Rechercher des livres (titre, auteur, ISBN)
@@ -104,8 +102,6 @@ export class BooksController {
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.booksService.findOne(id);
   }
-
-  // ==================== ENDPOINTS ADMIN ====================
 
   /**
    * BOOK-10: Ajouter un nouveau livre (ADMIN)

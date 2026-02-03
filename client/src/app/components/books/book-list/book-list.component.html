@@ -28,19 +28,18 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16">
     
     <!-- Search & Filters Section -->
-    @if (!loading()) {
-      <div class="mb-6 sm:mb-8 space-y-4">
+    <div class="mb-6 sm:mb-8 space-y-4">
         <!-- Search Bar -->
         <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <div class="flex-1 relative">
             <input type="text" 
-                   [(ngModel)]="searchTerm" 
-                   (ngModelChange)="onSearch($event)"
+                   [value]="searchTerm()" 
+                   (input)="onSearch($any($event.target).value)"
                    placeholder="Search by title, author, or ISBN..."
                    class="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-lg border border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm sm:text-base bg-white shadow-sm">
             <mat-icon class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">search</mat-icon>
           </div>
-          @if (searchTerm() || selectedCategory() !== 'all' || minPrice() || maxPrice()) {
+          @if (hasActiveFilters()) {
             <button (click)="clearFilters()" 
                     class="inline-flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 font-semibold transition-all shadow-sm">
               <mat-icon class="text-xl">clear</mat-icon>
@@ -54,8 +53,8 @@
           <!-- Category Filter -->
           <div class="flex-1">
             <label class="block text-sm font-semibold text-stone-700 mb-2">Category</label>
-            <select [(ngModel)]="selectedCategory" 
-                    (ngModelChange)="onCategoryChange($event)"
+            <select [value]="selectedCategory()" 
+                    (change)="onCategoryChange($any($event.target).value)"
                     class="w-full px-4 py-2 rounded-lg border border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm sm:text-base bg-white">
               <option value="all">All Categories</option>
               @for (category of categories(); track category.id) {
@@ -69,15 +68,15 @@
             <label class="block text-sm font-semibold text-stone-700 mb-2">Price Range</label>
             <div class="flex gap-2 items-center">
               <input type="number" 
-                     [(ngModel)]="minPrice" 
-                     (ngModelChange)="onPriceRangeChange(minPrice(), maxPrice())"
+                     [value]="minPrice() ?? ''" 
+                     (input)="onPriceRangeChange($any($event.target).value ? +$any($event.target).value : null, maxPrice())"
                      placeholder="Min"
                      min="0"
                      class="w-full px-3 py-2 rounded-lg border border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm bg-white">
               <span class="text-gray-400">-</span>
               <input type="number" 
-                     [(ngModel)]="maxPrice" 
-                     (ngModelChange)="onPriceRangeChange(minPrice(), maxPrice())"
+                     [value]="maxPrice() ?? ''" 
+                     (input)="onPriceRangeChange(minPrice(), $any($event.target).value ? +$any($event.target).value : null)"
                      placeholder="Max"
                      min="0"
                      class="w-full px-3 py-2 rounded-lg border border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm bg-white">
@@ -87,8 +86,8 @@
           <!-- Sort By -->
           <div class="flex-1">
             <label class="block text-sm font-semibold text-stone-700 mb-2">Sort By</label>
-            <select [(ngModel)]="sortBy" 
-                    (ngModelChange)="onSortChange(sortBy(), sortOrder())"
+            <select [value]="sortBy()" 
+                    (change)="onSortChange($any($event.target).value, sortOrder())"
                     class="w-full px-4 py-2 rounded-lg border border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm sm:text-base bg-white">
               <option value="title">Title (A-Z)</option>
               <option value="price">Price</option>
@@ -105,7 +104,6 @@
           </div>
         </div>
       </div>
-    }
     
     <!-- Loading state -->
     @if (loading()) {
@@ -150,7 +148,7 @@
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 bg-white rounded-lg p-4 sm:p-6 shadow-md border border-amber-100">
           <button 
             (click)="previousPage()" 
-            [disabled]="currentPage() === 1"
+            [disabled]="!canGoPrevious()"
             class="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all w-full sm:w-auto justify-center
                    disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400
                    enabled:bg-gradient-to-r enabled:from-amber-600 enabled:to-orange-600 enabled:text-white 
@@ -169,7 +167,7 @@
 
           <button 
             (click)="nextPage()" 
-            [disabled]="currentPage() === totalPages()"
+            [disabled]="!canGoNext()"
             class="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all w-full sm:w-auto justify-center
                    disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400
                    enabled:bg-gradient-to-r enabled:from-amber-600 enabled:to-orange-600 enabled:text-white 

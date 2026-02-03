@@ -10,7 +10,7 @@ export interface Book {
   coverImage?: string;    
   imageUrl?: string;       
   categoryId?: string;   
-  category?: CategoryBook;    
+  category?: CategoryBook;   //version minimaliste l catégorie ( pour separer la relation entre eux de 'entité catégories elle meme )
   isActive?: boolean;     
   publishedDate?: Date;    
   createdAt?: Date;        
@@ -25,7 +25,7 @@ export interface Book {
  */
 export interface CategoryBook {
   id: string;
-  name: string;            // e.g., "Fiction", "Science"
+  name: string;           
   description?: string;
 }
 export interface Category {
@@ -99,4 +99,17 @@ export interface UpdateBookDto {
   description?: string;
   imageUrl?: string;
   categoryId?: string;
+}
+
+export interface QueryBooksParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  author?: string;
+  isbn?: string;
+  categoryId?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sortBy?: 'price' | 'title' | 'createdAt' | 'rating' | 'bestseller';
+  order?: 'ASC' | 'DESC';
 }
