@@ -1,8 +1,6 @@
 import { Component, signal, computed, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Subject, switchMap, tap, debounceTime, distinctUntilChanged } from 'rxjs';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -44,90 +42,86 @@ export class AdminBooks {
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
-  private booksLoad$ = new Subject<any>();
-  private categoriesLoad$ = new Subject<void>();
-  private searchSubject$ = new Subject<string>();
-
   searchTerm = signal('');
   selectedCategoryId = signal('');
   page = signal(1);
   limit = signal(10);
   totalBooks = signal(0);
   isLoading = signal(false);
+  books = signal<any>({ data: [], meta: { total: 0, page: 1, limit: 10, totalPages: 0 } });
+  categories = signal<Array<{ id: string; name: string }>>([]);
+  
+  private searchDebounce = signal('');
+  private debounceTimer: any;
   
   displayedColumns = ['coverImage', 'title', 'author', 'isbn', 'price', 'stock', 'category', 'status', 'actions'];
 
-  categories = toSignal(
-    this.categoriesLoad$.pipe(
-      switchMap(() => this.booksService.getCategories())
-    ),
-    { initialValue: [] as Array<{ id: string; name: string }> }
-  );
-
-  books = toSignal(
-    this.booksLoad$.pipe(
-      tap(() => this.isLoading.set(true)),
-      switchMap((params) => this.booksService.getBooks(params)),
-      tap((response) => {
-        this.totalBooks.set(response.meta.total);
-        this.isLoading.set(false);
-      })
-    ),
-    { initialValue: { data: [], meta: { total: 0, page: 1, limit: 10, totalPages: 0 } } }
-  );
-
   booksData = computed(() => this.books()?.data || []);
 
-  constructor() {
-    this.categoriesLoad$.next();
-    
-    toSignal(
-      this.searchSubject$.pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-        tap((searchValue) => {
-          this.searchTerm.set(searchValue);
-          this.page.set(1);
-          this.triggerBooksLoad();
-        })
-      )
-    );
-    
-    this.triggerBooksLoad();
-  }
-
-  triggerBooksLoad(): void {
+  private queryParams = computed(() => {
     const params: any = {
       page: this.page(),
       limit: this.limit()
     };
 
-    const search = this.searchTerm().trim();
-    if (search) {
-      params.search = search;
-    }
+    const search = this.searchDebounce().trim();
+    if (search) params.search = search;
 
     const categoryId = this.selectedCategoryId().trim();
-    if (categoryId) {
-      params.categoryId = categoryId;
-    }
+    if (categoryId) params.categoryId = categoryId;
 
-    this.booksLoad$.next(params);
+    return params;
+  });
+
+  constructor() {
+    this.loadCategories();
+
+    effect(() => {
+      const params = this.queryParams();
+      this.loadBooks(params);
+    });
+  }
+
+  private async loadCategories() {
+    try {
+      const cats = await this.booksService.getCategories().toPromise();
+      this.categories.set(cats || []);
+    } catch (error) {
+      console.error('Failed to load categories', error);
+    }
+  }
+
+  private async loadBooks(params: any) {
+    try {
+      this.isLoading.set(true);
+      const response = await this.booksService.getBooks(params).toPromise();
+      if (response) {
+        this.books.set(response);
+        this.totalBooks.set(response.meta.total);
+      }
+    } catch (error) {
+      console.error('Failed to load books', error);
+    } finally {
+      this.isLoading.set(false);
+    }
   }
 
   onSearch(searchValue: string): void {
-    this.searchSubject$.next(searchValue);
+    this.searchTerm.set(searchValue);
+    this.page.set(1);
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(() => {
+      this.searchDebounce.set(searchValue);
+    }, 500);
   }
 
   onCategoryChange(): void {
     this.page.set(1);
-    this.triggerBooksLoad();
   }
 
   onPageChange(event: PageEvent): void {
     this.page.set(event.pageIndex + 1);
     this.limit.set(event.pageSize);
-    this.triggerBooksLoad();
   }
 
   openAddBookDialog(): void {
@@ -164,7 +158,7 @@ export class AdminBooks {
     this.booksService.createBook(bookData).subscribe({
       next: () => {
         this.snackBar.open('Book created successfully!', 'Close', { duration: 3000 });
-        this.triggerBooksLoad();
+        this.page.set(1);
       },
       error: (error) => {
         this.snackBar.open(error.error?.message || 'Failed to create book', 'Close', { duration: 3000 });
@@ -176,7 +170,12 @@ export class AdminBooks {
     this.booksService.updateBook(id, bookData).subscribe({
       next: () => {
         this.snackBar.open('Book updated successfully!', 'Close', { duration: 3000 });
-        this.triggerBooksLoad();
+        const currentBooks = this.books();
+        const updatedBooks = {
+          ...currentBooks,
+          data: currentBooks.data.map((b: Book) => b.id === id ? { ...b, ...bookData } : b)
+        };
+        this.books.set(updatedBooks);
       },
       error: (error) => {
         this.snackBar.open(error.error?.message || 'Failed to update book', 'Close', { duration: 3000 });
@@ -189,7 +188,12 @@ export class AdminBooks {
       this.booksService.deleteBook(book.id).subscribe({
         next: () => {
           this.snackBar.open('Book deleted successfully!', 'Close', { duration: 3000 });
-          this.triggerBooksLoad();
+          const currentBooks = this.books();
+          const updatedBooks = {
+            ...currentBooks,
+            data: currentBooks.data.filter((b: Book) => b.id !== book.id)
+          };
+          this.books.set(updatedBooks);
         },
         error: (error) => {
           this.snackBar.open(error.error?.message || 'Failed to delete book', 'Close', { duration: 3000 });
@@ -204,7 +208,12 @@ export class AdminBooks {
     this.booksService.toggleBookActive(book.id, newStatus).subscribe({
       next: () => {
         this.snackBar.open(`Book ${newStatus ? 'activated' : 'deactivated'} successfully!`, 'Close', { duration: 3000 });
-        this.triggerBooksLoad();
+        const currentBooks = this.books();
+        const updatedBooks = {
+          ...currentBooks,
+          data: currentBooks.data.map((b: Book) => b.id === book.id ? { ...b, isActive: newStatus } : b)
+        };
+        this.books.set(updatedBooks);
       },
       error: (error) => {
         this.snackBar.open('Failed to update book status', 'Close', { duration: 3000 });
@@ -226,7 +235,12 @@ export class AdminBooks {
       this.booksService.updateBookStock(book.id, quantity).subscribe({
         next: () => {
           this.snackBar.open('Stock updated successfully!', 'Close', { duration: 3000 });
-          this.triggerBooksLoad();
+          const currentBooks = this.books();
+          const updatedBooks = {
+            ...currentBooks,
+            data: currentBooks.data.map((b: Book) => b.id === book.id ? { ...b, stock: quantity } : b)
+          };
+          this.books.set(updatedBooks);
         },
         error: (error) => {
           this.snackBar.open('Failed to update stock', 'Close', { duration: 3000 });

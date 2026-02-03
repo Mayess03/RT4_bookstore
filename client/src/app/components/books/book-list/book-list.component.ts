@@ -1,6 +1,5 @@
 import { Component, inject, signal, effect, computed } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { RouterLink, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -13,7 +12,6 @@ import { AuthService } from '../../../services/auth.service';
 import { Book, QueryBooksParams } from '../../../models';
 import { BookCardComponent } from '../../book-card/book-card.component';
 import { LoadingComponent } from '../../loading/loading.component';
-import { debounceTime, distinctUntilChanged, Subject, switchMap, map, tap } from 'rxjs';
 
 /**
  * Book List Component
@@ -46,23 +44,17 @@ export class BookListComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
-  
-  private searchSubject = new Subject<string>();
-  private priceRangeSubject = new Subject<{ min: number | null; max: number | null }>();
-  private booksLoad$ = new Subject<any>();
-  private categoriesLoad$ = new Subject<void>();
 
-  
   loading = signal(false);
   error = signal<string | null>(null);
+  books = signal<Book[]>([]);
+  categories = signal<Array<{ id: string; name: string }>>([]);
 
-  // Pagination signals
   currentPage = signal(1);
   totalBooks = signal(0);
   booksPerPage = 12;
   totalPages = signal(0);
 
-  // Filter & Search signals
   searchTerm = signal('');
   selectedCategory = signal<string>('all');
   minPrice = signal<number | null>(null);
@@ -70,8 +62,11 @@ export class BookListComponent {
   sortBy = signal<string>('title');
   sortOrder = signal<'ASC' | 'DESC'>('ASC');
 
-  // Cart loading state
   addingToCartBookId = signal<string | null>(null);
+
+  private searchDebounce = signal<string>('');
+  private priceDebounce = signal<{ min: number | null; max: number | null }>({ min: null, max: null });
+  private debounceTimer: any;
 
   canGoNext = computed(() => this.currentPage() < this.totalPages());
   canGoPrevious = computed(() => this.currentPage() > 1);
@@ -83,75 +78,7 @@ export class BookListComponent {
     this.maxPrice() !== null
   );
 
-  // Reactive data streams
-  categories = toSignal(
-    this.categoriesLoad$.pipe(
-      switchMap(() => this.booksService.getCategories()) // Appelle a l'api
-    ),
-    { initialValue: [] as Array<{ id: string; name: string }> }
-  );
-
-  books = toSignal(
-    this.booksLoad$.pipe(
-      tap(() => {
-        this.loading.set(true);
-        this.error.set(null);
-      }),
-      switchMap((params) => this.booksService.getBooks(params)),
-      tap({
-        next: (response) => {
-          this.totalBooks.set(response.meta.total);
-          this.totalPages.set(response.meta.totalPages);
-          this.loading.set(false);
-        },
-        error: () => {
-          this.error.set('Failed to load books. Please try again.');
-          this.loading.set(false);
-        }
-      }),
-      map((response) => response.data)
-    ),
-    { initialValue: [] as Book[] }
-  );
-
-  constructor() {
-    this.categoriesLoad$.next();
-
-    toSignal(
-      this.searchSubject.pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-        tap((searchValue) => {
-          const trimmedSearch = searchValue.trim();
-          this.searchTerm.set(trimmedSearch);
-          this.currentPage.set(1);
-          this.triggerBooksLoad();
-        })
-      )
-    );
-
-    toSignal(
-      this.priceRangeSubject.pipe(
-        debounceTime(500),
-        distinctUntilChanged((prev, curr) => 
-          prev.min === curr.min && prev.max === curr.max
-        ),
-        tap(({ min, max }) => {
-          this.minPrice.set(min);
-          this.maxPrice.set(max);
-          this.currentPage.set(1);
-          this.triggerBooksLoad();
-        })
-      )
-    );
-
-    this.triggerBooksLoad();
-  }
-
-  /**
-   * Trigger books load with current filter params
-   */
-  triggerBooksLoad(scrollToTop: boolean = false) {
+  private queryParams = computed<QueryBooksParams>(() => {
     const params: QueryBooksParams = {
       page: this.currentPage(),
       limit: this.booksPerPage,
@@ -159,73 +86,88 @@ export class BookListComponent {
       order: this.sortOrder(),
     };
 
-    // Add optional filters
-    if (this.searchTerm()) {
-      params.search = this.searchTerm();
-    }
-    if (this.selectedCategory() !== 'all') {
-      params.categoryId = this.selectedCategory();
-    }
-    if (this.minPrice()) {
-      params.minPrice = this.minPrice() ?? undefined;
-    }
-    if (this.maxPrice()) {
-      params.maxPrice = this.maxPrice() ?? undefined;
-    }
+    if (this.searchDebounce()) params.search = this.searchDebounce();
+    if (this.selectedCategory() !== 'all') params.categoryId = this.selectedCategory();
+    if (this.priceDebounce().min) params.minPrice = this.priceDebounce().min ?? undefined;
+    if (this.priceDebounce().max) params.maxPrice = this.priceDebounce().max ?? undefined;
 
-    this.booksLoad$.next(params);
+    return params;
+  });
 
-   
-    if (scrollToTop) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+  constructor() {
+    this.loadCategories();
+
+    effect(() => {
+      const params = this.queryParams();
+      this.loadBooks(params);
+    });
+  }
+
+  private async loadCategories() {
+    try {
+      const cats = await this.booksService.getCategories().toPromise();
+      this.categories.set(cats || []);
+    } catch (error) {
+      console.error('Failed to load categories', error);
     }
   }
 
-  /**
-   * Handle search input - debounced
-   */
+  private async loadBooks(params: QueryBooksParams) {
+    try {
+      this.loading.set(true);
+      this.error.set(null);
+      const response = await this.booksService.getBooks(params).toPromise();
+      if (response) {
+        this.books.set(response.data);
+        this.totalBooks.set(response.meta.total);
+        this.totalPages.set(response.meta.totalPages);
+      }
+    } catch (error) {
+      this.error.set('Failed to load books. Please try again.');
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
   onSearch(searchValue: string) {
-    // Don't call API immediately - let debounce handle it
-    this.searchSubject.next(searchValue);
+    this.searchTerm.set(searchValue);
+    this.currentPage.set(1);
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(() => {
+      this.searchDebounce.set(searchValue.trim());
+    }, 750);
   }
 
-  /**
-   * Handle category filter change
-   */
   onCategoryChange(category: string) {
     this.selectedCategory.set(category);
     this.currentPage.set(1);
-    this.triggerBooksLoad();
   }
 
-  /**
-   * Handle price range filter - debounced
-   */
   onPriceRangeChange(min: number | null, max: number | null) {
-    this.priceRangeSubject.next({ min, max });
+    this.minPrice.set(min);
+    this.maxPrice.set(max);
+    this.currentPage.set(1);
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(() => {
+      this.priceDebounce.set({ min, max });
+    }, 750);
   }
 
-  /**
-   * Handle sort change
-   */
   onSortChange(sortBy: string, sortOrder: 'ASC' | 'DESC') {
     this.sortBy.set(sortBy);
     this.sortOrder.set(sortOrder);
-    this.triggerBooksLoad();
   }
 
-  /**
-   * Clear all filters
-   */
   clearFilters() {
     this.searchTerm.set('');
+    this.searchDebounce.set('');
     this.selectedCategory.set('all');
     this.minPrice.set(null);
     this.maxPrice.set(null);
+    this.priceDebounce.set({ min: null, max: null });
     this.sortBy.set('title');
     this.sortOrder.set('ASC');
     this.currentPage.set(1);
-    this.triggerBooksLoad();
   }
 
   /**
@@ -302,7 +244,7 @@ export class BookListComponent {
   nextPage() {
     if (this.currentPage() < this.totalPages()) {
       this.currentPage.update((page) => page + 1);
-      this.triggerBooksLoad(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
@@ -312,7 +254,7 @@ export class BookListComponent {
   previousPage() {
     if (this.currentPage() > 1) {
       this.currentPage.update((page) => page - 1);
-      this.triggerBooksLoad(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
@@ -322,7 +264,7 @@ export class BookListComponent {
   goToPage(page: number) {
     if (page >= 1 && page <= this.totalPages()) {
       this.currentPage.set(page);
-      this.triggerBooksLoad(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 }
