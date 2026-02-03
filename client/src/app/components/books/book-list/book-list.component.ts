@@ -1,5 +1,6 @@
 import { Component, inject, signal, effect, computed } from '@angular/core';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -105,7 +106,7 @@ export class BookListComponent {
 
   private async loadCategories() {
     try {
-      const cats = await this.booksService.getCategories().toPromise();
+      const cats = await firstValueFrom(this.booksService.getCategories());
       this.categories.set(cats || []);
     } catch (error) {
       console.error('Failed to load categories', error);
@@ -116,7 +117,7 @@ export class BookListComponent {
     try {
       this.loading.set(true);
       this.error.set(null);
-      const response = await this.booksService.getBooks(params).toPromise();
+      const response = await firstValueFrom(this.booksService.getBooks(params));
       if (response) {
         this.books.set(response.data);
         this.totalBooks.set(response.meta.total);

@@ -1,6 +1,7 @@
 import { Component, signal, computed, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { firstValueFrom } from 'rxjs';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -84,7 +85,7 @@ export class AdminBooks {
 
   private async loadCategories() {
     try {
-      const cats = await this.booksService.getCategories().toPromise();
+      const cats = await firstValueFrom(this.booksService.getCategories());
       this.categories.set(cats || []);
     } catch (error) {
       console.error('Failed to load categories', error);
@@ -94,7 +95,7 @@ export class AdminBooks {
   private async loadBooks(params: any) {
     try {
       this.isLoading.set(true);
-      const response = await this.booksService.getBooks(params).toPromise();
+      const response = await firstValueFrom(this.booksService.getBooks(params));
       if (response) {
         this.books.set(response);
         this.totalBooks.set(response.meta.total);
