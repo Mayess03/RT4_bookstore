@@ -37,6 +37,21 @@ RT4 Bookstore is a full-stack bookstore application:
 
 ---
 
+## Developer Tools 🛠️
+
+### GitHub Copilot Chat in WebStorm
+
+Yes! You can use GitHub Copilot Chat directly in your WebStorm IDE for AI-assisted development.
+
+**[📖 Read the complete setup guide →](./WEBSTORM_COPILOT_SETUP.md)**
+
+Quick setup:
+1. Install the GitHub Copilot plugin in WebStorm (2024.1+)
+2. Sign in with your GitHub account (requires Copilot subscription)
+3. Use `Ctrl + Shift + Alt + L` (Windows/Linux) or `Cmd + Shift + Alt + L` (macOS) to open Chat
+
+---
+
 ## Quickstart — Run Locally ✅
 
 ### Prerequisites
